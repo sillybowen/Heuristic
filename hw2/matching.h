@@ -1,5 +1,6 @@
 #ifndef matching_h_
 #define matching_h_
+#include "string.h"
 #include "mst.h"
 const int maxn = 1001;
 const int INF = (1<<31)-1;
