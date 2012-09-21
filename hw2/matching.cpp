@@ -90,7 +90,7 @@ void Matching::output() {
     cout<<linky[i]<<' '<<i<<endl;
 }
 void Matching::createEdge() {
-  nx = points.size();
+/*  nx = points.size();
   ny = points.size();
   double maxx;
   for (int i = 0; i< points.size();i++)
@@ -103,5 +103,11 @@ void Matching::createEdge() {
     for (int j = 0; j<points.size();j++)
       if (i!=j){
         w[i][j] = maxx+1 - w[i][j];
-    }
+        }*/
+
+  for (int i = 0; i<points.size();i++)
+    for (int j = i+1; j< points.size();j++)
+}
+void Matching::greedy() {
+  
 }

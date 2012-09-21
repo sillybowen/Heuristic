@@ -3,8 +3,10 @@
 #include "mst.h"
 const int maxn = 1001;
 const int INF = (1<<31)-1;
-class Matching {
 
+
+
+class Matching {
  private:
   double w[maxn][maxn];
   double lx[maxn],ly[maxn];
@@ -17,6 +19,7 @@ class Matching {
   int KM();
   void createEdge();
   void output();
+  void greedy();
  public:
   Matching (vector<point>p);
   void work();
