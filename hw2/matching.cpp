@@ -107,6 +107,9 @@ void Matching::createEdge() {
 
   for (int i = 0; i<points.size();i++)
     for (int j = i+1; j< points.size();j++)
+      {
+        
+      }
 }
 void Matching::greedy() {
   
