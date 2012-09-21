@@ -1,0 +1,39 @@
+#ifndef mst_h_
+#define mst_h_
+#include <vector>
+#include <cmath>
+using namespace std;
+struct point {
+  double x,y,z;
+  double dis (point p) {
+    return sqrt((x-p.x)*(x-p.x) +
+                (y-p.y)*(y-p.y) +
+                (z-p.z)*(z-p.z));
+  }
+};
+struct edge {
+  int p[2];
+  double dis;
+  edge(int x,int y, double d) {
+    p[0] = x;
+    p[1] = y;
+    dis = d;
+  };
+};
+class Mst {
+ private:
+  vector<point> points;
+  vector<edge> edges;
+  vector<int> root;
+  vector<edge> ans_edges;
+  vector<int> degree;
+  void createEdges();
+  int getRoot(int i);
+  void merge(int x,int y);
+  void findMst();
+  void calculateDegree();
+ public:
+  Mst(vector<point> p);
+  void work();
+};
+#endif

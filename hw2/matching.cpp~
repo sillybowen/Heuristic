@@ -1,0 +1,10 @@
+#include "matching.h"
+
+Matching::Matching (vector<point> p) {
+  points.resize(p.size());
+  for (int i = 0; i<p.size();i++)
+    points[i] = p[i];
+};
+void Matching::work() {
+  
+};

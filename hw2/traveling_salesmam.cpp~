@@ -1,0 +1,37 @@
+#include<iostream>
+#include <fstream>
+#include <vector>
+#include "mst.h"
+using namespace std;
+
+vector<point> p;
+void init() {
+  ifstream inputfile;
+  p.resize(1000);
+  inputfile.open("input_travel");
+  for (int i = 0; i<1000; i++) {
+    int x;
+    inputfile>>p[i].id>>p[i].x>>p[i].y>>p[i].z;
+  }
+  inputfile.close();
+}
+
+void hungarian() {
+}
+void euler() {
+}
+void work() {
+  Mst m_(p);
+  m_.work();
+  hungarian();
+  euler();
+}
+void outit() {
+//  for (int i = 0; i<1000;i++)
+  //  cout<<p[i][0]<<' '<<p[i][1]<<' '<<p[i][2]<<endl;
+}
+int main() {
+  init();
+  work();
+  outit();
+}
