@@ -1,6 +1,8 @@
 #include "matching.h"
 #include <iostream>
+#include <algorithm>
 using namespace std;
+
 Matching::Matching (vector<point> p) {
   points.resize(p.size());
   for (int i = 0; i<p.size();i++)

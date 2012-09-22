@@ -2,8 +2,10 @@
 #define matching_h_
 #include "string.h"
 #include "mst.h"
+#include "limits.h"
+
 const int maxn = 1001;
-const int INF = (1<<31)-1;
+const int INF = UINT_MAX;
 
 class Matching {
  private:
