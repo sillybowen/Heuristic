@@ -1,10 +1,10 @@
 .SUFFIXES: .h .o .cpp
 
-CC = traveling_salesmam.cpp mst.cpp matching.cpp
+CC = matrix_graph.cpp traveling_salesmam.cpp mst.cpp matching.cpp
 CC = g++
-CCOPTS = -g -O2
+CCOPTS = -g
 LIBS = 
-OBJS = traveling_salesmam.o mst.o matching.o
+OBJS = mst.o matrix_graph.o traveling_salesmam.o matching.o
 CCEXEC = travel
 
 all:	$(CCEXEC)
