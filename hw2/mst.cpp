@@ -2,9 +2,6 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
-bool compare(edge e1,edge e2) {
-  return e1.dis<e2.dis;
-}
 Mst::Mst(vector<point> p) {
   points.resize(p.size());
   for (int i = 0; i<p.size();i++)
@@ -53,7 +50,7 @@ void Mst::createEdges() {
       edge e(i,j, points[i].dis(points[j]));
       edges.push_back(e);
     }
-  sort(edges.begin(),edges.end(),compare);
+  sort(edges.begin(),edges.end(),comparee);
 };
 vector<point>  Mst::giveOddDegreePoints() {
   vector<point> ret;
@@ -62,3 +59,6 @@ vector<point>  Mst::giveOddDegreePoints() {
       ret.push_back(points[i]);
   return ret;
 };
+vector<edge> Mst::givenAnsEdges() {
+  return ans_edges;
+}

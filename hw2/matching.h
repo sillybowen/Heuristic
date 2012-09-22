@@ -5,8 +5,6 @@
 const int maxn = 1001;
 const int INF = (1<<31)-1;
 
-
-
 class Matching {
  private:
   double w[maxn][maxn];
@@ -16,6 +14,8 @@ class Matching {
   double slack[maxn];
   int nx,ny;
   vector<point> points;
+  vector<edge> edges;
+  vector<bool> visited;
   bool find(int x);
   int KM();
   void createEdge();
@@ -23,6 +23,8 @@ class Matching {
   void greedy();
  public:
   Matching (vector<point>p);
+  vector<edge> ans_edges;
   void work();
+  vector<edge> givenAnsEdges();
 };
 #endif

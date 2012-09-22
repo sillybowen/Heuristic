@@ -1,6 +1,7 @@
 #ifndef basic_geo_h
 #define basic_geo_h
 #include <cmath>
+#include <cstring>
 struct point {
   int id_at_input;
   int id_at_main;
@@ -20,6 +21,7 @@ struct point {
                 (z-p.z)*(z-p.z));
   };
 };
+
 struct edge {
   int p[2];
   double dis;
@@ -30,5 +32,8 @@ struct edge {
   };
 };
 
+static bool comparee(edge e1,edge e2) {
+  return e1.dis<e2.dis;
+};
 
 #endif
