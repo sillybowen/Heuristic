@@ -17,6 +17,7 @@ public:
   MatrixGraph(int numVertices, const vector<edge>& mstEdges,
       const vector<edge>& matchEdges);
   ~MatrixGraph();
+  void ifEulerianGraph() const;
   void eulerCircuitDFS(list<int>& toSpliceLs, int startVertex);
   // This transfer ownership of the found "circuit list" to the caller
   list<int>* findEulerCircuit(int startVertex);

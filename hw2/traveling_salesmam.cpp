@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -8,11 +9,11 @@ using namespace std;
 #define MAXNUMOFPOINTS 1000
 
 vector<point> p;
-void init() {
+void init(const char* filename) {
   ifstream inputfile;
   // Don't add default "point"s if there are NOT so many cities
   p.reserve(MAXNUMOFPOINTS);
-  inputfile.open("input_travel");
+  inputfile.open(filename);
   for (int i = 0; i<MAXNUMOFPOINTS; i++) {
     int x;
     point aCity;
@@ -30,7 +31,7 @@ void init() {
   inputfile.close();
 }
 
-void work() {
+void work(int startV) {
   Mst m_(p);
   m_.work();
   Matching ma_(m_.giveOddDegreePoints());
@@ -43,16 +44,29 @@ void work() {
   ma_.output();
   cout << "Output MST size: " << (int) edgesSet1.size() << endl;
   cout << "Output matching size: " << (int) edgesSet2.size() << endl;
+
   int numOfTotalEdges = (int) p.size();
   MatrixGraph myEuler(numOfTotalEdges, edgesSet1, edgesSet2);
-  myEuler.dumpEulerDFSGraph();
+  // myEuler.dumpEulerDFSGraph();
+  // Testing, make sure myEuler is an Eulerian Graph right now
+  myEuler.ifEulerianGraph();
+  // list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
+
+  // myEuler.trimEulerCircuitToTSP(pEulerCircuit);
+
+  // delete pEulerCircuit;
 }
 
 void outit() {
 }
 
-int main() {
-  init();
-  work();
+int main(int argc, char* argv[]) {
+  if (argc < 3) {
+    cout << "Please enter Euler Circuit Test input file and StartVertex!\n";
+    return 1;
+  }
+
+  init(argv[1]);
+  work(atoi(argv[2]));
   outit();
 }

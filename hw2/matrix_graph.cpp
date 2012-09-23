@@ -53,6 +53,14 @@ MatrixGraph::~MatrixGraph() {
   delete [] eulerDFSMatrix_;
 }
 
+// Assumption: vertices are named from 0 to (numVertices_ - 1)
+void MatrixGraph::ifEulerianGraph() const {
+  for (int i = 0; i < numVertices_; ++i) {
+    assert(vertexDegrees_[i] > 0);
+    assert(!(vertexDegrees_[i] % 2));
+  }
+}
+
 void MatrixGraph::eulerCircuitDFS(list<int>& toSpliceLs, int startVertex) {
   toSpliceLs.push_back(startVertex);
   for (int i = 0; i < numVertices_; ++i) {
@@ -101,6 +109,7 @@ list<int>* MatrixGraph::findEulerCircuit(int startVertex) {
 }
 
 void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
+  int startVert = pEulerCircuit->front();
   set<int> vertSet;
   list<int>::iterator it;
   for (it = pEulerCircuit->begin(); it != pEulerCircuit->end(); ) {
@@ -111,6 +120,8 @@ void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
       it = pEulerCircuit->erase(it);
     }
   }
+  // Pop in the final return back vertex (the original entry point)
+  pEulerCircuit->push_back(startVert);
 
   printEulerCircuitLs(pEulerCircuit);
 }
