@@ -12,22 +12,21 @@ void init() {
   ifstream inputfile;
   // Don't add default "point"s if there are NOT so many cities
   p.reserve(MAXNUMOFPOINTS);
-  inputfile.open("backup_input_travel");
+  inputfile.open("input_travel");
   for (int i = 0; i<MAXNUMOFPOINTS; i++) {
     int x;
     point aCity;
-    inputfile>>aCity.id_at_input>>aCity.x>>aCity.y>>aCity.z;
+    if(!(inputfile>>aCity.id_at_input>>aCity.x>>aCity.y>>aCity.z))
+      break;
     aCity.id_at_main = i;
     p.push_back(aCity);
-    if (inputfile.eof())
-      break;
   }
 
-//  cout << "p.size() = " << p.size() << endl;
-//  for (int i = 0; i < p.size(); ++i) {
-//    cout << "p element = " << p[i].id_at_input << " " << p[i].x
-//      << " " << p[i].y << " " << p[i].z << endl;
-//  }
+  cout << "p.size() = " << p.size() << endl;
+  for (int i = 0; i < p.size(); ++i) {
+    cout << "p element = " << p[i].id_at_input << " " << p[i].x
+      << " " << p[i].y << " " << p[i].z << endl;
+  }
   inputfile.close();
 }
 
@@ -40,13 +39,13 @@ void work() {
   ma_.outCost();
   vector<edge> edgesSet1 = m_.givenAnsEdges();
   vector<edge> edgesSet2 = ma_.givenAnsEdges();
-//  m_.output();
-//  ma_.output();
+  m_.output();
+  ma_.output();
   cout << "Output MST size: " << (int) edgesSet1.size() << endl;
   cout << "Output matching size: " << (int) edgesSet2.size() << endl;
   int numOfTotalEdges = (int) p.size();
   MatrixGraph myEuler(numOfTotalEdges, edgesSet1, edgesSet2);
-//  myEuler.dumpEulerDFSGraph();
+  myEuler.dumpEulerDFSGraph();
 }
 
 void outit() {
