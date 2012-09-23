@@ -4,9 +4,11 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <list>
 #include "basic_geo.h"  // For struct edge
 
 #define EDGEDISTANCEWIDTH 6
+#define EULERDFSEDGEWIDTH 3
 
 using namespace std;
 
@@ -15,13 +17,21 @@ public:
   MatrixGraph(int numVertices, const vector<edge>& mstEdges,
       const vector<edge>& matchEdges);
   ~MatrixGraph();
+  void eulerCircuitDFS(list<int>& toSpliceLs, int startVertex);
+  // This transfer ownership of the found "circuit list" to the caller
+  list<int>* findEulerCircuit(int startVertex);
+  void trimEulerCircuitToTSP(list<int>* pEulerCircuit);
 
-  void dumpGraph() const;
+  void printEulerCircuitLs(list<int>* pEulerCirLs) const;
+  void dumpDisGraph() const;
+  void dumpEulerDFSGraph() const;
 
 private:
   int numVertices_;
   int numEdges_;
   double** edgeMatrix_;
+  int** eulerDFSMatrix_;
+  int* vertexDegrees_;
 
   MatrixGraph(const MatrixGraph&);
   MatrixGraph& operator=(const MatrixGraph&);

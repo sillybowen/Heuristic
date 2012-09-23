@@ -1,13 +1,16 @@
 .SUFFIXES: .h .o .cpp
 
 CC = matrix_graph.cpp traveling_salesmam.cpp mst.cpp matching.cpp
+EULERCIRCUITCC = euler_circuit_test.cpp
 CC = g++
 CCOPTS = -g
 LIBS = 
 OBJS = mst.o matrix_graph.o traveling_salesmam.o matching.o
+EULERCIRCUITOBJS= matrix_graph.o euler_circuit_test.o
 CCEXEC = travel
+EULERCIRCUITTEST=euler_circuit_test
 
-all:	$(CCEXEC)
+all:	$(CCEXEC) $(EULERCIRCUITTEST)
 
 $(CCEXEC):	$(OBJS) makefile 
 	@echo Linking $@ . . .
@@ -17,10 +20,19 @@ $(CCEXEC):	$(OBJS) makefile
 	@echo Compiling $< . . .
 	$(CC) -c -O2$(CCOPTS) $<
 
+euler_circuit_test.o: $(EULERCIRCUITCC)
+	$(CC) -c -O2 $(CCOPTS) $(EULERCIRCUITCC)
+
+$(EULERCIRCUITTEST): $(EULERCIRCUITOBJS)
+	$(CC) $(CCOPTS) $(EULERCIRCUITOBJS) -o $(EULERCIRCUITTEST)
+
+
 run:	all
 	./$(CCEXEC)
 
 clean:
 	rm -f $(OBJS)
+	rm -f $(EULERCIRCUITOBJS)
 	rm -f $(CCEXEC)
+	rm -f $(EULERCIRCUITTEST)
 	rm -f core

@@ -1,4 +1,2 @@
 Heuristic
 =========
-
-hw2

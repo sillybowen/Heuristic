@@ -1,0 +1,9 @@
+Tao: 09/22/2012 8PM
+Euler circle and greedy TSP
+1) I uploaded two euler_circuit_test_file:
+  "euler_circuit_test_input" and "2euler_circuit_test_input"
+2) They are just list of edges (only showing one direction)
+3) Make sure the vertices are named as indexes, which means
+   each vertex is a number between 0 and (numOfVertices - 1)
+Compile: make
+run: ./euler_circuit_test $(euler_circuit_test_file) $(start vertex)

@@ -45,7 +45,7 @@ void work() {
   int numOfTotalEdges = (int) p.size();
 
   MatrixGraph myEuler(numOfTotalEdges, edgesSet1, edgesSet2);
-  // myEuler.dumpGraph();
+  myEuler.dumpEulerDFSGraph();
 
 //   Matching ma_(ps);
 //  ma_.work();
