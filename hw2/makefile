@@ -1,38 +1,21 @@
-.SUFFIXES: .h .o .cpp
+DIRS :=  match match/MinCost match/GEOM
 
-CC = matrix_graph.cpp traveling_salesmam.cpp mst.cpp matching.cpp
-EULERCIRCUITCC = euler_circuit_test.cpp
-CC = g++
-CCOPTS = -g
-LIBS = 
-OBJS = mst.o matrix_graph.o traveling_salesmam.o matching.o
-EULERCIRCUITOBJS= matrix_graph.o euler_circuit_test.o
-CCEXEC = travel
-EULERCIRCUITTEST=euler_circuit_test
+SOURCES := $(foreach dir, $(DIRS), $(wildcard $(dir)/*.cpp)) matrix_graph.cpp traveling_salesmam.cpp mst.cpp matching.cpp
+OBJS := $(patsubst %.cpp, %.o, $(SOURCES))
 
-all:	$(CCEXEC) $(EULERCIRCUITTEST)
+CFLAGS := -O5 -D_NDEBUG
+CC := g++
+LIBS := 
+INCLUDES := 
+LIBDIR := 
 
-$(CCEXEC):	$(OBJS) makefile 
-	@echo Linking $@ . . .
-	$(CC) $(CCOPTS) $(OBJS) -o $@ $(LIBS)
+all: travel
 
-%.o:	%.c
-	@echo Compiling $< . . .
-	$(CC) -c -O2$(CCOPTS) $<
+travel: ${OBJS}
+	${CC} ${CFLAGS} ${LIBDIR} -o $@ ${OBJS} ${LIBS}
 
-euler_circuit_test.o: $(EULERCIRCUITCC)
-	$(CC) -c -O2 $(CCOPTS) $(EULERCIRCUITCC)
-
-$(EULERCIRCUITTEST): $(EULERCIRCUITOBJS)
-	$(CC) $(CCOPTS) $(EULERCIRCUITOBJS) -o $(EULERCIRCUITTEST)
-
-
-run:	all
-	./$(CCEXEC)
+.cpp.o:
+	$(CC) $(CFLAGS) ${INCLUDES} $< -c -o $@
 
 clean:
-	rm -f $(OBJS)
-	rm -f $(EULERCIRCUITOBJS)
-	rm -f $(CCEXEC)
-	rm -f $(EULERCIRCUITTEST)
-	rm -f core
+	rm -f ${OBJS} travel

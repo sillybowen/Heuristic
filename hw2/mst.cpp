@@ -55,8 +55,9 @@ void Mst::createEdges() {
 vector<point>  Mst::giveOddDegreePoints() {
   vector<point> ret;
   for (int i = 0; i< degree.size();i++)
-    if (degree[i]%2==1)
+    if (degree[i]%2==1) {
       ret.push_back(points[i]);
+    }
   return ret;
 };
 
@@ -64,7 +65,7 @@ vector<edge> Mst::givenAnsEdges() {
   return ans_edges;
 }
 void Mst::output() {
-  cout<<"MST"<<endl;
+  cout<<"MST:"<<endl;
   for (int i = 0; i<ans_edges.size();i++)
-    cout<<ans_edges[i].p[0]<<' '<<ans_edges[i].p[1]<<endl;
+    cout<<ans_edges[i].p[0]<<' '<<ans_edges[i].p[1]<<' '<<ans_edges[i].dis<<endl;
 }

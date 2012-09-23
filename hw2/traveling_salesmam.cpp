@@ -12,7 +12,7 @@ void init() {
   ifstream inputfile;
   // Don't add default "point"s if there are NOT so many cities
   p.reserve(MAXNUMOFPOINTS);
-  inputfile.open("input_travel");
+  inputfile.open("travelingtest.txt");
   for (int i = 0; i<MAXNUMOFPOINTS; i++) {
     int x;
     point aCity;
@@ -35,18 +35,18 @@ void work() {
   Mst m_(p);
   m_.work();
   Matching ma_(m_.giveOddDegreePoints());
-  ma_.work();
+  ma_.work2();
   vector<edge> edgesSet1 = m_.givenAnsEdges();
   vector<edge> edgesSet2 = ma_.givenAnsEdges();
   m_.output();
   ma_.output();
   cout << "Output MST size: " << (int) edgesSet1.size() << endl;
   cout << "Output matching size: " << (int) edgesSet2.size() << endl;
+  cout<<"odd.number"<<m_.giveOddDegreePoints().size()<<endl;
+//  int numOfTotalEdges = (int) p.size();
 
-  int numOfTotalEdges = (int) p.size();
-
-  MatrixGraph myEuler(numOfTotalEdges, edgesSet1, edgesSet2);
-  myEuler.dumpEulerDFSGraph();
+  // MatrixGraph myEuler(numOfTotalEdges, edgesSet1, edgesSet2);
+//  myEuler.dumpEulerDFSGraph();
 
 //   Matching ma_(ps);
 //  ma_.work();
