@@ -41,7 +41,7 @@ int readInput(const char* filename, vector<edge>& outputEdges) {
 
   return (int) verticesSet.size();
 }
-/*
+
 int main(int argc, char* argv[]) {
   if (argc < 3) {
     cout << "Please enter Euler Circuit Test input file and StartVertex!\n";
@@ -63,4 +63,3 @@ int main(int argc, char* argv[]) {
 
   return 0;
 }
-*/

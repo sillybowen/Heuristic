@@ -17,6 +17,7 @@ void Mst::merge(int x,int y) {
 };
 void Mst::findMst() {
   root.resize(points.size());
+  cost = 0;
   for (int i = 0; i<points.size();i++)
     root[i] = i;
   int nodes = points.size();
@@ -25,6 +26,7 @@ void Mst::findMst() {
     if (getRoot(edges[index].p[0])!=getRoot(edges[index].p[1])) {
       merge(edges[index].p[0],edges[index].p[1]);
       ans_edges.push_back(edges[index]);
+      cost += edges[index].dis;
       nodes --;
     }
     index ++;
@@ -68,4 +70,7 @@ void Mst::output() {
   cout<<"MST:"<<endl;
   for (int i = 0; i<ans_edges.size();i++)
     cout<<ans_edges[i].p[0]<<' '<<ans_edges[i].p[1]<<' '<<ans_edges[i].dis<<endl;
+}
+void Mst::outCost() {
+  cout<<"MST cost:"<<cost<<endl;
 }

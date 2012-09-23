@@ -13,6 +13,7 @@ class Mst {
   vector<int> root;
   vector<edge> ans_edges;
   vector<int> degree;
+  double cost;
   void createEdges();
   int getRoot(int i);
   void merge(int x,int y);
@@ -24,5 +25,6 @@ class Mst {
   vector<point> giveOddDegreePoints();
   vector<edge> givenAnsEdges();
   void output();
+  void outCost();
 };
 #endif

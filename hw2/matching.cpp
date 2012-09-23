@@ -24,12 +24,13 @@ void Matching::work2() {
 
   pm->options = options;
   pm->Solve();
-
+  minCost = 0;
   for (int i=0; i<points.size(); i++) {
     int j = pm->GetMatch(i);
     if (i < j) {
       double len = points[i].dis(points[j]);
       edge e(i,j,len);
+      minCost+= len;
       ans_edges.push_back(e);
     }
   }
@@ -56,12 +57,14 @@ void Matching::createEdge() {
 void Matching::greedy() {
   int left = points.size();
   int index = 0;
+  greedyCost = 0;
   while (left>0) {
     if (!visited[edges[index].p[0]]&& !visited[edges[index].p[1]]) {
       ans_edges.push_back(edges[index]);
       visited[edges[index].p[0]] = true;
       visited[edges[index].p[1]] = true;
       left -= 2;
+      greedyCost+= edges[index].dis;
     }
     index ++;
   }
@@ -73,4 +76,9 @@ vector<edge> Matching::givenAnsEdges() {
     ans_edges[i].p[1] = points[ans_edges[i].p[1]].id_at_main;
   }
   return ans_edges;
+}
+
+void Matching::outCost() {
+//  cout<<"greedy cost"<<greedyCost<<endl;
+  cout<<"Matching cost:"<<minCost<<endl;
 }
