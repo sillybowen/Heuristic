@@ -12,15 +12,15 @@ void init() {
   ifstream inputfile;
   // Don't add default "point"s if there are NOT so many cities
   p.reserve(MAXNUMOFPOINTS);
-  inputfile.open("travelingtest.txt");
+  inputfile.open("backup_input_travel");
   for (int i = 0; i<MAXNUMOFPOINTS; i++) {
     int x;
     point aCity;
     inputfile>>aCity.id_at_input>>aCity.x>>aCity.y>>aCity.z;
-    if (inputfile.eof())
-      break;
     aCity.id_at_main = i;
     p.push_back(aCity);
+    if (inputfile.eof())
+      break;
   }
 
   cout << "p.size() = " << p.size() << endl;
