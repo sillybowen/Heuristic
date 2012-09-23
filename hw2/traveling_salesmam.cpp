@@ -46,9 +46,7 @@ void work() {
   cout << "Output matching size: " << (int) edgesSet2.size() << endl;
   int numOfTotalEdges = (int) p.size();
   MatrixGraph myEuler(numOfTotalEdges, edgesSet1, edgesSet2);
-  myEuler.dumpEulerDFSGraph();
-  euler();
-
+//  myEuler.dumpEulerDFSGraph();
 }
 
 void outit() {
