@@ -23,5 +23,6 @@ class Mst {
   void work();
   vector<point> giveOddDegreePoints();
   vector<edge> givenAnsEdges();
+  void output();
 };
 #endif

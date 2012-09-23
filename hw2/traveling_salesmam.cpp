@@ -36,9 +36,10 @@ void work() {
   m_.work();
   Matching ma_(m_.giveOddDegreePoints());
   ma_.work();
-
   vector<edge> edgesSet1 = m_.givenAnsEdges();
   vector<edge> edgesSet2 = ma_.givenAnsEdges();
+  m_.output();
+  ma_.output();
   cout << "Output MST size: " << (int) edgesSet1.size() << endl;
   cout << "Output matching size: " << (int) edgesSet2.size() << endl;
 

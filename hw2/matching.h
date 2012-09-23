@@ -21,12 +21,12 @@ class Matching {
   bool find(int x);
   int KM();
   void createEdge();
-  void output();
   void greedy();
  public:
   Matching (vector<point>p);
   vector<edge> ans_edges;
   void work();
+  void output();
   vector<edge> givenAnsEdges();
 };
 #endif

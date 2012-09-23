@@ -11,7 +11,7 @@ Matching::Matching (vector<point> p) {
 void Matching::work() {
   createEdge();
   greedy();
-  output();
+//  output();
 //  KM();
 //  output();
 };
@@ -90,6 +90,7 @@ int Matching::KM()                //返回最优匹配的值
 }
 
 void Matching::output() {
+  cout<<"matching:"<<endl;
   for (int i = 0; i<ans_edges.size(); i++)
     cout<<ans_edges[i].p[0]<<' '<<ans_edges[i].p[1]<<endl;
 }
@@ -139,4 +140,5 @@ vector<edge> Matching::givenAnsEdges() {
     ans_edges[i].p[0] = points[ans_edges[i].p[0]].id_at_main;
     ans_edges[i].p[1] = points[ans_edges[i].p[1]].id_at_main;
   }
+  return ans_edges;
 }
