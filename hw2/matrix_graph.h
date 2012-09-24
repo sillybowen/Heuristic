@@ -32,7 +32,7 @@ private:
   int numVertices_;
   int numEdges_;
   double** edgeMatrix_;
-  unordered_set<int>** eulerDFSMatrix_;
+  unordered_multiset<int>** eulerDFSMatrix_;
   int* vertexDegrees_;
 
   MatrixGraph(const MatrixGraph&);

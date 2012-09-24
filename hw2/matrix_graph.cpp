@@ -5,13 +5,13 @@
 MatrixGraph::MatrixGraph(int numVertices, const vector<edge>& mstEdges,
     const vector<edge>& matchEdges) : numVertices_(numVertices) {
   edgeMatrix_ = new double*[numVertices_];
-  eulerDFSMatrix_ = new unordered_set<int>*[numVertices_];
+  eulerDFSMatrix_ = new unordered_multiset<int>*[numVertices_];
   vertexDegrees_ = new int[numVertices_];
 
   for (int i = 0; i < numVertices_; ++i) {
     vertexDegrees_[i] = 0;
     edgeMatrix_[i] = new double[numVertices_];
-    eulerDFSMatrix_[i] = new unordered_set<int>;
+    eulerDFSMatrix_[i] = new unordered_multiset<int>;
     for (int j = 0; j < numVertices_; ++j) {
       edgeMatrix_[i][j] = 0.0;
     }
@@ -56,8 +56,8 @@ MatrixGraph::~MatrixGraph() {
 void MatrixGraph::ifEulerianGraph() const {
   for (int i = 0; i < numVertices_; ++i) {
     if (vertexDegrees_[i] != (int) eulerDFSMatrix_[i]->size()) {
-      cout << "For V:" << i << " vertexDeg: " << vertexDegrees_[i] << "; unorderSet: "
-        << eulerDFSMatrix_[i]->size() << endl;
+      cout << "For V:" << i << " vertexDeg: " << vertexDegrees_[i] 
+        << "; unorderSet: " << eulerDFSMatrix_[i]->size() << endl;
       assert(0);
     }
     assert(vertexDegrees_[i] > 0);
@@ -67,15 +67,17 @@ void MatrixGraph::ifEulerianGraph() const {
 
 void MatrixGraph::eulerCircuitDFS(list<int>& toSpliceLs, int startVertex) {
   toSpliceLs.push_back(startVertex);
-  unordered_set<int>::iterator it = eulerDFSMatrix_[startVertex]->begin();
+  unordered_multiset<int>::iterator it = eulerDFSMatrix_[startVertex]->begin();
 
   if (it == eulerDFSMatrix_[startVertex]->end()) {  // All edges are used
     return;
   } else {
     int i = *it;  // Go for edge: startVertex <-> i
     // Remove this used edge
-    eulerDFSMatrix_[startVertex]->erase(i);
-    eulerDFSMatrix_[i]->erase(startVertex);
+    eulerDFSMatrix_[startVertex]->erase(it);
+    // Only remove one element with key == startVertex, using iterator
+    it = eulerDFSMatrix_[i]->find(startVertex);
+    eulerDFSMatrix_[i]->erase(it);
     --vertexDegrees_[i];
     --vertexDegrees_[startVertex];
     --numEdges_;
