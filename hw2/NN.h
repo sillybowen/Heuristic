@@ -11,12 +11,12 @@ class NN{
  private:
   vector<point> points;
   vector<edge> edges;
-  vector<point>ans_sequence;
+  vector<int>ans_sequence;
   void createEdges();
   void findPath();
  public:
   NN(vector<point> p);
   void work();
-  vector<point> give_result();
+  vector<int> give_result();
 };
 #endif

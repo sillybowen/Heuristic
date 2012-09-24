@@ -72,6 +72,10 @@ void work(int startV) {
   ans = e.evaluate(nb.giveResult());
   cout<< "NN Greedy: " << ans<<endl;
 
+  NN nj(p);
+  nj.work();
+  double ans_nj = e.evaluate(nj.give_result());
+  cout << "NN Gready (Jinil): "<< ans_nj << endl;
 }
 
 void outit() {

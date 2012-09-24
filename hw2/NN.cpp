@@ -22,9 +22,9 @@ void NN::createEdges() {
 
 void NN::findPath(){
  
-  ans_sequence.push_back(points[0]);
+  ans_sequence.push_back(0);
   while(ans_sequence.size() < 1000){
-    int curr_city = ans_sequence.back().id_at_main;
+    int curr_city = ans_sequence.back();
     int next_city;
     int minimum_path = UINT_MAX;
     for(int i=0; i<edges.size(); i++){
@@ -40,18 +40,17 @@ void NN::findPath(){
 	// Check the ans_sequence if the next_city already visited or not.
 	bool include_f = false;
 	for(int j=0; j<ans_sequence.size(); j++){
-	  if(ans_sequence[j].id_at_main == next_city){
+	  if(ans_sequence[j] == next_city){
 	    include_f = true;
 	    break;
 	  }
 	}
 	// If this city is not visited yet, push it.
 	if(!include_f)
-	  ans_sequence.push_back(points[next_city]);
+	  ans_sequence.push_back(next_city);
       }
     }
   }
-  cout << "ans_sequence size : " << ans_sequence.size() << endl;
 }
 
 void NN::work(){
@@ -59,6 +58,6 @@ void NN::work(){
   findPath();
 }
 
-vector<point> NN::give_result(){
+vector<int> NN::give_result(){
   return ans_sequence;
 }
