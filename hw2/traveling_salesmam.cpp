@@ -27,10 +27,10 @@ void init(const char* filename) {
   }
 
   cout << "p.size() = " << p.size() << endl;
-  for (int i = 0; i < p.size(); ++i) {
-    cout << "p element = " << p[i].id_at_input << " " << p[i].x
-      << " " << p[i].y << " " << p[i].z << endl;
-  }
+  //  for (int i = 0; i < p.size(); ++i) {
+  //    cout << "p element = " << p[i].id_at_input << " " << p[i].x
+  //      << " " << p[i].y << " " << p[i].z << endl;
+  //  }
   inputfile.close();
 }
 
@@ -43,8 +43,8 @@ void work(int startV) {
   ma_.outCost();
   vector<edge> edgesSet1 = m_.givenAnsEdges();
   vector<edge> edgesSet2 = ma_.givenAnsEdges();
-  m_.output();
-  ma_.output();
+  //  m_.output();
+  //  ma_.output();
   cout << "Output MST size: " << (int) edgesSet1.size() << endl;
   cout << "Output matching size: " << (int) edgesSet2.size() << endl;
 
@@ -54,7 +54,6 @@ void work(int startV) {
   // Testing, make sure myEuler is an Eulerian Graph right now
   myEuler.ifEulerianGraph();
   list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
-
   cout << endl;
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
   cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit, p) << endl;

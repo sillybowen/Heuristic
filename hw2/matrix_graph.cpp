@@ -131,8 +131,8 @@ void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
     if (vertSet.find(*it) == vertSet.end()) {
       vertSet.insert(*it);
       ans_seq.push_back((*it));
-      cout<<"ans_seq"<<ans_seq.size()<<endl;
-      cout<<ans_seq[ans_seq.size()-1]<<endl;
+      //      cout<<"ans_seq"<<ans_seq.size()<<endl;
+      //      cout<<ans_seq[ans_seq.size()-1]<<endl;
       ++it;
     } else {  // Remove redundancy
       it = pEulerCircuit->erase(it);
@@ -157,15 +157,15 @@ double MatrixGraph::sumTSPDistance(const list<int>* pTSPTrip,
   for (; cit != pTSPTrip->end(); ++cit) {
     vertCountArr[*cit] += 1;
     double new_edge_dis = points[*cit].dis(points[*pcit]);
-    cout << "Added Edge: " << *cit << "-" << *pcit << " Dis: "
-      << new_edge_dis << endl;
+    //    cout << "Added Edge: " << *cit << "-" << *pcit << " Dis: "
+    //      << new_edge_dis << endl;
     totalTSPLen += new_edge_dis;
     pcit = cit;
   }
 
   for (int i = 0; i < numVertices_; ++i) {
     if (vertCountArr[i] != 1) {
-      cout << "Vertex: " << i << "; occured: " << vertCountArr[i] << " times!!!\n";
+      //      cout << "Vertex: " << i << "; occured: " << vertCountArr[i] << " times!!!\n";
       return -1.0;
     }
   }
@@ -178,9 +178,9 @@ void MatrixGraph::printEulerCircuitLs(list<int>* pEulerCirLs) const {
   cout << "List size= " << pEulerCirLs->size() << endl;
   list<int>::iterator iter;
   int i = 0;
-  for (iter = pEulerCirLs->begin(); iter != pEulerCirLs->end(); ++iter)
-    cout << i++<<' '<<*iter << endl;
-  cout << endl;
+  //  for (iter = pEulerCirLs->begin(); iter != pEulerCirLs->end(); ++iter)
+    //    cout << i++<<' '<<*iter << endl;
+  //  cout << endl;
 }
 
 void MatrixGraph::dumpDisGraph() const {

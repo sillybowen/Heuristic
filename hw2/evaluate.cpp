@@ -18,8 +18,8 @@ double Evaluate::evaluate (vector<int> seq) {
   if (seq[0] != startVertex_ || seq[seq.size()-1]!= startVertex_)
     return -1;
   for (int i = 0; i<seq.size();i++) {
-    cout<<i<<endl;
-    cout<<"seq"<<seq[i]<<endl;
+    //    cout<<i<<endl;
+    //    cout<<"seq"<<seq[i]<<endl;
     b[seq[i]] = true;
     if (i > 0) {
       ans += points[seq[i]].dis(points[seq[i-1]]);
