@@ -120,7 +120,9 @@ list<int>* MatrixGraph::findEulerCircuit(int startVertex) {
 
   return pEulerCirLs;
 }
-
+vector<int> MatrixGraph::giveResult() {
+  return ans_seq;
+}
 void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
   int startVert = pEulerCircuit->front();
   set<int> vertSet;
@@ -128,6 +130,9 @@ void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
   for (it = pEulerCircuit->begin(); it != pEulerCircuit->end(); ) {
     if (vertSet.find(*it) == vertSet.end()) {
       vertSet.insert(*it);
+      ans_seq.push_back((*it)-1);
+      cout<<"ans_seq"<<ans_seq.size()<<endl;
+      cout<<ans_seq[ans_seq.size()-1]<<endl;
       ++it;
     } else {  // Remove redundancy
       it = pEulerCircuit->erase(it);
@@ -135,7 +140,7 @@ void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
   }
   // Pop in the final return back vertex (the original entry point)
   pEulerCircuit->push_back(startVert);
-
+  ans_seq.push_back(startVert-1);
   printEulerCircuitLs(pEulerCircuit);
 }
 
@@ -168,8 +173,9 @@ void MatrixGraph::printEulerCircuitLs(list<int>* pEulerCirLs) const {
   // Output found euler circuit
   cout << "List size= " << pEulerCirLs->size() << endl;
   list<int>::iterator iter;
+  int i = 0;
   for (iter = pEulerCirLs->begin(); iter != pEulerCirLs->end(); ++iter)
-    cout << *iter << " ";
+    cout << i++<<' '<<*iter << endl;;
   cout << endl;
 }
 

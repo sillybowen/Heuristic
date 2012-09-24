@@ -30,14 +30,14 @@ public:
   void printEulerCircuitLs(list<int>* pEulerCirLs) const;
   void dumpDisGraph() const;
   void dumpEulerDFSGraph() const;
-
+  vector<int> giveResult();
 private:
   int numVertices_;
   int numEdges_;
   double** edgeMatrix_;
   unordered_multiset<int>** eulerDFSMatrix_;
   int* vertexDegrees_;
-
+  vector<int> ans_seq;
   MatrixGraph(const MatrixGraph&);
   MatrixGraph& operator=(const MatrixGraph&);
 };

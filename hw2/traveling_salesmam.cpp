@@ -59,12 +59,17 @@ void work(int startV) {
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
   cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit) << endl;
 
+
+  Evaluate e(p);
+  double ans;
+  ans = e.evaluate(myEuler.giveResult());
+  cout<<ans<<endl;
+
   delete pEulerCircuit;
 
   NN_Bowen nb(p);
   nb.work();
-  Evaluate e(p);
-  double ans = e.evaluate(nb.giveResult());
+  ans = e.evaluate(nb.giveResult());
   cout<<ans<<endl;
 
 }
