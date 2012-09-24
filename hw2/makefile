@@ -11,6 +11,9 @@ LIBDIR :=
 
 all: travel
 
+eulerCircuitTest: matrix_graph.cpp euler_circuit_test.cpp
+	g++ euler_circuit_test.cpp matrix_graph.cpp -std=c++0x -o eulerCircuitTest
+
 travel: ${OBJS}
 	${CC} ${CFLAGS} ${LIBDIR} -o $@ ${OBJS} ${LIBS}
 
@@ -18,4 +21,4 @@ travel: ${OBJS}
 	$(CC) $(CFLAGS) ${INCLUDES} $< -c -o $@
 
 clean:
-	rm -f ${OBJS} travel
+	rm -f ${OBJS} travel eulerCircuitTest

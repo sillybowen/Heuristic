@@ -52,7 +52,9 @@ void work(int startV) {
   myEuler.ifEulerianGraph();
   list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
 
-  // myEuler.trimEulerCircuitToTSP(pEulerCircuit);
+  cout << endl;
+  myEuler.trimEulerCircuitToTSP(pEulerCircuit);
+  cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit) << endl;
 
   delete pEulerCircuit;
 }

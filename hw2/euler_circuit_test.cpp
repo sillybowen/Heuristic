@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <ctime>
 #include <cassert>
 #include <iostream>
 #include <fstream>
@@ -11,6 +12,33 @@
 using namespace std;
 
 #define MAXNUMOFEDGES 100
+#define MAXNUMOFDEGREES 7
+#define MAXVERTEXINDEX 97
+
+// N is suggested # of edges
+void generateEdges(const char* outFileName, int N) {
+  ofstream outFile;
+  outFile.open(outFileName);
+  assert(outFile.is_open());
+  int numOfEdges = 0;
+  srand(time(NULL));
+
+  while (numOfEdges < N) {
+    int startV = rand() % MAXVERTEXINDEX;
+    int startVDegree = ((rand() % MAXNUMOFDEGREES) | 0x1) + 1;
+    cout << "startV = " << startVDegree << endl;
+    assert(startVDegree <= (MAXNUMOFDEGREES + 1) && startVDegree > 1);
+    assert(!(startVDegree % 2));
+    for (int i = 0; i < startVDegree; ++i) {
+      int endV;
+      while ((endV = rand() % MAXVERTEXINDEX) == startV);
+      assert(endV != startV);
+      // Form an edge startV <-> endV
+      outFile << startV << " " << endV << endl;
+      ++numOfEdges;
+    }
+  }
+}
 
 /*
  * Format (all int):
@@ -43,23 +71,27 @@ int readInput(const char* filename, vector<edge>& outputEdges) {
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    cout << "Please enter Euler Circuit Test input file and StartVertex!\n";
+  if (argc < 4) {
+    cout << "Please enter Euler Circuit Test_file(will Auto create one)\n"
+      << "and |Max Num Edges| also |StartVertex|!\n";
     return 1;
   }
 
   vector<edge> testEdges, emptyEdge;
+  // generateEdges(argv[1], atoi(argv[2]));
   int numOfVertices = readInput(argv[1], testEdges);
-  int startV = atoi(argv[2]);
-  MatrixGraph myEuler(numOfVertices + 1, testEdges, emptyEdge);
-  myEuler.dumpEulerDFSGraph();
+  int startV = atoi(argv[3]);
 
-  list<int>* finalCircuit = myEuler.findEulerCircuit(startV);
-  myEuler.trimEulerCircuitToTSP(finalCircuit);
+  MatrixGraph myEuler(MAXNUMOFEDGES, testEdges, emptyEdge);
+  myEuler.ifEulerianGraph();
+  // myEuler.dumpEulerDFSGraph();
 
-  cout << endl;
-  myEuler.dumpEulerDFSGraph();
-  delete finalCircuit;
+  // list<int>* finalCircuit = myEuler.findEulerCircuit(startV);
+  // myEuler.trimEulerCircuitToTSP(finalCircuit);
+
+  // cout << endl;
+  // myEuler.dumpEulerDFSGraph();
+  // delete finalCircuit;
 
   return 0;
 }

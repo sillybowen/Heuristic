@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstring>
 #include <set>
 #include "matrix_graph.h"
 
@@ -61,7 +62,10 @@ void MatrixGraph::ifEulerianGraph() const {
       assert(0);
     }
     assert(vertexDegrees_[i] > 0);
-    assert(!(vertexDegrees_[i] % 2));
+    if (vertexDegrees_[i] % 2 != 0) {
+      cout << "vertex i= " << i << "; degree= " << vertexDegrees_[i] << endl;
+      assert(!(vertexDegrees_[i] % 2));
+    }
   }
 }
 
@@ -133,6 +137,31 @@ void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
   pEulerCircuit->push_back(startVert);
 
   printEulerCircuitLs(pEulerCircuit);
+}
+
+double MatrixGraph::sumTSPDistance(list<int>* pTSPTrip) const {
+  int vertCountArr[numVertices_];
+  double totalTSPLen = 0.0;
+  memset(vertCountArr, 0, sizeof(int) * numVertices_);
+
+  list<int>::const_iterator cit = pTSPTrip->begin(), pcit;
+  // vertCountArr[*cit] += 1;  // Don't count startVertex twice
+  pcit = cit;
+  ++cit;
+  for (; cit != pTSPTrip->end(); ++cit) {
+    vertCountArr[*cit] += 1;
+    totalTSPLen += edgeMatrix_[*cit][*pcit];
+    pcit = cit;
+  }
+
+  for (int i = 0; i < numVertices_; ++i) {
+    if (vertCountArr[i] != 1) {
+      cout << "Vertex: " << i << "; occured: " << vertCountArr[i] << " times!!!\n";
+      return -1.0;
+    }
+  }
+
+  return totalTSPLen;
 }
 
 void MatrixGraph::printEulerCircuitLs(list<int>* pEulerCirLs) const {
