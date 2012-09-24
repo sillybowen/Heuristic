@@ -6,7 +6,7 @@
 #include "matrix_graph.h"
 #include "nn_bowen.h"
 #include "evaluate.h"
-#include "NN_gready.h"
+#include "NN.h"
 using namespace std;
 
 #define MAXNUMOFPOINTS 1000
