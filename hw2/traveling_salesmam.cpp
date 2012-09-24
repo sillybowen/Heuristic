@@ -4,6 +4,9 @@
 #include <vector>
 #include "matching.h"
 #include "matrix_graph.h"
+#include "nn_bowen.h"
+#include "evaluate.h"
+#include "NN_gready.h"
 using namespace std;
 
 #define MAXNUMOFPOINTS 1000
@@ -55,6 +58,13 @@ void work(int startV) {
   // myEuler.trimEulerCircuitToTSP(pEulerCircuit);
 
   delete pEulerCircuit;
+
+  NN_Bowen nb(p);
+  nb.work();
+  Evaluate e(p);
+  double ans = e.evaluate(nb.giveResult());
+  cout<<ans<<endl;
+
 }
 
 void outit() {

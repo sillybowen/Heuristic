@@ -72,8 +72,8 @@ void NN::work(){
   findNN();
 }
 
-vector<point> NN::give_result(){
-  ans_sequence.push_back(points[0].p);
+vector<int> NN::give_result(){
+  ans_sequence.push_back(points[0].p.id_at_main);
   int search_p = 0;
   while(ans_edges.size()>0){
     point p;
@@ -92,6 +92,6 @@ vector<point> NN::give_result(){
 	break;
       }
     }
-    ans_sequence.push_back(p);
+    ans_sequence.push_back(p.id_at_main);
   }
 }
