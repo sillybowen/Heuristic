@@ -8,9 +8,11 @@ using namespace std;
 
 class Evaluate {
  private:
-  vector<point> points;  
+  vector<point> points;
+  int startVertex_;
+
  public:
-  Evaluate(vector<point> p);
+  Evaluate(vector<point>& p, int startVertex);
   double evaluate(vector<int> seq);
 };
 #endif

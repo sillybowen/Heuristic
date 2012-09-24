@@ -57,20 +57,20 @@ void work(int startV) {
 
   cout << endl;
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
-  cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit) << endl;
+  cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit, p) << endl;
 
 
-  Evaluate e(p);
+  Evaluate e(p, startV);
   double ans;
   ans = e.evaluate(myEuler.giveResult());
-  cout<<ans<<endl;
+  cout<< "Euler Circuit Greedy Trimming: " << ans<<endl;
 
   delete pEulerCircuit;
 
   NN_Bowen nb(p);
   nb.work();
   ans = e.evaluate(nb.giveResult());
-  cout<<ans<<endl;
+  cout<< "NN Greedy: " << ans<<endl;
 
 }
 

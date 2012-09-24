@@ -130,7 +130,7 @@ void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
   for (it = pEulerCircuit->begin(); it != pEulerCircuit->end(); ) {
     if (vertSet.find(*it) == vertSet.end()) {
       vertSet.insert(*it);
-      ans_seq.push_back((*it)-1);
+      ans_seq.push_back((*it));
       cout<<"ans_seq"<<ans_seq.size()<<endl;
       cout<<ans_seq[ans_seq.size()-1]<<endl;
       ++it;
@@ -140,11 +140,12 @@ void MatrixGraph::trimEulerCircuitToTSP(list<int>* pEulerCircuit) {
   }
   // Pop in the final return back vertex (the original entry point)
   pEulerCircuit->push_back(startVert);
-  ans_seq.push_back(startVert-1);
-  printEulerCircuitLs(pEulerCircuit);
+  ans_seq.push_back(startVert);
+  // printEulerCircuitLs(pEulerCircuit);
 }
 
-double MatrixGraph::sumTSPDistance(list<int>* pTSPTrip) const {
+double MatrixGraph::sumTSPDistance(const list<int>* pTSPTrip,
+    vector<point>& points) const {
   int vertCountArr[numVertices_];
   double totalTSPLen = 0.0;
   memset(vertCountArr, 0, sizeof(int) * numVertices_);
@@ -155,7 +156,10 @@ double MatrixGraph::sumTSPDistance(list<int>* pTSPTrip) const {
   ++cit;
   for (; cit != pTSPTrip->end(); ++cit) {
     vertCountArr[*cit] += 1;
-    totalTSPLen += edgeMatrix_[*cit][*pcit];
+    double new_edge_dis = points[*cit].dis(points[*pcit]);
+    cout << "Added Edge: " << *cit << "-" << *pcit << " Dis: "
+      << new_edge_dis << endl;
+    totalTSPLen += new_edge_dis;
     pcit = cit;
   }
 
@@ -175,7 +179,7 @@ void MatrixGraph::printEulerCircuitLs(list<int>* pEulerCirLs) const {
   list<int>::iterator iter;
   int i = 0;
   for (iter = pEulerCirLs->begin(); iter != pEulerCirLs->end(); ++iter)
-    cout << i++<<' '<<*iter << endl;;
+    cout << i++<<' '<<*iter << endl;
   cout << endl;
 }
 

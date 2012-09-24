@@ -25,7 +25,7 @@ public:
   void trimEulerCircuitToTSP(list<int>* pEulerCircuit);
   // Also check whether every node has been visited from index 0 to numVertices_-1
   // Must make sure vertices numbering are from 0 to numVertices_-1
-  double sumTSPDistance(list<int>* pTSPTrip) const;
+  double sumTSPDistance(const list<int>* pTSPTrip, vector<point>& points) const;
 
   void printEulerCircuitLs(list<int>* pEulerCirLs) const;
   void dumpDisGraph() const;
