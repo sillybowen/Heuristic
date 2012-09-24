@@ -5,16 +5,15 @@
 MatrixGraph::MatrixGraph(int numVertices, const vector<edge>& mstEdges,
     const vector<edge>& matchEdges) : numVertices_(numVertices) {
   edgeMatrix_ = new double*[numVertices_];
-  eulerDFSMatrix_ = new int*[numVertices_];
+  eulerDFSMatrix_ = new unordered_set<int>*[numVertices_];
   vertexDegrees_ = new int[numVertices_];
 
   for (int i = 0; i < numVertices_; ++i) {
     vertexDegrees_[i] = 0;
     edgeMatrix_[i] = new double[numVertices_];
-    eulerDFSMatrix_[i] = new int[numVertices_];
+    eulerDFSMatrix_[i] = new unordered_set<int>;
     for (int j = 0; j < numVertices_; ++j) {
       edgeMatrix_[i][j] = 0.0;
-      eulerDFSMatrix_[i][j] = 0;  // '0' means no edge (or edge has been removed)
     }
   }
 
@@ -24,19 +23,19 @@ MatrixGraph::MatrixGraph(int numVertices, const vector<edge>& mstEdges,
     vertexDegrees_[mstEdges[i].p[0]] += 1;
     vertexDegrees_[mstEdges[i].p[1]] += 1;
     edgeMatrix_[mstEdges[i].p[0]][mstEdges[i].p[1]] = mstEdges[i].dis;
-    eulerDFSMatrix_[mstEdges[i].p[0]][mstEdges[i].p[1]] = 1;
+    eulerDFSMatrix_[mstEdges[i].p[0]]->insert(mstEdges[i].p[1]);
     // Copy for the other direction: p[1] -> p[0]
     edgeMatrix_[mstEdges[i].p[1]][mstEdges[i].p[0]] = mstEdges[i].dis;
-    eulerDFSMatrix_[mstEdges[i].p[1]][mstEdges[i].p[0]] = 1;
+    eulerDFSMatrix_[mstEdges[i].p[1]]->insert(mstEdges[i].p[0]);
   }
   for (int i = 0; i < matchEdgeSize; ++i) {
     vertexDegrees_[matchEdges[i].p[0]] += 1;
     vertexDegrees_[matchEdges[i].p[1]] += 1;
     edgeMatrix_[matchEdges[i].p[0]][matchEdges[i].p[1]] = matchEdges[i].dis;
-    eulerDFSMatrix_[matchEdges[i].p[0]][matchEdges[i].p[1]] = 1;
+    eulerDFSMatrix_[matchEdges[i].p[0]]->insert(matchEdges[i].p[1]);
     // Copy for the other direction: p[1] -> p[0]
     edgeMatrix_[matchEdges[i].p[1]][matchEdges[i].p[0]] = matchEdges[i].dis;
-    eulerDFSMatrix_[matchEdges[i].p[1]][matchEdges[i].p[0]] = 1;
+    eulerDFSMatrix_[matchEdges[i].p[1]]->insert(matchEdges[i].p[0]);
   }
 
   numEdges_ = mstEdgeSize + matchEdgeSize;
@@ -47,7 +46,7 @@ MatrixGraph::~MatrixGraph() {
 
   for (int i = 0; i < numVertices_; ++i) {
     delete [] edgeMatrix_[i];
-    delete [] eulerDFSMatrix_[i];
+    delete eulerDFSMatrix_[i];
   }
   delete [] edgeMatrix_;
   delete [] eulerDFSMatrix_;
@@ -56,6 +55,11 @@ MatrixGraph::~MatrixGraph() {
 // Assumption: vertices are named from 0 to (numVertices_ - 1)
 void MatrixGraph::ifEulerianGraph() const {
   for (int i = 0; i < numVertices_; ++i) {
+    if (vertexDegrees_[i] != (int) eulerDFSMatrix_[i]->size()) {
+      cout << "For V:" << i << " vertexDeg: " << vertexDegrees_[i] << "; unorderSet: "
+        << eulerDFSMatrix_[i]->size() << endl;
+      assert(0);
+    }
     assert(vertexDegrees_[i] > 0);
     assert(!(vertexDegrees_[i] % 2));
   }
@@ -63,17 +67,19 @@ void MatrixGraph::ifEulerianGraph() const {
 
 void MatrixGraph::eulerCircuitDFS(list<int>& toSpliceLs, int startVertex) {
   toSpliceLs.push_back(startVertex);
-  for (int i = 0; i < numVertices_; ++i) {
-    if (eulerDFSMatrix_[startVertex][i] == 1) {
-      // Remove this used edge
-      eulerDFSMatrix_[i][startVertex] = 0;
-      eulerDFSMatrix_[startVertex][i] = 0;
-      --vertexDegrees_[i];
-      --vertexDegrees_[startVertex];
-      --numEdges_;
-      eulerCircuitDFS(toSpliceLs, i);
-      break;
-    }
+  unordered_set<int>::iterator it = eulerDFSMatrix_[startVertex]->begin();
+
+  if (it == eulerDFSMatrix_[startVertex]->end()) {  // All edges are used
+    return;
+  } else {
+    int i = *it;  // Go for edge: startVertex <-> i
+    // Remove this used edge
+    eulerDFSMatrix_[startVertex]->erase(i);
+    eulerDFSMatrix_[i]->erase(startVertex);
+    --vertexDegrees_[i];
+    --vertexDegrees_[startVertex];
+    --numEdges_;
+    eulerCircuitDFS(toSpliceLs, i);
   }
 }
 
@@ -103,6 +109,7 @@ list<int>* MatrixGraph::findEulerCircuit(int startVertex) {
       }
     }
   }
+  cout << "Eulerian Circuit Result: ";
   printEulerCircuitLs(pEulerCirLs);
 
   return pEulerCirLs;
@@ -156,7 +163,10 @@ void MatrixGraph::dumpEulerDFSGraph() const {
   for (int i = 0; i < numVertices_; ++i) {
     cout << "D(" << vertexDegrees_[i] << ')';
     for (int j = 0; j < numVertices_; ++j) {
-      cout << setw(EULERDFSEDGEWIDTH) << eulerDFSMatrix_[i][j] << ' ';
+      if (eulerDFSMatrix_[i]->find(j) != eulerDFSMatrix_[i]->end())
+        cout << setw(EULERDFSEDGEWIDTH) << '1' << ' ';
+      else
+        cout << setw(EULERDFSEDGEWIDTH) << '0' << ' ';
     }
     cout << endl;
   }

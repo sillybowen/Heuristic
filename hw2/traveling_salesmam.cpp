@@ -50,11 +50,11 @@ void work(int startV) {
   // myEuler.dumpEulerDFSGraph();
   // Testing, make sure myEuler is an Eulerian Graph right now
   myEuler.ifEulerianGraph();
-  // list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
+  list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
 
   // myEuler.trimEulerCircuitToTSP(pEulerCircuit);
 
-  // delete pEulerCircuit;
+  delete pEulerCircuit;
 }
 
 void outit() {

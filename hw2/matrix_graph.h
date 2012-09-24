@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <vector>
 #include <list>
+#include <unordered_set>
 #include "basic_geo.h"  // For struct edge
 
 #define EDGEDISTANCEWIDTH 6
@@ -31,7 +32,7 @@ private:
   int numVertices_;
   int numEdges_;
   double** edgeMatrix_;
-  int** eulerDFSMatrix_;
+  unordered_set<int>** eulerDFSMatrix_;
   int* vertexDegrees_;
 
   MatrixGraph(const MatrixGraph&);
