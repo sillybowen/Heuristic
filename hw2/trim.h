@@ -6,6 +6,7 @@
 using namespace std;
 class Trim {
  private:
+  const int numOfPoints_;
   vector<point> points;
   vector<int> eulerOutput;
   vector<int> ansSeq;
@@ -18,8 +19,9 @@ class Trim {
   vector<int> strongRevert(vector<int>v);
   bool updated;
   vector<int> swapHeu(vector<int> v);
+
  public:
-  Trim(vector<point>p,list<int>* e,vector<double>* d);
+  Trim(const vector<point>&p,list<int>* e,vector<double>* d);
   void work();
   void work2();
   vector<int> work3(vector<int> p);

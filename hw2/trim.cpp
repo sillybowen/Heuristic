@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "evaluate.h"
 using namespace std;
-Trim::Trim(vector<point> p, list<int>* e,vector<double>*d) {
+Trim::Trim(const vector<point>& p, list<int>* e,vector<double>*d) : numOfPoints_(p.size()) {
   points.resize(p.size());
   for (int i = 0; i<p.size();i++)
     points[i] = p[i];
@@ -107,22 +107,22 @@ vector<int> Trim::work3(vector<int> currentSol) {
       maxD = -1;
       for (int i = 1; i<ret.size()-1;i++) 
 	if (!tried[i]&&
-	    ((*distance)[ret[i-1]*1000+ret[i]] +
-	     (*distance)[ret[i+1]*1000+ret[i]]
+	    ((*distance)[ret[i-1]*numOfPoints_+ret[i]] +
+	     (*distance)[ret[i+1]*numOfPoints_+ret[i]]
 	     )>maxD) {
-	  maxD = (*distance)[ret[i-1]*1000+ret[i]] + 
-	    (*distance)[ret[i+1]*1000+ret[i]];
+	  maxD = (*distance)[ret[i-1]*numOfPoints_+ret[i]] + 
+	    (*distance)[ret[i+1]*numOfPoints_+ret[i]];
 	  f = i;
 	}
       if (maxD == -1) break;
       maxReduce=0;
-      removeCost = (*distance)[ret[f-1]*1000+ret[f+1]] - maxD;
+      removeCost = (*distance)[ret[f-1]*numOfPoints_+ret[f+1]] - maxD;
       for (int i = 1;i<ret.size();i++)
 	if (i!=f && i!=f+1) {
 	  curReduce = 
-	    (*distance) [ret[f]*1000+ret[i-1]] +
-	    (*distance) [ret[f]*1000+ret[i]] -
-	    (*distance) [ret[i]*1000+ret[i-1]] +
+	    (*distance) [ret[f]*numOfPoints_+ret[i-1]] +
+	    (*distance) [ret[f]*numOfPoints_+ret[i]] -
+	    (*distance) [ret[i]*numOfPoints_+ret[i-1]] +
 	    removeCost;
 	  if (curReduce<maxReduce) {
 	    maxReduce = curReduce;
@@ -160,15 +160,15 @@ vector<int> Trim::swapHeu(vector<int>v) {
     r = false;
     for (int i = 1; i<ans.size()-1; i++)
       for (int j = i+2; j<ans.size()-1; j++) {
-	double d1 = (*distance)[ans[i]*1000+ans[i-1]] +
-		     (*distance)[ans[i]*1000+ans[i+1]] +
-		     (*distance)[ans[j]*1000+ans[j-1]] +
-		     (*distance)[ans[j]*1000+ans[j+1]];
+	double d1 = (*distance)[ans[i]*numOfPoints_+ans[i-1]] +
+		     (*distance)[ans[i]*numOfPoints_+ans[i+1]] +
+		     (*distance)[ans[j]*numOfPoints_+ans[j-1]] +
+		     (*distance)[ans[j]*numOfPoints_+ans[j+1]];
 
-	double d2 = (*distance)[ans[i]*1000+ans[j+1]] +
-	  (*distance)[ans[i]*1000+ans[j-1]] +
-	  (*distance)[ans[j]*1000+ans[i+1]] +
-	  (*distance)[ans[j]*1000+ans[i-1]] ;
+	double d2 = (*distance)[ans[i]*numOfPoints_+ans[j+1]] +
+	  (*distance)[ans[i]*numOfPoints_+ans[j-1]] +
+	  (*distance)[ans[j]*numOfPoints_+ans[i+1]] +
+	  (*distance)[ans[j]*numOfPoints_+ans[i-1]] ;
 	if ( d2<d1) {
 	  cout<<"dd"<<d1<<' '<<d2<<endl;	
 	  cout<<i<<' '<<j<<endl;
@@ -195,10 +195,10 @@ vector<int> Trim::strongRevert(vector<int> v) {
     r = false;
     for (int i = 1; i<ans.size()-1; i++)
       for (int j = i+1; j<ans.size()-1; j++) 
-	if (( (*distance)[ans[i]*1000+ans[i-1]] 
-	      + (*distance)[ans[j]*1000+ans[j+1]])
-	    > ( (*distance)[ans[i]*1000+ans[j+1]] 
-		+ (*distance)[ans[j]*1000+ans[i-1]])) {
+	if (( (*distance)[ans[i]*numOfPoints_+ans[i-1]] 
+	      + (*distance)[ans[j]*numOfPoints_+ans[j+1]])
+	    > ( (*distance)[ans[i]*numOfPoints_+ans[j+1]] 
+		+ (*distance)[ans[j]*numOfPoints_+ans[i-1]])) {
 	  reverse(ans.begin()+i,ans.begin()+j+1);
 	  r  = true;
 	  updated = true;
