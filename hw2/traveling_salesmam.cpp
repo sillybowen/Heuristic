@@ -8,6 +8,7 @@
 #include "evaluate.h"
 #include "NN.h"
 #include "trim.h"
+#include "genetic.h"
 using namespace std;
 
 #define MAXNUMOFPOINTS 1000
@@ -126,14 +127,22 @@ void work() {
     ansV = tmpAns;
   }
   cout<<"optimization2: "<< ans<<endl;
-  
 
+
+  // Genetic
+  cout << "Start Genetic Algorithm ... " << endl;
+  Genetic ge(tmpAns, p);
+  int max_length = 8;
+  ge.work(max_length);
+  tmpAns = ge.giveResult();
+  ans = e.evaluate(tmpAns);
+  if (ans < ansC && ans > 0) {
+    ansC = ans;
+    ansV = tmpAns;
+  }
+  cout << "Genetic : " << ans << endl;
   cout<<"Best is"<<ans<<endl;
-
-  /*  NN nj(p);
-  nj.work();
-  double ans_nj = e.evaluate(nj.give_result());
-  cout << "NN Gready (Jinil): "<< ans_nj << endl;*/
+  
 }
 
 void outit() {
