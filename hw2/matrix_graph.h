@@ -27,6 +27,7 @@ public:
   // Must make sure vertices numbering are from 0 to numVertices_-1
   double sumTSPDistance(const list<int>* pTSPTrip, vector<point>& points) const;
 
+  void printOutputTSPTrip(const list<int>* pTSPTrip, const char* outFileN) const;
   void printEulerCircuitLs(list<int>* pEulerCirLs) const;
   void dumpDisGraph() const;
   void dumpEulerDFSGraph() const;

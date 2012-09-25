@@ -10,6 +10,7 @@
 using namespace std;
 
 #define MAXNUMOFPOINTS 1000
+const char* outFileName = "tsp_output.txt";
 
 vector<point> p;
 void init(const char* filename) {
@@ -63,7 +64,7 @@ void work(int startV) {
   double ans;
   ans = e.evaluate(myEuler.giveResult());
   cout<< "Euler Circuit Greedy Trimming: " << ans<<endl;
-
+  myEuler.printOutputTSPTrip(pEulerCircuit, outFileName);
   delete pEulerCircuit;
 
   NN_Bowen nb(p);

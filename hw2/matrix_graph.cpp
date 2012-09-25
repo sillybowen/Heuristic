@@ -1,3 +1,4 @@
+#include <fstream>
 #include <cassert>
 #include <cstring>
 #include <set>
@@ -181,6 +182,21 @@ void MatrixGraph::printEulerCircuitLs(list<int>* pEulerCirLs) const {
   //  for (iter = pEulerCirLs->begin(); iter != pEulerCirLs->end(); ++iter)
     //    cout << i++<<' '<<*iter << endl;
   //  cout << endl;
+}
+
+void MatrixGraph::printOutputTSPTrip(const list<int>* pTSPTrip,
+    const char* outFileN) const {
+  ofstream outF;
+  outF.open(outFileN);
+  assert(outF.is_open());
+
+  list<int>::const_iterator cit;
+  for (cit = pTSPTrip->begin(); cit != pTSPTrip->end(); ++cit) {
+    // Plus 1 to make sure outputing "In-File" city names
+    outF << (*cit + 1) << endl;
+  }
+
+  outF.close();
 }
 
 void MatrixGraph::dumpDisGraph() const {
