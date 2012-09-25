@@ -13,6 +13,7 @@ class Genetic {
  public:
   Genetic(vector<int> pre_result, vector<point> p);
   void work(int max_length);
+  void work2(int start_length, int end_length);
   vector<int> giveResult();
 };
 #endif

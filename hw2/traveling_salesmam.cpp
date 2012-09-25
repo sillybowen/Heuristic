@@ -134,15 +134,17 @@ void work() {
   Genetic ge(tmpAns, p);
   int max_length = 8;
   ge.work(max_length);
+  ge.work2(++max_length, MAXNUMOFPOINTS-2);
   tmpAns = ge.giveResult();
+
   ans = e.evaluate(tmpAns);
   if (ans < ansC && ans > 0) {
     ansC = ans;
     ansV = tmpAns;
   }
   cout << "Genetic : " << ans << endl;
-  cout<<"Best is"<<ans<<endl;
-  
+  cout<<"Best is"<<ansC<<endl;
+
 }
 
 void outit() {

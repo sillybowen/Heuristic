@@ -1,5 +1,8 @@
 #include "genetic.h"
 #include <iostream>
+
+#include "evaluate.h"
+
 using namespace std;
 
 Genetic::Genetic(vector<int> pre_result, vector<point> p) {
@@ -125,10 +128,54 @@ void Genetic::work(int max_length) {
       }
     }
   }
-
+  
   // Save the result into ansSeq vector
+  ansSeq.clear();
+  ansSeq.resize(points.size());
   for(int i=0; i<points.size(); i++)
-    ansSeq.push_back(points[i].id_at_main);
+    ansSeq[i] = points[i].id_at_main;
+
+}
+
+void Genetic::work2(int start_length, int end_length){
+  point pre_p, post_p, ch_p[2];
+  double original_sum, reverse_sum;
+  for(int interval=start_length; interval<=end_length; interval++){
+
+    for(int start_p=1; start_p<points.size()-interval-1; start_p++){
+      pre_p = points[ start_p-1 ];
+      post_p = points[ start_p + interval ];
+      ch_p[0] = points[ start_p ];
+      ch_p[1] = points[ start_p + interval - 1 ];
+
+      original_sum = pre_p.dis(ch_p[0]) + post_p.dis(ch_p[1]);
+      reverse_sum = pre_p.dis(ch_p[1]) + post_p.dis(ch_p[0]);
+
+      // If the reversed interval is better,
+      // Update the result
+      if(reverse_sum < original_sum){
+
+	cout << "changed" << endl;
+
+	int index = 0;
+	int count = (int)(interval / 2);
+	point temp;
+
+	while(count>0){
+	  temp = points[start_p + count - 1];
+	  points[start_p + count - 1] = points[start_p + interval - count];
+	  points[start_p + interval - count] = temp;
+	  count--;
+	}
+      }
+    }
+  }
+  // Save the result into ansSeq vector
+  ansSeq.clear();
+  ansSeq.resize(points.size());
+  for(int i=0; i<points.size(); i++)
+    ansSeq[i] = points[i].id_at_main;
+
 }
 
 vector<int> Genetic::giveResult() {
