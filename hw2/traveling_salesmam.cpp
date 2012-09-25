@@ -7,6 +7,7 @@
 #include "nn_bowen.h"
 #include "evaluate.h"
 #include "NN.h"
+#include "trim.h"
 using namespace std;
 
 #define MAXNUMOFPOINTS 1000
@@ -56,6 +57,8 @@ void work(int startV) {
   myEuler.ifEulerianGraph();
   list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
   cout << endl;
+  Trim trim (p,pEulerCircuit);
+
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
   cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit, p) << endl;
 
@@ -66,6 +69,10 @@ void work(int startV) {
   cout<< "Euler Circuit Greedy Trimming: " << ans<<endl;
   myEuler.printOutputTSPTrip(pEulerCircuit, outFileName);
   delete pEulerCircuit;
+
+  trim.work();
+  ans = e.evaluate(trim.giveResult());
+  cout<<"Bowen's trim: "<< ans<<endl;
 
   NN_Bowen nb(p);
   nb.work();

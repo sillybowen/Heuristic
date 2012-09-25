@@ -2,7 +2,19 @@
 #define trim_h_
 #include "basic_geo.h"
 #include <vector>
-class trim {
-  vector<points> p;
-}
+#include <list>
+using namespace std;
+class Trim {
+ private:
+  vector<point> points;
+  vector<int> eulerOutput;
+  vector<int> ansSeq;
+  int pick(int x);
+  double removeCost(int x);
+ public:
+  Trim(vector<point>p,list<int>* e);
+  void work();
+  vector<int> giveResult();
+  
+};
 #endif
