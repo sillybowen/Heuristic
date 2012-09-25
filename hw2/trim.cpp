@@ -86,3 +86,65 @@ void Trim::prework() {
       }
   }
 }
+
+vector<int> Trim::work3(vector<int> currentSol) {
+  bool findBetter = true;
+  vector<int> ret;
+  vector<bool> tried;
+  tried.resize(currentSol.size());
+  for (int i = 0; i<currentSol.size(); i++)
+    ret.push_back(currentSol[i]);
+
+  while (findBetter) {
+    findBetter = false;
+    for (int i = 0; i<ret.size();i++)
+      tried[i] = false;
+    double maxD=-1;
+    double maxReduce=0;
+    double curReduce;
+    double removeCost;
+    int f;
+    int newPos;
+    while (!findBetter) {
+      maxD = -1;
+      for (int i = 1; i<ret.size()-1;i++) 
+	if (!tried[i]&&
+	    (points[ret[i-1]].dis(points[ret[i]])+
+	     points[ret[i+1]].dis(points[ret[i]]))>maxD) {
+	  maxD = points[ret[i-1]].dis(points[ret[i]])+
+	    points[ret[i+1]].dis(points[ret[i]]);
+	  f = i;
+	}
+      if (maxD == -1) break;
+      maxReduce=0;
+      removeCost = points[ret[f-1]].dis(points[ret[f+1]]) - maxD;
+      for (int i = 1;i<ret.size();i++)
+	if (i!=f && i!=f+1) {
+	  curReduce = points[ret[f]].dis(points[ret[i-1]]) +
+	    points[ret[f]].dis(points[ret[i]]) - 
+	    points[ret[i]].dis(points[ret[i-1]]) +
+	    removeCost;
+	  if (curReduce<maxReduce) {
+	    maxReduce = curReduce;
+	    newPos = i;
+	  }
+	}
+      tried[f] = true;
+      if (maxReduce<0) {
+	findBetter = true;
+	int tmp = ret[f];
+	if (f>newPos) {
+	  for (int i = f; i>newPos;i--)
+	    ret[i] = ret[i-1];
+	  ret[newPos] = tmp;
+	}
+	else {
+	  for (int i = f;i<newPos-1;i++)
+	    ret[i] = ret[i+1];
+	  ret[newPos-1] = tmp; 
+	}
+      }
+    }
+  }
+  return ret;
+}

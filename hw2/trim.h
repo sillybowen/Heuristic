@@ -18,6 +18,7 @@ class Trim {
   Trim(vector<point>p,list<int>* e);
   void work();
   void work2();
+  vector<int> work3(vector<int> p);
   vector<int> giveResult();
   
 };

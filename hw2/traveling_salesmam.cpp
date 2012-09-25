@@ -106,6 +106,13 @@ void work() {
   }
   cout<<"Trim with revert: "<< ans<<endl;
 
+  tmpAns = trim.work3(ansV);
+    ans = e.evaluate(tmpAns);
+  if (ans<ansC&&ans>0) {
+    ansC = ans;
+    ansV = tmpAns;
+  }
+  cout<<"optimization: "<< ans<<endl;
 
   cout<<"Best is"<<ans<<endl;
 
