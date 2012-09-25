@@ -118,7 +118,7 @@ void work() {
     ansC = ans;
     ansV = tmpAns;
   }
-
+  
   cout<<"optimization: "<< ans<<endl;
   tmpAns = trim.work4(ansV);
   ans = e.evaluate(tmpAns);
@@ -127,7 +127,7 @@ void work() {
     ansV = tmpAns;
   }
   cout<<"optimization2: "<< ans<<endl;
-
+  
 
   // Genetic
   cout << "Start Genetic Algorithm ... " << endl;
@@ -135,7 +135,7 @@ void work() {
   int max_length = 8;
   ge.work(max_length);
   ge.work2(++max_length, p.size()-2);
-  //ge.work3(++max_length, (p.size()/2)-1);
+  ge.work3(++max_length, (p.size()/2)-1);
   tmpAns = ge.giveResult();
 
   ans = e.evaluate(tmpAns);
@@ -143,6 +143,8 @@ void work() {
     ansC = ans;
     ansV = tmpAns;
   }
+
+
   cout << "Genetic : " << ans << endl;
   cout<<"Best is"<<ansC<<endl;
 
