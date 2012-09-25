@@ -58,7 +58,7 @@ void work(int startV) {
   list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
   cout << endl;
   Trim trim (p,pEulerCircuit);
-
+  Trim trimWithRevert (p,pEulerCircuit);
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
   cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit, p) << endl;
 
@@ -73,6 +73,10 @@ void work(int startV) {
   trim.work();
   ans = e.evaluate(trim.giveResult());
   cout<<"Bowen's trim: "<< ans<<endl;
+
+  trimWithRevert.work2();
+  ans = e.evaluate(trimWithRevert.giveResult());
+  cout<<"Trim with revert: "<< ans<<endl;
 
   NN_Bowen nb(p);
   nb.work();

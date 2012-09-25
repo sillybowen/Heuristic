@@ -11,9 +11,13 @@ class Trim {
   vector<int> ansSeq;
   int pick(int x);
   double removeCost(int x);
+  void prework();
+  double dis(int i,int j);
+  void revert(int a,int b);
  public:
   Trim(vector<point>p,list<int>* e);
   void work();
+  void work2();
   vector<int> giveResult();
   
 };

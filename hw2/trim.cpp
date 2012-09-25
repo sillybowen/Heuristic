@@ -11,7 +11,10 @@ Trim::Trim(vector<point> p, list<int>* e) {
     it++;
   }
 }
-
+void Trim::work2() {
+  prework();
+  work();
+}
 void Trim::work() {
   for (int i = 1; i<eulerOutput.size()-1;i++)
     if (eulerOutput[i] == 0)
@@ -48,4 +51,32 @@ double Trim::removeCost(int x) {
     points[eulerOutput[x]].dis(points[eulerOutput[x+1]]) -
     points[eulerOutput[x-1]].dis(points[eulerOutput[x+1]]);
   return ans;
+}
+void Trim::revert(int h,int t) {
+  int p;
+  //  cout<<"revert"<<endl;
+  //  for (int i = h;i<=t;i++)
+  //  cout<<eulerOutput[i]<<' ';
+  // cout<<endl;
+  for (int i = h; i<=(t+h)/2;i++) {
+    p = eulerOutput[i];
+    eulerOutput[i] = eulerOutput[t-(i-h)];
+    eulerOutput[t-(i-h)] = p;
+  }
+  
+  //  for (int i = h;i<=t;i++)
+  //    cout<<eulerOutput[i]<<' ';
+  //  cout<<endl;
+}
+double Trim::dis(int i,int j) {
+  return
+  points[eulerOutput[i]].dis(points[eulerOutput[j]]);
+}
+void Trim::prework() {
+  for (int i = 1; i<eulerOutput.size()-1; i++)
+    for (int j = i+3; j<eulerOutput.size()-1; j++) 
+      if (eulerOutput[i] == eulerOutput[j]) {
+	if ( dis(i-1,i+1)+ dis(j-1,j+1) > dis(i-1,j-1)+dis(i+1,j+1))
+	  revert(i+1,j-1);
+      }
 }
