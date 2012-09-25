@@ -1,6 +1,7 @@
 #include "trim.h"
 #include <iostream>
 #include <algorithm>
+#include "evaluate.h"
 using namespace std;
 Trim::Trim(vector<point> p, list<int>* e,vector<double>*d) {
   points.resize(p.size());
@@ -87,6 +88,7 @@ vector<int> Trim::work3(vector<int> currentSol) {
   vector<int> ret;
   vector<bool> tried;
   int count = 0;
+  std::cout<<"work3"<<endl;
   tried.resize(currentSol.size());
   for (int i = 0; i<currentSol.size(); i++)
     ret.push_back(currentSol[i]);
@@ -147,11 +149,48 @@ vector<int> Trim::work3(vector<int> currentSol) {
   }
   return ret;
 }
+vector<int> Trim::swapHeu(vector<int>v) {
+  bool r = true;
+  vector<int> ans = v;
+  int count = 0;
+  std::cout<<"inswap"<<endl;
+  Evaluate e(points,0);
+  cout<<e.evaluate(ans)<<endl;
+  while (r) {
+    r = false;
+    for (int i = 1; i<ans.size()-1; i++)
+      for (int j = i+2; j<ans.size()-1; j++) {
+	double d1 = (*distance)[ans[i]*1000+ans[i-1]] +
+		     (*distance)[ans[i]*1000+ans[i+1]] +
+		     (*distance)[ans[j]*1000+ans[j-1]] +
+		     (*distance)[ans[j]*1000+ans[j+1]];
 
+	double d2 = (*distance)[ans[i]*1000+ans[j+1]] +
+	  (*distance)[ans[i]*1000+ans[j-1]] +
+	  (*distance)[ans[j]*1000+ans[i+1]] +
+	  (*distance)[ans[j]*1000+ans[i-1]] ;
+	if ( d2<d1) {
+	  cout<<"dd"<<d1<<' '<<d2<<endl;	
+	  cout<<i<<' '<<j<<endl;
+	  //  cout<<ans[i]<<' '<<ans[j]<<endl;
+	  int p = ans[j];
+	  ans[j] = ans[i];
+	  ans[i] = p;
+	  cout<<e.evaluate(ans)<<endl;
+	  //  cout<<ans[i]<<' '<<ans[j]<<endl;
+	  r  = true;
+	  updated = true;
+	}
+      }
+    cout<<e.evaluate(ans)<<endl;
+  }
+  return ans;
+}
 vector<int> Trim::strongRevert(vector<int> v) {
   bool r = true;
   vector<int> ans = v;
   int count = 0;
+  std::cout<<"strongRever"<<endl;
   while (r) {
     r = false;
     for (int i = 1; i<ans.size()-1; i++)
@@ -176,8 +215,9 @@ vector<int> Trim::work4(vector<int> v) {
   while (updated)  {
     cout<<"count"<<count++<<endl;;
     updated = false;
-    tmp1 = ans;
-    tmp = strongRevert(tmp1);
+    tmp = ans;
+    tmp = strongRevert(tmp);
+    tmp = swapHeu(tmp);
     ans = work3(tmp);
   }
   return ans;

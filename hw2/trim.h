@@ -17,6 +17,7 @@ class Trim {
   void revert(int a,int b);
   vector<int> strongRevert(vector<int>v);
   bool updated;
+  vector<int> swapHeu(vector<int> v);
  public:
   Trim(vector<point>p,list<int>* e,vector<double>* d);
   void work();
