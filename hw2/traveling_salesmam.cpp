@@ -117,7 +117,16 @@ void work() {
     ansC = ans;
     ansV = tmpAns;
   }
+
   cout<<"optimization: "<< ans<<endl;
+  tmpAns = trim.work4(ansV);
+  ans = e.evaluate(tmpAns);
+  if (ans<ansC&&ans>0) {
+    ansC = ans;
+    ansV = tmpAns;
+  }
+  cout<<"optimization2: "<< ans<<endl;
+  
 
   cout<<"Best is"<<ans<<endl;
 

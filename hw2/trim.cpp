@@ -1,5 +1,6 @@
 #include "trim.h"
 #include <iostream>
+#include <algorithm>
 using namespace std;
 Trim::Trim(vector<point> p, list<int>* e,vector<double>*d) {
   points.resize(p.size());
@@ -73,7 +74,8 @@ void Trim::prework() {
     for (int j = i+3; j<eulerOutput.size()-1; j++) 
       if (eulerOutput[i] == eulerOutput[j]) {
 	if ( dis(i-1,i+1)+ dis(j-1,j+1) > dis(i-1,j-1)+dis(i+1,j+1)) {
-	  revert(i+1,j-1);
+	  //	  revert(i+1,j-1);
+	  reverse(eulerOutput.begin()+i+1,eulerOutput.begin()+j);
 	  r  = true;
 	}
       }
@@ -105,19 +107,14 @@ vector<int> Trim::work3(vector<int> currentSol) {
 	if (!tried[i]&&
 	    ((*distance)[ret[i-1]*1000+ret[i]] +
 	     (*distance)[ret[i+1]*1000+ret[i]]
-	     //points[ret[i-1]].dis(points[ret[i]])+
-	     //	     points[ret[i+1]].dis(points[ret[i]])
 	     )>maxD) {
 	  maxD = (*distance)[ret[i-1]*1000+ret[i]] + 
 	    (*distance)[ret[i+1]*1000+ret[i]];
-	    //points[ret[i-1]].dis(points[ret[i]])+
-	    //	    points[ret[i+1]].dis(points[ret[i]]);
 	  f = i;
 	}
       if (maxD == -1) break;
       maxReduce=0;
       removeCost = (*distance)[ret[f-1]*1000+ret[f+1]] - maxD;
-      //	points[ret[f-1]].dis(points[ret[f+1]]) - maxD;
       for (int i = 1;i<ret.size();i++)
 	if (i!=f && i!=f+1) {
 	  curReduce = 
@@ -125,19 +122,15 @@ vector<int> Trim::work3(vector<int> currentSol) {
 	    (*distance) [ret[f]*1000+ret[i]] -
 	    (*distance) [ret[i]*1000+ret[i-1]] +
 	    removeCost;
-	  //	    points[ret[f]].dis(points[ret[i-1]]) +
-	  //	    points[ret[f]].dis(points[ret[i]]) - 
-	  //	    points[ret[i]].dis(points[ret[i-1]]) +
-	  //	    removeCost;
 	  if (curReduce<maxReduce) {
 	    maxReduce = curReduce;
 	    newPos = i;
 	  }
-	  count++;
 	}
       tried[f] = true;
       if (maxReduce<0) {
 	findBetter = true;
+	updated = true;
 	int tmp = ret[f];
 	if (f>newPos) {
 	  for (int i = f; i>newPos;i--)
@@ -152,6 +145,40 @@ vector<int> Trim::work3(vector<int> currentSol) {
       }
     }
   }
-  cout<<count<<endl;
   return ret;
+}
+
+vector<int> Trim::strongRevert(vector<int> v) {
+  bool r = true;
+  vector<int> ans = v;
+  int count = 0;
+  while (r) {
+    r = false;
+    for (int i = 1; i<ans.size()-1; i++)
+      for (int j = i+1; j<ans.size()-1; j++) 
+	if (( (*distance)[ans[i]*1000+ans[i-1]] 
+	      + (*distance)[ans[j]*1000+ans[j+1]])
+	    > ( (*distance)[ans[i]*1000+ans[j+1]] 
+		+ (*distance)[ans[j]*1000+ans[i-1]])) {
+	  reverse(ans.begin()+i,ans.begin()+j+1);
+	  r  = true;
+	  updated = true;
+	}
+  }
+  return ans;
+}
+
+vector<int> Trim::work4(vector<int> v) {
+  updated = true;
+  vector<int> tmp1,tmp,ans;
+  ans = v;
+  int count = 0;
+  while (updated)  {
+    cout<<"count"<<count++<<endl;;
+    updated = false;
+    tmp1 = ans;
+    tmp = strongRevert(tmp1);
+    ans = work3(tmp);
+  }
+  return ans;
 }
