@@ -9,16 +9,16 @@ LIBS :=
 INCLUDES := 
 LIBDIR := 
 
-all: travel
+all: tsp_solver
 
 eulerCircuitTest: matrix_graph.cpp euler_circuit_test.cpp
 	g++ euler_circuit_test.cpp matrix_graph.cpp -std=c++0x -o eulerCircuitTest
 
-travel: ${OBJS}
+tsp_solver: ${OBJS}
 	${CC} ${CFLAGS} ${LIBDIR} -o $@ ${OBJS} ${LIBS}
 
 .cpp.o:
 	$(CC) $(CFLAGS) ${INCLUDES} $< -c -o $@
 
 clean:
-	rm -f ${OBJS} travel eulerCircuitTest
+	rm -f ${OBJS} tsp_solver

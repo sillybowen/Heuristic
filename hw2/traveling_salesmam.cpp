@@ -14,11 +14,12 @@ using namespace std;
 const char* outFileName = "tsp_output.txt";
 
 vector<point> p;
-void init(const char* filename) {
+vector<int> ansV;
+void init() {
   ifstream inputfile;
   // Don't add default "point"s if there are NOT so many cities
   p.reserve(MAXNUMOFPOINTS);
-  inputfile.open(filename);
+  inputfile.open("tsp_input.txt");
   for (int i = 0; i<MAXNUMOFPOINTS; i++) {
     int x;
     point aCity;
@@ -36,7 +37,9 @@ void init(const char* filename) {
   inputfile.close();
 }
 
-void work(int startV) {
+void work() {
+  int startV = 0;
+
   Mst m_(p);
   m_.work();
   Matching ma_(m_.giveOddDegreePoints());
@@ -57,45 +60,75 @@ void work(int startV) {
   Trim trim (p,pEulerCircuit);
   Trim trimWithRevert (p,pEulerCircuit);
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
-  cout << "\nTotal Distance: " << myEuler.sumTSPDistance(pEulerCircuit, p) << endl;
-
 
   Evaluate e(p, startV);
+  double ansC;
+  vector<int> tmpAns;
   double ans;
-  ans = e.evaluate(myEuler.giveResult());
-  cout<< "Euler Circuit Greedy Trimming: " << ans<<endl;
-  myEuler.printOutputTSPTrip(pEulerCircuit, outFileName);
-  delete pEulerCircuit;
 
-  trim.work();
-  ans = e.evaluate(trim.giveResult());
-  cout<<"Bowen's trim: "<< ans<<endl;
-
-  trimWithRevert.work2();
-  ans = e.evaluate(trimWithRevert.giveResult());
-  cout<<"Trim with revert: "<< ans<<endl;
 
   NN_Bowen nb(p);
   nb.work();
-  ans = e.evaluate(nb.giveResult());
+  tmpAns = nb.giveResult();
+  ans = e.evaluate(tmpAns);
+  ansV = tmpAns;
+  ansC = ans;
   cout<< "NN Greedy: " << ans<<endl;
 
-  NN nj(p);
+
+  tmpAns = myEuler.giveResult();
+  ans = e.evaluate(tmpAns);
+  if (ans<ansC&&ans>0) {
+    ansC = ans;
+    ansV = tmpAns;
+  }
+  cout<< "Euler Circuit Greedy Trimming: " << ans<<endl;
+  //  myEuler.printOutputTSPTrip(pEulerCircuit, outFileName);
+  delete pEulerCircuit;
+
+
+  trim.work();
+  tmpAns = trim.giveResult();
+  ans = e.evaluate(tmpAns);
+  if (ans<ansC&&ans>0) {
+    ansC = ans;
+    ansV = tmpAns;
+  }
+  cout<<"Bowen's trim: "<< ans<<endl;
+
+
+  trimWithRevert.work2();
+  tmpAns = trimWithRevert.giveResult();
+  ans = e.evaluate(tmpAns);
+  if (ans<ansC&&ans>0) {
+    ansC = ans;
+    ansV = tmpAns;
+  }
+  cout<<"Trim with revert: "<< ans<<endl;
+
+
+  cout<<"Best is"<<ans<<endl;
+
+  /*  NN nj(p);
   nj.work();
   double ans_nj = e.evaluate(nj.give_result());
-  cout << "NN Gready (Jinil): "<< ans_nj << endl;
+  cout << "NN Gready (Jinil): "<< ans_nj << endl;*/
 }
 
 void outit() {
+  ofstream outF;
+  Evaluate e(p,0);
+  cout<<e.evaluate(ansV)<<endl;
+  outF.open(outFileName);
+  for (int i = 0; i<ansV.size();i++)
+    outF<<ansV[i]+1<<endl;
+  outF.close();
+
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    cout << "Please enter Euler Circuit Test input file and StartVertex!\n";
-    return 1;
-  }
 
-  init(argv[1]);
-  work(atoi(argv[2]));
+  init();
+  work();
   outit();
 }
