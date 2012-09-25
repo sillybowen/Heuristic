@@ -15,6 +15,8 @@ const char* outFileName = "tsp_output.txt";
 
 vector<point> p;
 vector<int> ansV;
+vector<double> distanc;
+
 void init() {
   ifstream inputfile;
   // Don't add default "point"s if there are NOT so many cities
@@ -35,6 +37,9 @@ void init() {
   //      << " " << p[i].y << " " << p[i].z << endl;
   //  }
   inputfile.close();
+  for (int i = 0; i<p.size();i++)
+    for (int j = 0;j<p.size();j++)
+      distanc.push_back(p[i].dis(p[j]));
 }
 
 void work() {
@@ -57,8 +62,8 @@ void work() {
   myEuler.ifEulerianGraph();
   list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
 
-  Trim trim (p,pEulerCircuit);
-  Trim trimWithRevert (p,pEulerCircuit);
+  Trim trim (p,pEulerCircuit,&distanc);
+  Trim trimWithRevert (p,pEulerCircuit,&distanc);
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
 
   Evaluate e(p, startV);

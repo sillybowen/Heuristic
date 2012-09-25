@@ -1,7 +1,7 @@
 #include "trim.h"
 #include <iostream>
 using namespace std;
-Trim::Trim(vector<point> p, list<int>* e) {
+Trim::Trim(vector<point> p, list<int>* e,vector<double>*d) {
   points.resize(p.size());
   for (int i = 0; i<p.size();i++)
     points[i] = p[i];
@@ -10,6 +10,7 @@ Trim::Trim(vector<point> p, list<int>* e) {
     eulerOutput.push_back(*it);
     it++;
   }
+  distance = d;
 }
 void Trim::work2() {
   prework();
@@ -54,19 +55,11 @@ double Trim::removeCost(int x) {
 }
 void Trim::revert(int h,int t) {
   int p;
-  //  cout<<"revert"<<endl;
-  //  for (int i = h;i<=t;i++)
-  //  cout<<eulerOutput[i]<<' ';
-  // cout<<endl;
   for (int i = h; i<=(t+h)/2;i++) {
     p = eulerOutput[i];
     eulerOutput[i] = eulerOutput[t-(i-h)];
     eulerOutput[t-(i-h)] = p;
   }
-  
-  //  for (int i = h;i<=t;i++)
-  //    cout<<eulerOutput[i]<<' ';
-  //  cout<<endl;
 }
 double Trim::dis(int i,int j) {
   return
@@ -91,6 +84,7 @@ vector<int> Trim::work3(vector<int> currentSol) {
   bool findBetter = true;
   vector<int> ret;
   vector<bool> tried;
+  int count = 0;
   tried.resize(currentSol.size());
   for (int i = 0; i<currentSol.size(); i++)
     ret.push_back(currentSol[i]);
@@ -109,25 +103,37 @@ vector<int> Trim::work3(vector<int> currentSol) {
       maxD = -1;
       for (int i = 1; i<ret.size()-1;i++) 
 	if (!tried[i]&&
-	    (points[ret[i-1]].dis(points[ret[i]])+
-	     points[ret[i+1]].dis(points[ret[i]]))>maxD) {
-	  maxD = points[ret[i-1]].dis(points[ret[i]])+
-	    points[ret[i+1]].dis(points[ret[i]]);
+	    ((*distance)[ret[i-1]*1000+ret[i]] +
+	     (*distance)[ret[i+1]*1000+ret[i]]
+	     //points[ret[i-1]].dis(points[ret[i]])+
+	     //	     points[ret[i+1]].dis(points[ret[i]])
+	     )>maxD) {
+	  maxD = (*distance)[ret[i-1]*1000+ret[i]] + 
+	    (*distance)[ret[i+1]*1000+ret[i]];
+	    //points[ret[i-1]].dis(points[ret[i]])+
+	    //	    points[ret[i+1]].dis(points[ret[i]]);
 	  f = i;
 	}
       if (maxD == -1) break;
       maxReduce=0;
-      removeCost = points[ret[f-1]].dis(points[ret[f+1]]) - maxD;
+      removeCost = (*distance)[ret[f-1]*1000+ret[f+1]] - maxD;
+      //	points[ret[f-1]].dis(points[ret[f+1]]) - maxD;
       for (int i = 1;i<ret.size();i++)
 	if (i!=f && i!=f+1) {
-	  curReduce = points[ret[f]].dis(points[ret[i-1]]) +
-	    points[ret[f]].dis(points[ret[i]]) - 
-	    points[ret[i]].dis(points[ret[i-1]]) +
+	  curReduce = 
+	    (*distance) [ret[f]*1000+ret[i-1]] +
+	    (*distance) [ret[f]*1000+ret[i]] -
+	    (*distance) [ret[i]*1000+ret[i-1]] +
 	    removeCost;
+	  //	    points[ret[f]].dis(points[ret[i-1]]) +
+	  //	    points[ret[f]].dis(points[ret[i]]) - 
+	  //	    points[ret[i]].dis(points[ret[i-1]]) +
+	  //	    removeCost;
 	  if (curReduce<maxReduce) {
 	    maxReduce = curReduce;
 	    newPos = i;
 	  }
+	  count++;
 	}
       tried[f] = true;
       if (maxReduce<0) {
@@ -146,5 +152,6 @@ vector<int> Trim::work3(vector<int> currentSol) {
       }
     }
   }
+  cout<<count<<endl;
   return ret;
 }

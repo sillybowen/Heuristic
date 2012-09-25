@@ -9,16 +9,18 @@ class Trim {
   vector<point> points;
   vector<int> eulerOutput;
   vector<int> ansSeq;
+  vector<double> *distance;
   int pick(int x);
   double removeCost(int x);
   void prework();
   double dis(int i,int j);
   void revert(int a,int b);
  public:
-  Trim(vector<point>p,list<int>* e);
+  Trim(vector<point>p,list<int>* e,vector<double>* d);
   void work();
   void work2();
   vector<int> work3(vector<int> p);
+  vector<int> work4(vector<int> p);
   vector<int> giveResult();
   
 };
