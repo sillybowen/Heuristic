@@ -30,6 +30,7 @@ int Genetic::calFactorial(int n){
   return result;
 }
 
+// Genetic Algorithm
 void Genetic::work(int max_length) {
   double min_distance, original_distance;
 
@@ -137,6 +138,7 @@ void Genetic::work(int max_length) {
 
 }
 
+// 2-Opt Algorithm
 void Genetic::work2(int start_length, int end_length){
   point pre_p, post_p, ch_p[2];
   double original_sum, reverse_sum;
@@ -154,9 +156,6 @@ void Genetic::work2(int start_length, int end_length){
       // If the reversed interval is better,
       // Update the result
       if(reverse_sum < original_sum){
-
-	cout << "changed" << endl;
-
 	int index = 0;
 	int count = (int)(interval / 2);
 	point temp;
@@ -176,6 +175,56 @@ void Genetic::work2(int start_length, int end_length){
   for(int i=0; i<points.size(); i++)
     ansSeq[i] = points[i].id_at_main;
 
+}
+
+void Genetic::work3(int start_length, int end_length){
+
+  point ch_1[2], ch_2[2], pre_p[2], post_p[2];
+  for(int length=start_length; length<=end_length; length++){
+    
+    // i : first array start point
+    for(int i=1; i<points.size()-2*length; i++){
+      ch_1[0] = points[i];
+      ch_1[1] = points[i+length-1];
+      pre_p[0] = points[i-1];
+      post_p[0] = points[i+length];
+  
+      // j : second array start point
+      for(int j=i+length+1; j<points.size()-length; j++){
+	ch_2[0] = points[j];
+	ch_2[1] = points[j+length-1];
+	pre_p[1] = points[j-1];
+	post_p[1] = points[j+length];
+
+	double original_sum = pre_p[0].dis( ch_1[0] )
+	  + post_p[0].dis( ch_1[1] ) 
+	  + pre_p[1].dis( ch_2[0] )
+	  + post_p[1].dis( ch_2[1] );
+
+	double mute_sum = pre_p[0].dis( ch_2[0] )
+	  + pre_p[1].dis( ch_1[0] )
+	  + post_p[1].dis( ch_1[1] )
+	  + post_p[0].dis( ch_2[1] );
+
+	if(mute_sum < original_sum){
+       	  cout << "changed " << endl;
+	  vector<point> temp;
+	  temp.resize(length);
+	  for(int k=0; k<length; k++){
+	    temp[k] = points[i+k];
+	    points[i+k] = points[j+k];
+	    points[j+k] = temp[k];
+	  }
+	}
+      }
+    }
+  }
+
+  // Save the result into ansSeq vector
+  ansSeq.clear();
+  ansSeq.resize(points.size());
+  for(int i=0; i<points.size(); i++)
+    ansSeq[i] = points[i].id_at_main;
 }
 
 vector<int> Genetic::giveResult() {

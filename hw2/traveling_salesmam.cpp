@@ -134,7 +134,8 @@ void work() {
   Genetic ge(tmpAns, p);
   int max_length = 8;
   ge.work(max_length);
-  ge.work2(++max_length, MAXNUMOFPOINTS-2);
+  ge.work2(++max_length, p.size()-2);
+  //ge.work3(++max_length, (p.size()/2)-1);
   tmpAns = ge.giveResult();
 
   ans = e.evaluate(tmpAns);
