@@ -73,10 +73,16 @@ double Trim::dis(int i,int j) {
   points[eulerOutput[i]].dis(points[eulerOutput[j]]);
 }
 void Trim::prework() {
+  bool r = true;
+  while (r) {
+    r = false;
   for (int i = 1; i<eulerOutput.size()-1; i++)
     for (int j = i+3; j<eulerOutput.size()-1; j++) 
       if (eulerOutput[i] == eulerOutput[j]) {
-	if ( dis(i-1,i+1)+ dis(j-1,j+1) > dis(i-1,j-1)+dis(i+1,j+1))
+	if ( dis(i-1,i+1)+ dis(j-1,j+1) > dis(i-1,j-1)+dis(i+1,j+1)) {
 	  revert(i+1,j-1);
+	  r  = true;
+	}
       }
+  }
 }

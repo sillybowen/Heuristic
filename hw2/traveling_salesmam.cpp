@@ -45,18 +45,15 @@ void work(int startV) {
   ma_.outCost();
   vector<edge> edgesSet1 = m_.givenAnsEdges();
   vector<edge> edgesSet2 = ma_.givenAnsEdges();
-  //  m_.output();
-  //  ma_.output();
   cout << "Output MST size: " << (int) edgesSet1.size() << endl;
   cout << "Output matching size: " << (int) edgesSet2.size() << endl;
 
   int numOfTotalEdges = (int) p.size();
   MatrixGraph myEuler(numOfTotalEdges, edgesSet1, edgesSet2);
-  // myEuler.dumpEulerDFSGraph();
-  // Testing, make sure myEuler is an Eulerian Graph right now
+
   myEuler.ifEulerianGraph();
   list<int>* pEulerCircuit = myEuler.findEulerCircuit(startV);
-  cout << endl;
+
   Trim trim (p,pEulerCircuit);
   Trim trimWithRevert (p,pEulerCircuit);
   myEuler.trimEulerCircuitToTSP(pEulerCircuit);
