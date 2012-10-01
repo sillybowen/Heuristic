@@ -51,8 +51,7 @@ void output() {
   int total_saved = 0;
   cout<<"POSITION"<<endl;
   for (int i = 0; i<hospitals.size();i++) {
-    hospitals[i]->output();
-    cout<<endl;
+    hospitals[i]->outputHos();
   }
   cout<<"ROUTINE"<<endl;
   for (int j = 0; j<ambulances.size();j++){

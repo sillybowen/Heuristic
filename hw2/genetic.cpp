@@ -179,27 +179,27 @@ void Genetic::work2(int start_length, int end_length){
 
 void Genetic::work3(int start_length, int end_length){
 
-  point ch_1[2], ch_2[2], pre_p[2], post_p[2];
+  int ch_1[2], ch_2[2], pre_p[2], post_p[2];
   for(int length=start_length; length<=end_length; length++){
     
     // i : first array start point
     for(int i=1; i<points.size()-2*length; i++){
-      ch_1[0] = points[i];
-      ch_1[1] = points[i+length-1];
-      pre_p[0] = points[i-1];
-      post_p[0] = points[i+length];
+      ch_1[0] = i;
+      ch_1[1] = i+length-1;
+      pre_p[0] = i-1;
+      post_p[0] = i+length;
   
       // j : second array start point
       for(int j=i+length+1; j<points.size()-length; j++){
-	ch_2[0] = points[j];
-	ch_2[1] = points[j+length-1];
-	pre_p[1] = points[j-1];
-	post_p[1] = points[j+length];
+	ch_2[0] = j;
+	ch_2[1] = j+length-1;
+	pre_p[1] = j-1;
+	post_p[1] = j+length;
 
-	double original_sum = pre_p[0].dis( ch_1[0] )
-	  + post_p[0].dis( ch_1[1] ) 
-	  + pre_p[1].dis( ch_2[0] )
-	  + post_p[1].dis( ch_2[1] );
+	double original_sum = points[pre_p[0]].dis( points[ch_1[0]] )
+	  + points[post_p[0]].dis( points[ch_1[1]] ) 
+	  + points[pre_p[1]].dis( points[ch_2[0]] )
+	  + points[post_p[1]].dis( points[ch_2[1]] );
 
 	double mute_sum = pre_p[0].dis( ch_2[0] )
 	  + pre_p[1].dis( ch_1[0] )
