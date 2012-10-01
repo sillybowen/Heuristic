@@ -1,8 +1,5 @@
-#include "patient.h"
-#include "ambulance.h"
 #include "kmeans.h"
-#include <vector>
-#include <algorithm>
+
 using namespace std;
 bool comparePos(Position p1, Position p2) {
   if (p1.x<p2.x) return true;
@@ -23,7 +20,8 @@ bool change(vector<Position> &n, vector<Position> &o) {
 
 void kmeansToFindHospital(vector<Patient*> &patients,
                           vector<int> &ambNumber,
-                          vector<Hospital*> &hospitals) {
+                          vector<Hospital*> &hospitals,
+                          vector<Ambulance*>&ambulances) {
   vector<Position> center;
   vector<int> cluster;
   center.resize(ambNumber.size());
@@ -76,7 +74,7 @@ void kmeansToFindHospital(vector<Patient*> &patients,
   int head = 0;
   int tail = ambNumber.size()-1;
   int id = 0;
-
+  // hospital location
   while (head<=tail) {
     id ++;
     Hospital * h = new Hospital(center[head].x,center[head].y,id,ambNumber[id-1]);
@@ -87,6 +85,24 @@ void kmeansToFindHospital(vector<Patient*> &patients,
     h = new Hospital(center[tail].x,center[tail].y,id,ambNumber[id-1]);
     hospitals.push_back(h);
     tail--;
+  }
+  id = 0;
+  for (int i = 0; i<hospitals.size();i++) {
+    hospitals[i]->outputHos();
+    for (int j = 0; j<hospitals[i]->getAmbNumber();j++) {
+      id++;
+      Ambulance * amb = new Ambulance(hospitals[i],id,&patients,&hospitals);
+      ambulances.push_back(amb);
+    }
+  }
+  //find nearest hos for each patient
+  for (int i = 0; i<patients.size();i++) {
+    int c = 0;
+    for (int j = 1; j<hospitals.size();j++)
+      if (patients[i]->distance(hospitals[j])<patients[i]->distance(hospitals[c]))
+        c = j;
+    patients[i]->setNearestHospital(hospitals[c]);
+//    patients[i]->output();
   }
 }
 

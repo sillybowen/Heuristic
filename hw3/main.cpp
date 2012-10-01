@@ -35,26 +35,31 @@ void init() {
 }
 void work() {
   int id = 0;
-  kmeansToFindHospital(patients,ambNumber,hospitals);
-  for (int i = 0; i<hospitals.size();i++) {
-    hospitals[i]->outputHos();
-    for (int j = 0; j<hospitals[i]->getAmbNumber();j++) {
-      id++;
-      Ambulance * amb = new Ambulance(hospitals[i],id);
-      ambulances.push_back(amb);
-    }
-
-    for (int j = 1; j<=hospitals[i]->getAmbNumber();j++){
-      ambulances[ambulances.size()-j]->output();
-    }
-  }
+  cout<<"enter work"<<endl;
+  kmeansToFindHospital(patients,ambNumber,hospitals,ambulances);
+  cout<<"after kmeans"<<endl;
+  for (int i = 0; i<ambulances.size();i++)
+    ambulances[i]->move();
 }
 void workdone() {
   for (int i = 0; i<patients.size();i++)
     delete patients[i];
+  for (int i = 0; i<ambulances.size();i++)
+    delete ambulances[i];
+  for (int i = 0; i<hospitals.size();i++)
+    delete hospitals[i];
+}
+void output() {
+  int total_saved = 0;
+  for (int j = 0; j<ambulances.size();j++){
+    ambulances[j]->output();
+    total_saved+= ambulances[j]->getSavedCount();
+  }
+cout<<"Total saved:"<<total_saved<<endl;
 }
 int main() {
   init();
   work();
+  output();
   workdone();
 }

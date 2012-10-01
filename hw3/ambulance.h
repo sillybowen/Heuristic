@@ -8,10 +8,20 @@ class Ambulance {
   int id;
   int next_available_time_;
   vector<Patient*> onboard_;
-  vector<Position*> routine;// -1 .. -4 
+  vector<Position*> routine;
+  vector<Patient*> *patients;
+  vector<Hospital*> *hospitals;
+  int saved_count_;
  public:
-  Ambulance (Hospital*h,int i);
+  Ambulance (Hospital*h,int i,vector<Patient*>* p, vector<Hospital*>*hos);
   void output();
   bool addRountine(Position* p);
+  void move();
+  void goToNearestHospital();
+  void goToSave(Patient*p);
+  bool couldSave(Patient*p);
+  Patient* findNextToSave();
+  bool couldSaveMore();
+  int getSavedCount() {return saved_count_;}
 };
 #endif

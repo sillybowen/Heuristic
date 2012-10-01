@@ -30,9 +30,16 @@ class Patient:public Position  {
  private:
   int resecue_time_;
   int id;
+  bool saved;
+  Hospital* nearest_hospital_;
  public:
   Patient(int x,int y,int t,int i);
   void output();
   bool isPatient();
+  void setNearestHospital(Hospital* h) {nearest_hospital_ = h;};
+  Hospital* getNearestHospital() { return nearest_hospital_;};
+  void setSaved() { saved = true;}
+  bool getSaved() { return saved;}
+  int getRescueTime() {return resecue_time_;}
 };
 #endif

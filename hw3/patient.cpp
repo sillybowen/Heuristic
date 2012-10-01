@@ -4,7 +4,8 @@ using namespace std;
 Patient::Patient(int x,int y,int t,int i): 
   Position(x,y),
   resecue_time_(t),
-  id(i) {
+  id(i),
+  saved(false){
 }
 
 void Patient::output() {
