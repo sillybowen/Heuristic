@@ -35,9 +35,7 @@ void init() {
 }
 void work() {
   int id = 0;
-  cout<<"enter work"<<endl;
   kmeansToFindHospital(patients,ambNumber,hospitals,ambulances);
-  cout<<"after kmeans"<<endl;
   for (int i = 0; i<ambulances.size();i++)
     ambulances[i]->move();
 }
@@ -51,11 +49,16 @@ void workdone() {
 }
 void output() {
   int total_saved = 0;
+  cout<<"POSITION"<<endl;
+  for (int i = 0; i<hospitals.size();i++) {
+    hospitals[i]->output();
+    cout<<endl;
+  }
+  cout<<"ROUTINE"<<endl;
   for (int j = 0; j<ambulances.size();j++){
     ambulances[j]->output();
     total_saved+= ambulances[j]->getSavedCount();
   }
-cout<<"Total saved:"<<total_saved<<endl;
 }
 int main() {
   init();

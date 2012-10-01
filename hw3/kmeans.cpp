@@ -88,7 +88,6 @@ void kmeansToFindHospital(vector<Patient*> &patients,
   }
   id = 0;
   for (int i = 0; i<hospitals.size();i++) {
-    hospitals[i]->outputHos();
     for (int j = 0; j<hospitals[i]->getAmbNumber();j++) {
       id++;
       Ambulance * amb = new Ambulance(hospitals[i],id,&patients,&hospitals);
