@@ -11,12 +11,17 @@ Ambulance::Ambulance(Hospital* h,int i,vector<Patient*> *p, vector<Hospital*> *h
   routine.push_back(h);
 }
 void Ambulance::output() {
+  int time = 0;
+//  cout<<"new amb"<<id<<endl;
   for (int i = 0; i< routine.size();i++) {
     routine[i]->output();
+//    cout<<" time "<<time<<endl;
     if (i!=routine.size()-1)
       cout<<',';
     else
-      cout<<endl;
+    cout<<endl;
+    if (i+1<routine.size())
+      time+= routine[i]->distance(routine[i+1])+1;
   }
 }
 bool Ambulance::addRountine(Position* p){
