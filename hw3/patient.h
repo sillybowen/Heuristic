@@ -22,6 +22,9 @@ class Hospital:public Position {
   void output();
   void outputHos();
   bool isPatient();
+  int getAmbNumber() {
+    return ambulance_number_;
+  };
 };
 class Patient:public Position  {
  private:

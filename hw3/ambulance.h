@@ -5,12 +5,12 @@
 using namespace std;
 class Ambulance {
  private:
-  // Position pos;
+  int id;
   int next_available_time_;
   vector<Patient*> onboard_;
   vector<Position*> routine;// -1 .. -4 
  public:
-  Ambulance (Hospital*h);
+  Ambulance (Hospital*h,int i);
   void output();
   bool addRountine(Position* p);
 };

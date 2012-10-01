@@ -1,10 +1,10 @@
 .SUFFIXES: .h .o .cpp
 
-CC = main.cpp patient.cpp ambulance.cpp
+CC = main.cpp patient.cpp ambulance.cpp kmeans.cpp
 CC = g++
 CCOPTS = -g
 LIBS = 
-OBJS = main.o patient.o ambulance.o
+OBJS = main.o patient.o ambulance.o kmeans.o
 CCEXEC = ambulance
 
 all:	$(CCEXEC)
