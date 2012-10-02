@@ -9,6 +9,7 @@ AcoAmbulance::AcoAmbulance(int ambID, int curLocation, Mutex* pAcoGMutex,
                         cur_load_(0),
                         cur_loc_(curLocation),
                         l_dyingT_(INT_MAX),
+                        tot_saved_(0),
                         pAco_g_m_(pAcoGMutex),
                         pAco_g_(pAcoG) {
   // Push in the starting point(index)

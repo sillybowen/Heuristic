@@ -16,6 +16,8 @@ using base::Mutex;
 
 #define SCORECAPITAL 2000
 #define PHEROMONESTIMES 5
+#define PHEROMONESONCEADDUP 10;
+#define MAXSTOCHASTICRETRIES 3
 
 class ACOGraphs {
 public:
@@ -32,6 +34,10 @@ public:
 
   long calMovePreference(int ambId, int nextVert) const;
   int ambulGoStochastic(int ambId) const;
+  int ACOAlgorithm(int maxRuns);
+  int oneACORun();
+  int dispatchAmbulance(int ambId);
+  int moveAmbulance(int ambId);
   int nextAmbulanceMove(int ambId);
 
   friend class AcoAmbulance;
@@ -39,6 +45,7 @@ public:
 private:
   typedef unordered_multiset<int> EdgesMultiSet;
   typedef unordered_multiset<int>::const_iterator EdgesConstIter;
+  typedef unordered_multiset<int>::iterator EdgesIter;
   struct EdgeInfo {
     int pheromones;
     int distance;  // |x1-x2| + |y1-y2|

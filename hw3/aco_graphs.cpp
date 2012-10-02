@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <ctime>
 #include <cassert>
 #include <climits>
 #include <cstring>
@@ -63,6 +65,15 @@ ACOGraphs::~ACOGraphs() {
 
 void ACOGraphs::initAcoAmbulance() {
   int ambId = 0;
+
+  // Clear old data
+  if (pAmb_vect_.size() > 0) {
+    int size = pAmb_vect_.size();
+    for (int i = 0; i < size; ++i)
+      delete pAmb_vect_[i];
+  }
+  pAmb_vect_.clear();
+
   for (int i = fir_hos_ind_; i < numOfVertices_; ++i) {
     int numAmbuls = hosPatVect_[i]->getNumOfAmbuls();
     while (numAmbuls-- > 0) {
@@ -164,21 +175,135 @@ int ACOGraphs::ambulGoStochastic(int ambId) const {
   long randVal = rand() % sum;
   accumMapIter = accumPreferMap.upper_bound(randVal);
 
-  assert(accumMapIter == accumPreferMap.end());
+  assert(accumMapIter != accumPreferMap.end());
 
   return (*accumMapIter).second;
 }
 
-// next stochastic move for ambulance ind: ambId, find one, then carry out move
+int ACOGraphs::ACOAlgorithm(int maxRuns) {
+  int maxSaved = 0, tmp;
+
+  while (maxRuns-- > 0) {
+    srand(time(NULL) + maxRuns);
+    if ((tmp = oneACORun()) > maxSaved)
+      maxSaved = tmp;
+    cout << "Saved " << tmp << endl;
+    initAcoAmbulance();
+  }
+
+  return maxSaved;
+}
+
+int ACOGraphs::oneACORun() {
+  int numAmbuls = pAmb_vect_.size();
+  int numSaved = 0;
+
+  for (int i = 0; i < numAmbuls; ++i) {
+    numSaved += dispatchAmbulance(i);
+  }
+  return numSaved;
+}
+
+int ACOGraphs::dispatchAmbulance(int ambId) {
+  int ret;
+  while ((ret = moveAmbulance(ambId)) != -1);
+  // print ambulance route
+  int routeSize = pAmb_vect_[ambId]->route_.size();
+  vector<int>& rRoute = pAmb_vect_[ambId]->route_;
+  // for (int i = 0; i < routeSize; ++i) {
+  //   if (i != 0)
+  //     cout << ',';
+  //   if (getpHosPat(rRoute[i])->isPatient()) {
+  //     cout << 'P' << rRoute[i] + 1 << ',';
+  //   } else {
+  //     cout << 'H' << rRoute[i] - fir_hos_ind_ + 1 << ',';
+  //   }
+  //   getpHosPat(rRoute[i])->output();
+  // }
+  // cout << endl << "total saved" << pAmb_vect_[ambId]->tot_saved_ << endl;
+  return pAmb_vect_[ambId]->tot_saved_;
+}
+
+// Move for ambulance ind: ambId, find one, then carry out move
 // -------Update relevent states after move
+// Do the move, update relevant states
+int ACOGraphs::moveAmbulance(int ambId) {
+  int nextVert;
+  aco_g_m_.lock();
+  nextVert = nextAmbulanceMove(ambId);
+
+  if (nextVert == -1) {
+    aco_g_m_.unlock();
+    return -1;
+  } else {
+    // Do the move, update state information
+    int ambulCurLoc = pAmb_vect_[ambId]->cur_loc_;
+    if (hosPatVect_[nextVert]->isPatient()) {  // Pick up new patient
+      EdgesIter toremove;
+      if (hosPatVect_[nextVert]->isPatient()) {  // Remove bidirectional edges
+        for (int i = 0; i < numOfVertices_; ++i) {
+          if (i != nextVert) {
+            toremove = adjVertList_[i]->find(nextVert);
+            toremove = adjVertList_[i]->erase(toremove);
+          }
+        }
+      } else {
+        toremove = adjVertList_[ambulCurLoc]->find(nextVert);
+        toremove = adjVertList_[ambulCurLoc]->erase(toremove);
+      }
+      pAmb_vect_[ambId]->cur_load_ += 1;
+      if (pAmb_vect_[ambId]->cur_load_ == pAmb_vect_[ambId]->max_load_)
+        pAmb_vect_[ambId]->ready_to_hos_ = true;
+      if (hosPatVect_[nextVert]->getDyingTime() < pAmb_vect_[ambId]->l_dyingT_)
+        pAmb_vect_[ambId]->l_dyingT_ = hosPatVect_[nextVert]->getDyingTime();
+      pAmb_vect_[ambId]->onboard_.push_back(nextVert);
+    } else {  // Unload patients to hospital
+      pAmb_vect_[ambId]->ready_to_hos_ = false;
+      pAmb_vect_[ambId]->tot_saved_ += pAmb_vect_[ambId]->cur_load_;
+      pAmb_vect_[ambId]->cur_load_ = 0;
+      pAmb_vect_[ambId]->l_dyingT_ = INT_MAX;
+      pAmb_vect_[ambId]->onboard_.clear();
+    }
+    pAmb_vect_[ambId]->passed_time_ +=
+      (matrixGraph_[ambulCurLoc][nextVert].distance + 1);
+    pAmb_vect_[ambId]->cur_loc_ = nextVert;
+    pAmb_vect_[ambId]->route_.push_back(nextVert);
+    // Update pheromones
+    matrixGraph_[ambulCurLoc][nextVert].pheromones += PHEROMONESONCEADDUP;
+    matrixGraph_[nextVert][ambulCurLoc].pheromones += PHEROMONESONCEADDUP;
+  }
+  aco_g_m_.unlock();
+  return 1;
+}
+
 // return the nextmove vertex id, -1 if No move possible
 // Assuming holding the mutex!!!
 int ACOGraphs::nextAmbulanceMove(int ambId) {
   int curLocation = pAmb_vect_[ambId]->cur_loc_;
   int curLoad = pAmb_vect_[ambId]->cur_load_;
+  int numEdgesToGo = adjVertList_[curLocation]->size();
+  int nearestHosId = hosPatVect_[curLocation]->getNearestHospitalID();
+  int retries = MAXSTOCHASTICRETRIES;
 
+  // Already full load
+  if (curLoad == pAmb_vect_[ambId]->max_load_)
+    return nearestHosId;
 
-  return -1;
+  if (numEdgesToGo > 0) {
+    int tmp;
+    while (retries-- > 0 && (tmp = ambulGoStochastic(ambId)) == -1);
+    if (tmp == -1 && curLoad > 0) {  // Go to nearest hospital
+      return nearestHosId;
+    } else if (tmp == -1) {
+      return -1;
+    } else {
+      return tmp;
+    }
+  } else if (numEdgesToGo == 0 && curLoad > 0) {
+    return nearestHosId;
+  } else {
+    return -1;
+  }
 }
 
 // Only used for '2test' file, ambId = 0

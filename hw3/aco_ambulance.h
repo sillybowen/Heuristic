@@ -28,9 +28,10 @@ private:
   int                      cur_load_;
   int                      cur_loc_;    // location represent by HospitalPatient ind
   int                      l_dyingT_;   // smallest dyingTime amony all onboard
+  int                      tot_saved_;
   Mutex*                   pAco_g_m_;   // Not owned here
   ACOGraphs*               pAco_g_;
-  vector<HospitalPatient*> onboard_;    // do NOT transfer ownership
+  vector<int> onboard_;    // onboard patient index
   vector<int>              route_;      // route represent by HospitalPatient ind
 };
 

@@ -1,6 +1,10 @@
 #ifndef Hospital_Patient_Header_
 #define Hospital_Patient_Header_
+
+#include <iostream>
 #include "patient.h"
+
+using std::cout;
 
 class HospitalPatient : public Position {
 public:
@@ -9,8 +13,8 @@ public:
       int dyingTime);
   ~HospitalPatient() { }
 
-  void output() { }
-  bool isPatient() { return is_patient_; }
+  void output() const { cout << x << ',' << y; }
+  bool isPatient() const { return is_patient_; }
   int getNumOfAmbuls() const { return num_of_ambulances_; }
   int getDyingTime() const { return dying_time_; }
 
