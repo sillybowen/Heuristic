@@ -14,6 +14,9 @@ using std::vector;
 using std::unordered_multiset;
 using base::Mutex;
 
+#define SCORECAPITAL 2000
+#define PHEROMONESTIMES 5
+
 class ACOGraphs {
 public:
   // Require strict ordering on vector<HospitalPatient*>, patients first
@@ -25,6 +28,7 @@ public:
 
   void outputAdjG() const;
   void outputMatrixG() const;
+  void testForPreferBalance() const;
 
   long calMovePreference(int ambId, int nextVert) const;
   int ambulGoStochastic(int ambId) const;

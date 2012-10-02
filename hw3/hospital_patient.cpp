@@ -7,8 +7,7 @@ HospitalPatient::HospitalPatient(int xpos, int ypos, bool isPatient, int index,
                                       num_of_ambulances_(numOfAmbuls),
                                       dying_time_(dyingTime),
                                       nearest_hos_id_(-1),
-                                      nearest_hos_dist_(-1) {
-}
+                                      nearest_hos_dist_(-1) { }
 
 // Return -1 if this is a Hospital, or hospital id's, between 0 to N-1
 int HospitalPatient::getNearestHospitalID() const {
