@@ -7,6 +7,7 @@
 #include "ambulance.h"
 #include "kmeans.h"
 #include "hospital_patient.h"
+#include "aco_graphs.h"
 using namespace std;
 vector<Patient*> patients;
 vector<int> ambNumber;
@@ -50,12 +51,15 @@ void work() {
         hospitals[i]->y, false, index++, hospitals[i]->getAmbNumber(), -1);
     pHosPatVector->push_back(newHosPat);
   }
+  ACOGraphs acoGraph(pHosPatVector->size(), *pHosPatVector);
   // cout << "Index (expect 305)= " << index << endl;
 
   for (int i = 0; i<ambulances.size();i++)
     ambulances[i]->move();
 
   // Free mem for HospitalPatient class
+  for (int i = 0; i < pHosPatVector->size(); ++i)
+    delete pHosPatVector->at(i);
   delete pHosPatVector;
 }
 void workdone() {

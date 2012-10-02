@@ -1,21 +1,21 @@
 .SUFFIXES: .h .o .cpp
 
-CC = main.cpp patient.cpp ambulance.cpp kmeans.cpp hospital_patient.cpp
+CC = patient.cpp ambulance.cpp kmeans.cpp hospital_patient.cpp aco_graphs.cpp main.cpp
 CC = g++
-CCOPTS = -g
+CXXFLAGS = -g -std=c++0x
 LIBS = 
-OBJS = main.o patient.o ambulance.o kmeans.o hospital_patient.o
+OBJS = patient.o ambulance.o kmeans.o hospital_patient.o aco_graphs.o main.o
 CCEXEC = ambulance
 
 all:	$(CCEXEC)
 
-$(CCEXEC):	$(OBJS) makefile 
+$(CCEXEC):	$(OBJS) makefile
 	@echo Linking $@ . . .
-	$(CC) $(CCOPTS) $(OBJS) -o $@ $(LIBS)
+	$(CC) $(CXXFLAGS) $(OBJS) -o $@ $(LIBS)
 
 %.o:	%.c
 	@echo Compiling $< . . .
-	$(CC) -c $(CCOPTS) $<
+	$(CC) $(CXXFLAGS) $<
 
 run:	all
 	./$(CCEXEC)
