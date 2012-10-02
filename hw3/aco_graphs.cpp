@@ -62,12 +62,17 @@ void ACOGraphs::initAcoAmbulance() {
   for (int i = fir_hos_ind_; i < numOfVertices_; ++i) {
     int numAmbuls = hosPatVect_[i]->getNumOfAmbuls();
     while (numAmbuls-- > 0) {
-      AcoAmbulance* new_ambul = new AcoAmbulance(ambId++, i, &aco_g_m_);
+      AcoAmbulance* new_ambul = new AcoAmbulance(ambId++, i, &aco_g_m_, this);
       pAmb_vect_.push_back(new_ambul);
     }
   }
   assert(ambId == (int) pAmb_vect_.size());
 }
+
+const HospitalPatient* ACOGraphs::getpHosPat(int vertInd) const {
+  return hosPatVect_[vertInd];
+}
+
 
 void ACOGraphs::outputAdjG() const {
   for (int i = 0; i < numOfVertices_; ++i) {
@@ -99,4 +104,51 @@ void ACOGraphs::outputMatrixG() const {
     cout << "NearHos " << hosPatVect_[i]->getNearestHospitalID() << '|'
       << hosPatVect_[i]->getNearestHospitalDis() << endl;
   }
+}
+
+// nextVert is the next index to move to
+long ACOGraphs::calMovePreference(int ambId, int nextVert) const {
+  int curLocation = pAmb_vect_[ambId]->cur_loc_;
+
+  long dyingPrefer = ((long) getpHosPat(nextVert)->getDyingTime()
+      - (long) pAmb_vect_[ambId]->passed_time_);
+  long dis = (long) matrixGraph_[curLocation][nextVert].distance;
+  return (dyingPrefer + dis) * (dyingPrefer - dis) +
+    (long) matrixGraph_[curLocation][nextVert].pheromones;
+}
+
+// Made sure there is way to go => adjVertList_[curLocation]->size() > 0
+// Assuming holding the Mutex
+int ACOGraphs::ambulGoStochastic(int ambId) const {
+  int curLocation = pAmb_vect_[ambId]->cur_loc_;
+  vector<long> accumPrefer;
+  accumPrefer.resize(adjVertList_[curLocation]->size());
+
+  EdgesConstIter cit = adjVertList_[curLocation]->begin();
+  long sum = 0;
+  int endInd = 0;
+  while (cit != adjVertList_[curLocation]->end()) {
+    sum += calMovePreference(ambId, *cit);
+    accumPrefer[endInd++] = sum;
+    ++cit;
+  }
+
+  // Generate random number:
+  long randVal = rand() % sum;
+  int i;
+  for (i = 0; i < endInd; ++i)
+    if (accumPrefer[i] > randVal)
+      break;
+
+  return i;
+}
+
+// next stochastic move for ambulance ind: ambId
+// return the nextmove vertex id, -1 if No move possible
+// Assuming holding the mutex!!!
+int ACOGraphs::nextAmbulanceMove(int ambId) {
+  int curLocation = pAmb_vect_[ambId]->cur_loc_;
+  int curLoad = pAmb_vect_[ambId]->cur_load_;
+
+  return -1;
 }

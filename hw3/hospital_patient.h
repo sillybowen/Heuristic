@@ -12,6 +12,7 @@ public:
   void output() { }
   bool isPatient() { return is_patient_; }
   int getNumOfAmbuls() const { return num_of_ambulances_; }
+  int getDyingTime() const { return dying_time_; }
 
   int getNearestHospitalID() const;
   int getNearestHospitalDis() const;

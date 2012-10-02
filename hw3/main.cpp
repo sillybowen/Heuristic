@@ -55,6 +55,8 @@ void work() {
   ACOGraphs acoGraph(pHosPatVector->size(), firstHosIndex, *pHosPatVector);
   // acoGraph.outputMatrixG();
   acoGraph.outputAdjG();
+  cout << "move prefer for ambId 0 to p2: " << acoGraph.calMovePreference(0, 2)
+    << endl;
   // cout << "Index (expect 305)= " << index << endl;
 
   for (int i = 0; i<ambulances.size();i++)
