@@ -1,11 +1,12 @@
 #include<iostream>
 #include<string>
 #include<sstream>
+#include <vector>
+#include <algorithm>
 #include "patient.h"
 #include "ambulance.h"
 #include "kmeans.h"
-#include <vector>
-#include <algorithm>
+#include "hospital_patient.h"
 using namespace std;
 vector<Patient*> patients;
 vector<int> ambNumber;
@@ -35,8 +36,27 @@ void init() {
 void work() {
   int id = 0;
   kmeansToFindHospital(patients,ambNumber,hospitals,ambulances);
+
+  // Dump values into HospitalPatient class
+  int index = 0;
+  vector<HospitalPatient*>* pHosPatVector = new vector<HospitalPatient*>();
+  for (int i = 0; i < patients.size(); ++i) {
+    HospitalPatient* newHosPat = new HospitalPatient(patients[i]->x, patients[i]->y,
+        true, index++, -1, patients[i]->getRescueTime());
+    pHosPatVector->push_back(newHosPat);
+  }
+  for (int i = 0; i < hospitals.size(); ++i) {
+    HospitalPatient* newHosPat = new HospitalPatient(hospitals[i]->x,
+        hospitals[i]->y, false, index++, hospitals[i]->getAmbNumber(), -1);
+    pHosPatVector->push_back(newHosPat);
+  }
+  // cout << "Index (expect 305)= " << index << endl;
+
   for (int i = 0; i<ambulances.size();i++)
     ambulances[i]->move();
+
+  // Free mem for HospitalPatient class
+  delete pHosPatVector;
 }
 void workdone() {
   for (int i = 0; i<patients.size();i++)
