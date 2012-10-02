@@ -39,19 +39,22 @@ void work() {
   kmeansToFindHospital(patients,ambNumber,hospitals,ambulances);
 
   // Dump values into HospitalPatient class
-  int index = 0;
+  int index = 0, firstHosIndex;
   vector<HospitalPatient*>* pHosPatVector = new vector<HospitalPatient*>();
   for (int i = 0; i < patients.size(); ++i) {
     HospitalPatient* newHosPat = new HospitalPatient(patients[i]->x, patients[i]->y,
         true, index++, -1, patients[i]->getRescueTime());
     pHosPatVector->push_back(newHosPat);
   }
+  firstHosIndex = index;
   for (int i = 0; i < hospitals.size(); ++i) {
     HospitalPatient* newHosPat = new HospitalPatient(hospitals[i]->x,
         hospitals[i]->y, false, index++, hospitals[i]->getAmbNumber(), -1);
     pHosPatVector->push_back(newHosPat);
   }
-  ACOGraphs acoGraph(pHosPatVector->size(), *pHosPatVector);
+  ACOGraphs acoGraph(pHosPatVector->size(), firstHosIndex, *pHosPatVector);
+  // acoGraph.outputMatrixG();
+  acoGraph.outputAdjG();
   // cout << "Index (expect 305)= " << index << endl;
 
   for (int i = 0; i<ambulances.size();i++)

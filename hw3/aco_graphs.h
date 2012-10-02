@@ -1,28 +1,43 @@
 #ifndef ACO_Graphs_Header_
 #define ACO_Graphs_Header_
 
+#include <iostream>
 #include <vector>
 #include <unordered_set>
 #include "hospital_patient.h"
+#include "lock.hpp"
 
+using std::cout;
+using std::endl;
 using std::vector;
 using std::unordered_multiset;
+using base::Mutex;
 
 class ACOGraphs {
 public:
-  ACOGraphs(int numVertices, const vector<HospitalPatient*>& hosPatVect);
+  // Require strict ordering on vector<HospitalPatient*>, patients first
+  // then hospitals
+  ACOGraphs(int numVertices, int firHosInd,
+      const vector<HospitalPatient*>& hosPatVect);
   ~ACOGraphs();
 
+  void outputAdjG() const;
+  void outputMatrixG() const;
+
 private:
-  const int numOfVertices_;
   typedef unordered_multiset<int> EdgesMultiSet;
+  typedef unordered_multiset<int>::const_iterator EdgesConstIter;
   struct EdgeInfo {
     int pheromones;
     int distance;  // |x1-x2| + |y1-y2|
   };
 
-  vector<EdgesMultiSet*> adjVertList_;
-  vector<EdgeInfo*>      matrixGraph_;
+  const int                       numOfVertices_;
+  const int                       fir_hos_ind_;
+  Mutex                           aco_g_m_;  // Protect both graphs
+  const vector<HospitalPatient*>& hosPatVect_;
+  vector<EdgesMultiSet*>          adjVertList_;
+  vector<EdgeInfo*>               matrixGraph_;
 };
 
 #endif
