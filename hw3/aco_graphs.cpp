@@ -43,14 +43,7 @@ ACOGraphs::ACOGraphs(int numVertices, int firHosInd,
   }
 
   // Fill in adjacent graph
-  for (int i = 0; i < numVertices; ++i) {
-    adjVertList_.push_back(new EdgesMultiSet);
-    for (int j = 0; j < numVertices; ++j) {
-      if (j != i && hosPatVect[j]->isPatient()) {
-        adjVertList_[i]->insert(j);
-      }
-    }
-  }
+  initAdjGraph();
 
   // Init ambulances
   initAcoAmbulance();
@@ -60,6 +53,25 @@ ACOGraphs::~ACOGraphs() {
   for (int i = 0; i < numOfVertices_; ++i) {
     delete adjVertList_[i];
     delete [] matrixGraph_[i];
+  }
+}
+
+void ACOGraphs::initAdjGraph() {
+  // Clear Old data
+  if (adjVertList_.size() > 0) {
+    int size = adjVertList_.size();
+    for (int i = 0; i < size; ++i)
+      delete adjVertList_[i];
+  }
+  adjVertList_.clear();
+
+  for (int i = 0; i < numOfVertices_; ++i) {
+    adjVertList_.push_back(new EdgesMultiSet);
+    for (int j = 0; j < numOfVertices_; ++j) {
+      if (j != i && hosPatVect_[j]->isPatient()) {
+        adjVertList_[i]->insert(j);
+      }
+    }
   }
 }
 
@@ -188,6 +200,7 @@ int ACOGraphs::ACOAlgorithm(int maxRuns) {
     if ((tmp = oneACORun()) > maxSaved)
       maxSaved = tmp;
     cout << "Saved " << tmp << endl;
+    initAdjGraph();
     initAcoAmbulance();
   }
 

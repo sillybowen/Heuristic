@@ -57,7 +57,7 @@ void work() {
   // cout << "move prefer for ambId 0 to p2: " << acoGraph.calMovePreference(0, 2)
   //   << endl;
   cout << "--------------" << endl;
-  cout << "Total patients saved = " << acoGraph.ACOAlgorithm(100) << endl;
+  cout << "Total patients saved = " << acoGraph.ACOAlgorithm(1000) << endl;
   cout << "--------------" << endl;
   // acoGraph.outputMatrixG();
   cout << "--------------" << endl;

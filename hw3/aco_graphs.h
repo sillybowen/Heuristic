@@ -26,6 +26,7 @@ public:
   ACOGraphs(int numVertices, int firHosInd,
       const vector<HospitalPatient*>& hosPatVect);
   ~ACOGraphs();
+  void initAdjGraph();
   void initAcoAmbulance();
 
   void outputAdjG() const;
