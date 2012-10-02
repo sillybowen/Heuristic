@@ -1,5 +1,6 @@
 #include "patient.h"
 #include <iostream>
+#include <sstream>
 using namespace std;
 Patient::Patient(int x,int y,int t,int i): 
   Position(x,y),

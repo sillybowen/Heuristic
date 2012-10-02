@@ -15,9 +15,9 @@ void Ambulance::output() {
   for (int i = 0; i< routine.size();i++) {
     routine[i]->output();
     if (i!=routine.size()-1)
-      cout<<',';
+      cout<<",";
     else
-    cout<<endl;
+      cout<< "\n";
     if (i+1<routine.size())
       time+= routine[i]->distance(routine[i+1])+1;
   }
@@ -25,6 +25,21 @@ void Ambulance::output() {
 bool Ambulance::addRountine(Position* p){
   routine.push_back(p);
   return true;
+}
+void Ambulance::move2() {
+  Patient* nextToSave;
+  while (couldSaveMore() || onboard_.size()>0) {
+    if (onboard_.size()<4) {
+      nextToSave = findNextToSave2();
+      if (nextToSave!=NULL)
+        goToSave(nextToSave);
+      else if (onboard_.size()>0)
+        goToNearestHospital();
+      else return;
+    }
+    else // it's full now
+      goToNearestHospital ();
+  }
 }
 void Ambulance::move() {
   Patient* nextToSave;
@@ -91,4 +106,42 @@ Patient* Ambulance::findNextToSave() {
         ret = tmp;
   }
   return ret;
+}
+Patient* Ambulance::findNextToSave2() {
+  Patient * ret = NULL;
+  Patient * tmp;
+  vector<Patient*> ps;
+  vector<Patient*> ps2;
+  Position* currentPos = routine[routine.size()-1];
+  for (int i = 0; i<patients->size();i++) {
+    tmp = patients->at(i);
+    if (tmp->getSaved()==false && couldSave(tmp))
+      ps.push_back(tmp);
+  }
+  if (ps.size() == 0) return NULL;
+  int ind;
+  if (rand()%5 != 0) {
+    for (int i = 0; i<ps.size();i++)
+      for (int j = i+1;j<ps.size();j++)
+	if (ps[i]->distance(currentPos)>
+	    ps[j]->distance(currentPos)) {
+	  Patient * p = ps[i];
+	  ps[i] = ps[j];
+	  ps[j] = p;
+	}
+    ind = rand()%3%ps.size();
+  }
+  else {
+    for (int i = 0; i<ps.size();i++)
+      for (int j = i+1;j<ps.size();j++)
+	if (ps[i]->getRescueTime() - ps[i]->distance(currentPos) - ps[i]->disToNH() - next_available_time_ >
+	    ps[j]->getRescueTime() - ps[j]->distance(currentPos) - ps[i]->disToNH() - next_available_time_) {
+	  Patient * p = ps[i];
+	  ps[i] = ps[j];
+	  ps[j] = p;
+	}
+    ind = rand()%3%ps.size();
+  }
+  //  cout<<ind<<endl;
+  return ps[ind];
 }

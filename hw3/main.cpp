@@ -8,11 +8,13 @@
 #include "kmeans.h"
 #include "hospital_patient.h"
 #include "aco_graphs.h"
+#include "bowen_work_class.h"
 using namespace std;
 vector<Patient*> patients;
 vector<int> ambNumber;
 vector<Hospital*> hospitals;
 vector<Ambulance*> ambulances;
+Bowen_work *bw;
 void init() {
   string s;
   cin>>s;
@@ -37,9 +39,10 @@ void init() {
 void work() {
   int id = 0;
   kmeansToFindHospital(patients,ambNumber,hospitals,ambulances);
-
+  bw = new Bowen_work(hospitals,patients,ambulances);
+  bw->work();
   // Dump values into HospitalPatient class
-  int index = 0, firstHosIndex;
+  /*  int index = 0, firstHosIndex;
   vector<HospitalPatient*>* pHosPatVector = new vector<HospitalPatient*>();
   for (int i = 0; i < patients.size(); ++i) {
     HospitalPatient* newHosPat = new HospitalPatient(patients[i]->x, patients[i]->y,
@@ -68,7 +71,7 @@ void work() {
   // Free mem for HospitalPatient class
   for (int i = 0; i < pHosPatVector->size(); ++i)
     delete pHosPatVector->at(i);
-  delete pHosPatVector;
+    delete pHosPatVector;*/
 }
 void workdone() {
   for (int i = 0; i<patients.size();i++)
@@ -76,10 +79,10 @@ void workdone() {
   for (int i = 0; i<ambulances.size();i++)
     delete ambulances[i];
   for (int i = 0; i<hospitals.size();i++)
-    delete hospitals[i];
+  delete hospitals[i];
 }
 void output() {
-  int total_saved = 0;
+  /*  int total_saved = 0;
   cout<<"POSITION"<<endl;
   for (int i = 0; i<hospitals.size();i++) {
     hospitals[i]->outputHos();
@@ -88,7 +91,9 @@ void output() {
   for (int j = 0; j<ambulances.size();j++){
     ambulances[j]->output();
     total_saved+= ambulances[j]->getSavedCount();
-  }
+    }*/
+  bw->output();
+
 }
 int main() {
   init();

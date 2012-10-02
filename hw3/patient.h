@@ -1,6 +1,8 @@
 #ifndef patient_h_
 #define patient_h_
 #include <cstdlib>
+#include <string>
+using namespace std;
 class Position {
  public:
   int x;
@@ -37,10 +39,19 @@ class Patient:public Position  {
   Patient(int x,int y,int t,int i);
   void output();
   bool isPatient();
+  void resetSaved() {
+    if (distance(nearest_hospital_)!=0)
+      saved = false;
+  }
   void setNearestHospital(Hospital* h) {nearest_hospital_ = h;};
   Hospital* getNearestHospital() { return nearest_hospital_;};
   void setSaved() { saved = true;}
+  int disToNH() {return distance(nearest_hospital_);}
   bool getSaved() { return saved;}
   int getRescueTime() {return resecue_time_;}
+  Patient* copy() {
+    Patient* p = new Patient(x,y,resecue_time_,id);
+    p->setNearestHospital(nearest_hospital_);
+  }
 };
 #endif
