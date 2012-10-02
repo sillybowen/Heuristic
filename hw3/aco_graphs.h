@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_set>
 #include "hospital_patient.h"
+#include "aco_ambulance.h"
 #include "lock.hpp"
 
 using std::cout;
@@ -20,6 +21,7 @@ public:
   ACOGraphs(int numVertices, int firHosInd,
       const vector<HospitalPatient*>& hosPatVect);
   ~ACOGraphs();
+  void initAcoAmbulance();
 
   void outputAdjG() const;
   void outputMatrixG() const;
@@ -38,6 +40,7 @@ private:
   const vector<HospitalPatient*>& hosPatVect_;
   vector<EdgesMultiSet*>          adjVertList_;
   vector<EdgeInfo*>               matrixGraph_;
+  vector<AcoAmbulance*>           pAmb_vect_;
 };
 
 #endif

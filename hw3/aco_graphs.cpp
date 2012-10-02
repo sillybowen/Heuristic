@@ -1,3 +1,4 @@
+#include <cassert>
 #include <climits>
 #include <cstring>
 #include "aco_graphs.h"
@@ -44,6 +45,9 @@ ACOGraphs::ACOGraphs(int numVertices, int firHosInd,
       }
     }
   }
+
+  // Init ambulances
+  initAcoAmbulance();
 }
 
 ACOGraphs::~ACOGraphs() {
@@ -51,6 +55,18 @@ ACOGraphs::~ACOGraphs() {
     delete adjVertList_[i];
     delete [] matrixGraph_[i];
   }
+}
+
+void ACOGraphs::initAcoAmbulance() {
+  int ambId = 0;
+  for (int i = fir_hos_ind_; i < numOfVertices_; ++i) {
+    int numAmbuls = hosPatVect_[i]->getNumOfAmbuls();
+    while (numAmbuls-- > 0) {
+      AcoAmbulance* new_ambul = new AcoAmbulance(ambId++, i, &aco_g_m_);
+      pAmb_vect_.push_back(new_ambul);
+    }
+  }
+  assert(ambId == (int) pAmb_vect_.size());
 }
 
 void ACOGraphs::outputAdjG() const {
