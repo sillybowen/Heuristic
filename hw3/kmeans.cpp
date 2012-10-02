@@ -98,7 +98,6 @@ void kmeansToFindHospital(vector<Patient*> &patients,
     hospitals[i] = h;
     hospitals[i]->setId(i+1);
   }
-    
 
   id = 0;
   for (int i = 0; i<hospitals.size();i++) {
@@ -115,6 +114,8 @@ void kmeansToFindHospital(vector<Patient*> &patients,
       if (patients[i]->distance(hospitals[j])<patients[i]->distance(hospitals[c]))
         c = j;
     patients[i]->setNearestHospital(hospitals[c]);
+    if (patients[i]->getNearestHospital()->distance(patients[i])==0)
+      patients[i]->setSaved();
   }
 }
 
