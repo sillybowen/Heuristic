@@ -22,6 +22,12 @@ void Ambulance::output() {
       time+= routine[i]->distance(routine[i+1])+1;
   }
 }
+
+void Ambulance::outputValues(vector<int>& routeList) {
+  for (int i = 0; i < routine.size(); ++i)
+    routine[i]->outputValues(routeList);
+}
+
 bool Ambulance::addRountine(Position* p){
   routine.push_back(p);
   return true;

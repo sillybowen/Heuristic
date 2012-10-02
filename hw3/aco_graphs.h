@@ -15,8 +15,10 @@ using std::unordered_multiset;
 using base::Mutex;
 
 #define SCORECAPITAL 2000
-#define PHEROMONESTIMES 5
-#define PHEROMONESONCEADDUP 10;
+#define INITGREEDYPHEROMONES 4000
+#define PHEROMONESTIMES 15
+#define PHEROMONESONCEADDUP 20
+#define PHEROMONESFADING 5
 #define MAXSTOCHASTICRETRIES 3
 
 class ACOGraphs {
@@ -26,6 +28,7 @@ public:
   ACOGraphs(int numVertices, int firHosInd,
       const vector<HospitalPatient*>& hosPatVect);
   ~ACOGraphs();
+  void pheromonFading();
   void initAdjGraph();
   void initAcoAmbulance();
 
@@ -35,7 +38,8 @@ public:
 
   long calMovePreference(int ambId, int nextVert) const;
   int ambulGoStochastic(int ambId) const;
-  int ACOAlgorithm(int maxRuns);
+  void initWithBowenResult(const vector<int>& routeList);
+  int ACOAlgorithm(int maxRuns, const vector<int>& greedyRouteList);
   int oneACORun();
   int dispatchAmbulance(int ambId);
   int moveAmbulance(int ambId);

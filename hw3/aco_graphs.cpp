@@ -56,6 +56,16 @@ ACOGraphs::~ACOGraphs() {
   }
 }
 
+void ACOGraphs::pheromonFading() {
+  for (int i = 0; i < numOfVertices_; ++i) {
+    for (int j = 0; j < numOfVertices_; ++j) {
+      int new_pheromons = matrixGraph_[i][j].pheromones - PHEROMONESFADING;
+      matrixGraph_[i][j].pheromones = (new_pheromons < 0)? 0 : new_pheromons;
+      assert(matrixGraph_[i][j].pheromones >= 0);
+    }
+  }
+}
+
 void ACOGraphs::initAdjGraph() {
   // Clear Old data
   if (adjVertList_.size() > 0) {
@@ -192,18 +202,58 @@ int ACOGraphs::ambulGoStochastic(int ambId) const {
   return (*accumMapIter).second;
 }
 
-int ACOGraphs::ACOAlgorithm(int maxRuns) {
-  int maxSaved = 0, tmp;
+void ACOGraphs::initWithBowenResult(const vector<int>& routeList) {
+  int size = routeList.size();
+  for (int i = 0; i < size - 1; ++i) {  // Add pheromone for route[i] to route[i+1]
+    if (routeList[i] < 0 && routeList[i+1] < 0)  // two hospitals, skip
+      continue;
+    int startV = (routeList[i] < 0)? (-routeList[i] - 1 + fir_hos_ind_):
+      (routeList[i] - 1);
+    int endV = (routeList[i + 1] < 0)? (-routeList[i + 1] - 1 + fir_hos_ind_):
+      (routeList[i + 1] - 1);
+    // cout << "S: " << startV << " E: " << endV << endl;
+    matrixGraph_[startV][endV].pheromones = INITGREEDYPHEROMONES;
+    matrixGraph_[endV][startV].pheromones = INITGREEDYPHEROMONES;
+  }
+}
 
+int ACOGraphs::ACOAlgorithm(int maxRuns, const vector<int>& greedyRouteList) {
+  int maxSaved = 0, tmp;
+  int ambulsize = pAmb_vect_.size();
+  vector<int> cpRoute[ambulsize];
+
+  initWithBowenResult(greedyRouteList);
   while (maxRuns-- > 0) {
     srand(time(NULL) + maxRuns);
-    if ((tmp = oneACORun()) > maxSaved)
+    if ((tmp = oneACORun()) > maxSaved) {
       maxSaved = tmp;
-    cout << "Saved " << tmp << endl;
+      for (int i = 0; i < ambulsize; ++i)
+        cpRoute[i] = (pAmb_vect_[i]->route_);
+    }
+    // cout << "Saved " << tmp << endl;
     initAdjGraph();
     initAcoAmbulance();
+    pheromonFading();
   }
 
+  // print ambulance route
+  for (int i = 0; i < ambulsize; ++i) {
+    int routeSize = cpRoute[i].size();
+    for (int j = 0; j < routeSize; ++j) {
+      if (j != 0)
+        cout << ',';
+      if (getpHosPat(cpRoute[i][j])->isPatient()) {
+        cout << 'P' << cpRoute[i][j] + 1 << ',';
+      } else {
+        cout << 'H' << cpRoute[i][j] - fir_hos_ind_ + 1 << ',';
+      }
+      getpHosPat(cpRoute[i][j])->output();
+      if (getpHosPat(cpRoute[i][j])->isPatient()) {
+        cout << ',' << getpHosPat(cpRoute[i][j])->getDyingTime();
+      }
+    }
+    cout << endl;
+  }
   return maxSaved;
 }
 
@@ -220,20 +270,7 @@ int ACOGraphs::oneACORun() {
 int ACOGraphs::dispatchAmbulance(int ambId) {
   int ret;
   while ((ret = moveAmbulance(ambId)) != -1);
-  // print ambulance route
-  int routeSize = pAmb_vect_[ambId]->route_.size();
-  vector<int>& rRoute = pAmb_vect_[ambId]->route_;
-  // for (int i = 0; i < routeSize; ++i) {
-  //   if (i != 0)
-  //     cout << ',';
-  //   if (getpHosPat(rRoute[i])->isPatient()) {
-  //     cout << 'P' << rRoute[i] + 1 << ',';
-  //   } else {
-  //     cout << 'H' << rRoute[i] - fir_hos_ind_ + 1 << ',';
-  //   }
-  //   getpHosPat(rRoute[i])->output();
-  // }
-  // cout << endl << "total saved" << pAmb_vect_[ambId]->tot_saved_ << endl;
+
   return pAmb_vect_[ambId]->tot_saved_;
 }
 

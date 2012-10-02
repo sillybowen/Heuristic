@@ -13,6 +13,9 @@ vector<Patient*> patients;
 vector<int> ambNumber;
 vector<Hospital*> hospitals;
 vector<Ambulance*> ambulances;
+
+void output(vector<int>& routeList);
+
 void init() {
   string s;
   cin>>s;
@@ -56,14 +59,13 @@ void work() {
   // acoGraph.outputAdjG();
   // cout << "move prefer for ambId 0 to p2: " << acoGraph.calMovePreference(0, 2)
   //   << endl;
-  cout << "--------------" << endl;
-  cout << "Total patients saved = " << acoGraph.ACOAlgorithm(1000) << endl;
-  cout << "--------------" << endl;
-  // acoGraph.outputMatrixG();
-  cout << "--------------" << endl;
-
   for (int i = 0; i<ambulances.size();i++)
     ambulances[i]->move();
+  vector<int> greedyRouteList;
+  output(greedyRouteList);
+  int totSaved = acoGraph.ACOAlgorithm(500, greedyRouteList);
+  cout << "Total patients saved = " << totSaved << endl;
+
 
   // Free mem for HospitalPatient class
   for (int i = 0; i < pHosPatVector->size(); ++i)
@@ -78,7 +80,7 @@ void workdone() {
   for (int i = 0; i<hospitals.size();i++)
     delete hospitals[i];
 }
-void output() {
+void output(vector<int>& routeList) {
   int total_saved = 0;
   cout<<"POSITION"<<endl;
   for (int i = 0; i<hospitals.size();i++) {
@@ -86,13 +88,14 @@ void output() {
   }
   cout<<"ROUTINE"<<endl;
   for (int j = 0; j<ambulances.size();j++){
-    ambulances[j]->output();
+    // ambulances[j]->output();
+    ambulances[j]->outputValues(routeList);
     total_saved+= ambulances[j]->getSavedCount();
   }
 }
 int main() {
   init();
   work();
-  output();
+  // output();
   workdone();
 }

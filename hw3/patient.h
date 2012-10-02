@@ -1,6 +1,10 @@
 #ifndef patient_h_
 #define patient_h_
 #include <cstdlib>
+#include <vector>
+
+using std::vector;
+
 class Position {
  public:
   int x;
@@ -8,6 +12,7 @@ class Position {
   Position() {};
  Position(int xx,int yy): x(xx),y(yy){};
   virtual void output() {};
+  virtual void outputValues(vector<int>&) { }
   virtual bool isPatient(){return false;};
   int distance(Position* p) {
     return abs(p->x-x)+ abs(p->y-y);
@@ -20,6 +25,7 @@ class Hospital:public Position {
  public:
   Hospital(int x,int y,int id,int an);
   void output();
+  void outputValues(vector<int>&);
   void outputHos();
   bool isPatient();
   void setId(int i) {id = i;}
@@ -36,6 +42,7 @@ class Patient:public Position  {
  public:
   Patient(int x,int y,int t,int i);
   void output();
+  void outputValues(vector<int>&);
   bool isPatient();
   void setNearestHospital(Hospital* h) {nearest_hospital_ = h;};
   Hospital* getNearestHospital() { return nearest_hospital_;};

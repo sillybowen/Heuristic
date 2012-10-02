@@ -11,6 +11,11 @@ Patient::Patient(int x,int y,int t,int i):
 void Patient::output() {
   cout<<"P"<<id<<','<<x<<','<<y<<','<<resecue_time_;
 }
+
+void Patient::outputValues(vector<int>& rRouteList) {
+  rRouteList.push_back(id);
+}
+
 bool Patient::isPatient() {
   return true;
 }
@@ -26,6 +31,11 @@ Hospital::Hospital(int x,int y,int i,int ab):
 void Hospital::output() {
   cout<<"H"<<id<<','<<x<<','<<y;
 }
+
+void Hospital::outputValues(vector<int>& rRouteList) {
+  rRouteList.push_back(-id);
+}
+
 void Hospital::outputHos() {
   cout<<"H"<<id<<','<<x<<','<<y<<','<<ambulance_number_<<endl;
 }

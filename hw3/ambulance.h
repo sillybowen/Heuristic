@@ -15,6 +15,7 @@ class Ambulance {
  public:
   Ambulance (Hospital*h,int i,vector<Patient*>* p, vector<Hospital*>*hos);
   void output();
+  void outputValues(vector<int>&);
   bool addRountine(Position* p);
   void move();
   void goToNearestHospital();
