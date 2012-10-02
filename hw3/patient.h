@@ -22,6 +22,7 @@ class Hospital:public Position {
   void output();
   void outputHos();
   bool isPatient();
+  void setId(int i) {id = i;}
   int getAmbNumber() {
     return ambulance_number_;
   };

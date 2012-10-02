@@ -75,17 +75,31 @@ void kmeansToFindHospital(vector<Patient*> &patients,
   int tail = ambNumber.size()-1;
   int id = 0;
   // hospital location
+  vector<int> tmpAmbNumber = ambNumber;
+  sort(tmpAmbNumber.begin(),tmpAmbNumber.end());
   while (head<=tail) {
     id ++;
-    Hospital * h = new Hospital(center[head].x,center[head].y,id,ambNumber[id-1]);
+    Hospital * h = new Hospital(center[head].x,center[head].y,id,tmpAmbNumber[id-1]);
     hospitals.push_back(h);
     head++;
     if (tail<head) break;
     id ++;
-    h = new Hospital(center[tail].x,center[tail].y,id,ambNumber[id-1]);
+    h = new Hospital(center[tail].x,center[tail].y,id,tmpAmbNumber[id-1]);
     hospitals.push_back(h);
     tail--;
   }
+  // reorder hospital to fit input order
+  Hospital*h;
+  for (int i= 0; i<ambNumber.size();i++) {
+    int j = i;
+    while (hospitals[j]->getAmbNumber() != ambNumber[i]) j++;
+    h = hospitals[j];
+    hospitals[j] = hospitals[i];
+    hospitals[i] = h;
+    hospitals[i]->setId(i+1);
+  }
+    
+
   id = 0;
   for (int i = 0; i<hospitals.size();i++) {
     for (int j = 0; j<hospitals[i]->getAmbNumber();j++) {
@@ -101,7 +115,6 @@ void kmeansToFindHospital(vector<Patient*> &patients,
       if (patients[i]->distance(hospitals[j])<patients[i]->distance(hospitals[c]))
         c = j;
     patients[i]->setNearestHospital(hospitals[c]);
-//    patients[i]->output();
   }
 }
 

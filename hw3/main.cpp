@@ -31,7 +31,6 @@ void init() {
   while(cin>>ambNum) {
     ambNumber.push_back(ambNum);
   }
-  sort(ambNumber.begin(),ambNumber.end());
 }
 void work() {
   int id = 0;

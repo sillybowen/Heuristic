@@ -12,10 +12,8 @@ Ambulance::Ambulance(Hospital* h,int i,vector<Patient*> *p, vector<Hospital*> *h
 }
 void Ambulance::output() {
   int time = 0;
-//  cout<<"new amb"<<id<<endl;
   for (int i = 0; i< routine.size();i++) {
     routine[i]->output();
-//    cout<<" time "<<time<<endl;
     if (i!=routine.size()-1)
       cout<<',';
     else
