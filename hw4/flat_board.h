@@ -10,6 +10,8 @@ public:
   FlatBoard(int f1GamePos, int f2GamePos, int boardLen, int boardWeight);
   FlatBoard(int f1GamePos, int f2GamePos, int boardLen, int boardWeight,
       Player* otherPlayer);
+  FlatBoard(int f1GamePos, int f2GamePos, int boardLen, int boardWeight,
+      Player* firPlayer, Player* secPlayer);
   ~FlatBoard();
   int getFulcrumOnePos() const { return f1_pos_; }  // Return board index position
   int getFulcrumTwoPos() const { return f2_pos_; }  // Return board index position
@@ -18,11 +20,13 @@ public:
   Player* getP1() const { return ply_one_; }
 
   int addWt(int boardIndex, int weight);
+  int removeWt(int boardIndex);
   int addGamePosWt(int gamePos, int weight);
   int startGame();
   int otherPlayerAdd(int gamePos, int weight);
 
   enum game_status { playing, oneWin, twoWin, equal };
+  enum game_stage { addblock, removeblock };
 
 private:
   const int board_len_;

@@ -25,6 +25,26 @@ Player::MovePos GreedyPlayer::nextAdd() {
   return greedyAdd();
 }
 
+// Return -1 for nothing to remove
+int GreedyPlayer::nextRemove() {
+  return greedyRemove();
+}
+
+int GreedyPlayer::greedyRemove() {
+  int scoreMax = INT_MIN, chosePos = -1, toRemoveWt, tmp;
+  for (int i = 0; i <= boardLen_; ++i) {
+    // Has a block, possible remove position
+    if (pfl_board_[i] && ((tmp = removeScoreFunct(i)) >= scoreMax)) {
+      toRemoveWt = pfl_board_[i];
+      scoreMax = tmp;
+      chosePos = i;
+    }
+  }
+  // assert(scoreMax > -1);
+  blocks_arr_[toRemoveWt] += 1;  // Return block, may return other player's block
+  return chosePos;
+}
+
 Player::MovePos GreedyPlayer::greedyAdd() {
   int wtblock = getLargestAvailBlock();
   if (wtblock == 0) {  // All blocks are used
@@ -57,6 +77,20 @@ int GreedyPlayer::scoreFunct(MovePos aMove) const {
 
   curf1val += (f1_pos_ - aMove.boardArrPos) * aMove.wt;
   curf2val += (f2_pos_ - aMove.boardArrPos) * aMove.wt;
+
+  if (curf1val > 0 || curf2val < 0)
+    return INT_MIN;
+  else
+    return -curf1val + curf2val - curf1val * curf2val;  // |x| + |y| + |x*y|
+}
+
+int GreedyPlayer::removeScoreFunct(int boardIndex) const {
+  int curf1val = pflat_board_->getFulcrumOneValue();
+  int curf2val = pflat_board_->getFulcrumTwoValue();
+  int toRemoveWt = pfl_board_[boardIndex];
+
+  curf1val -= (f1_pos_ - boardIndex) * toRemoveWt;
+  curf2val -= (f2_pos_ - boardIndex) * toRemoveWt;
 
   if (curf1val > 0 || curf2val < 0)
     return INT_MIN;

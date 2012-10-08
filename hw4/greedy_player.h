@@ -8,13 +8,19 @@ public:
   GreedyPlayer(const FlatBoard* pFB, const int* pboard, int boardLen);
   ~GreedyPlayer();
 
+  // Impl pure virtual functs
   MovePos nextAdd();
+  int nextRemove();
+
+  // score funct Testing
   void fullScoreDistri() const;
   void getScoreDistri(int weight) const;
 
 private:
+  int greedyRemove();
   MovePos greedyAdd();
   int scoreFunct(MovePos aMove) const;
+  int removeScoreFunct(int boardIndex) const;
   int getLargestAvailBlock() const;
 
   const int  f1_pos_;

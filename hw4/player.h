@@ -20,7 +20,8 @@ public:
     MovePos(int boardPos, int weight) : boardArrPos(boardPos), wt(weight) { }
   };
 
-  virtual MovePos nextAdd() = 0;
+  virtual MovePos nextAdd() = 0; // Add block, using board index pos
+  virtual int nextRemove() = 0;  // Remove an existing block, return board index pos
 
   void linktoFlatBoard(const FlatBoard* pFB, const int* pboard, int boardLen) {
     pflat_board_ = pFB;

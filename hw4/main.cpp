@@ -10,9 +10,9 @@ int main(int argc, char* argv[]) {
   // Board length must be Even number, so we can get equal half length
   cout << "INT_MIN= " << INT_MIN << endl;
 
-  // FlatBoard fb(-3, -1, 20, 3);
-  Player* human = new HumanPlayer();
-  FlatBoard fb(-3, -1, 20, 3, human);
+  FlatBoard fb(-3, -1, 20, 3);
+  // Player* human = new HumanPlayer();
+  // FlatBoard fb(-3, -1, 20, 3, human);
   cout << "Only Board Fulcrum values: " << fb.getFulcrumOneValue() << ", "
     << fb.getFulcrumTwoValue() << endl;
   fb.addGamePosWt(-4, 3);
