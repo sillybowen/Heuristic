@@ -1,11 +1,11 @@
 .SUFFIXES: .h .o .cpp
 
-CC = flat_board.cpp greedy_player.cpp main.cpp
+CC = dp_remove.cpp flat_board.cpp greedy_player.cpp main.cpp
 CC = g++
 #CXXFLAGS = -O2 -std=c++0x
-CXXFLAGS = -g
+CXXFLAGS = -g -O2
 LIBS = 
-OBJS = flat_board.o greedy_player.o main.o
+OBJS = dp_remove.o flat_board.o greedy_player.o main.o
 CCEXEC = notipping
 
 all:	$(CCEXEC)
