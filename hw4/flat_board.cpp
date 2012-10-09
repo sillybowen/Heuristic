@@ -1,12 +1,14 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include "flat_board.h"
 #include "greedy_player.h"
 
 using std::cout;
 using std::endl;
+using std::setw;
 using std::stringstream;
 
 FlatBoard::FlatBoard(int srv_port, int f1GamePos, int f2GamePos, int boardLen,
@@ -176,21 +178,36 @@ void FlatBoard::clientPlayer(std::string& teamName) {
       cout << "#Server: \"" << fromSrv << "\"\n";
 
       if (fromSrv.compare(0, 3, "ADD") == 0) {
+        readSrvUpdateBoard(fromSrv);
+        outputboard();
         amove = ply_two_->nextAdd();
-        assert(addWt(amove.boardArrPos, amove.wt) != -1);
+        stringstream ss;
+        ss << amove.wt << ',' << amove.boardArrPos - board_len_ / 2 << '\n';
+        cout << "Add to pos: " << amove.boardArrPos - board_len_ / 2
+          << " Wt = " << amove.wt
+          << " Current val at this pos: " << fl_board_[amove.boardArrPos] << endl;
+        fromPly = ss.str();
+
+        if (!fromPly.empty()) {
+          (*arch_clt_) << fromPly;
+        }
       } else if (fromSrv.compare(0, 6, "REMOVE") == 0) {
+        readSrvUpdateBoard(fromSrv);
         amove.boardArrPos = ply_two_->nextRemove();
+        cout << "Remove to pos: " << amove.boardArrPos - board_len_ / 2
+          << " Wt = " << fl_board_[amove.boardArrPos]
+          << " Current val at this pos: " << fl_board_[amove.boardArrPos] << endl;
+        stringstream ss;
+        ss << fl_board_[amove.boardArrPos] << ',' << amove.boardArrPos - board_len_ / 2 << '\n';
+        fromPly = ss.str();
+
+        if (!fromPly.empty()) {
+          (*arch_clt_) << fromPly;
+        }
       } else {
         continue;
       }
 
-      stringstream ss;
-      ss << amove.wt << ',' << amove.boardArrPos - board_len_ / 2 << '\n';
-      fromPly = ss.str();
-
-      if (!fromPly.empty()) {
-        (*arch_clt_) << fromPly;
-      }
     } while (1);
 
   } catch ( SocketException& ) {
@@ -198,17 +215,47 @@ void FlatBoard::clientPlayer(std::string& teamName) {
   }
 }
 
-// Return -1 if illegal move, otherwise 1
-// Have to transfer gamePos(-15, to +15) to proper index on fl_board_ (gamePos + 15)
-int FlatBoard::otherPlayerAdd(int gamePos, int weight) {
-  int boardIndex = gamePos + board_len_ / 2;
-  if (fl_board_[boardIndex]) {  // Already occupied
-    return -1;
-  } else {
-    fl_board_[boardIndex] = weight;
-    return 1;
+void FlatBoard::outputboard() const {
+  for (int i = 0; i <= board_len_; ++i)
+    cout << setw(3) << i - board_len_ / 2 << ' ';
+  cout << endl;
+  
+  for (int i = 0; i <= board_len_; ++i)
+    cout << setw(3) << fl_board_[i] << ' ';
+  cout << endl;
+}
+
+void FlatBoard::readSrvUpdateBoard(const std::string& fromSrv) {
+  stringstream ss;
+  ss << fromSrv;
+
+  int tmp, wt, gamePos, ind = 0;
+  while ((tmp = ss.get()) != '|');
+
+  while (ss.peek() != '|') {
+    ss >> wt;
+    assert(ss.get() == int(','));
+    ss >> gamePos;
+
+    while (ind < (gamePos + board_len_ / 2))
+      fl_board_[ind++] = 0;
+
+    fl_board_[gamePos + board_len_ / 2] = wt;
+
+    ++ind;
+  }
+  while (ind <= board_len_)
+    fl_board_[ind++] = 0;
+
+  // Sum up to get f1crum and f2crum values
+  f1_val_ = 0;
+  f2_val_ = 0;
+  for (int i = 0; i <= board_len_; ++i) {
+    f1_val_ += (f1_pos_ - i) * fl_board_[i];
+    f2_val_ += (f2_pos_ - i) * fl_board_[i];
   }
 }
+
 
 // Register with the architecture server
 ClientSocket* FlatBoard::registerSrv(int srv_port) {

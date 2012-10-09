@@ -8,29 +8,35 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    cout << "Format: ./notipping  srv_port  team_name" << endl;
+  if (argc < 4) {
+    cout << "Format: ./notipping  srv_port  team_name  is_human(default no:0)"
+      << endl;
     return 1;
   }
 
-  int srv_port = atoi(argv[1]);
+  int srv_port = atoi(argv[1]), ishuman = 0;
   string teamName(argv[2]);
+  Player* human = NULL;
+  FlatBoard* pfb;
+  if (argc == 4)
+    ishuman = atoi(argv[3]);
   // Board length must be Even number, so we can get equal half length
-  // FlatBoard fb(srv_port, -3, -1, 20, 3);
-  Player* human = new HumanPlayer();
-  FlatBoard fb(srv_port, -3, -1, 20, 3, human);
-  cout << "Only Board Fulcrum values: " << fb.getFulcrumOneValue() << ", "
-    << fb.getFulcrumTwoValue() << endl;
-  fb.addGamePosWt(-4, 3);
-  cout << "Init Fulcrum values: " << fb.getFulcrumOneValue() << ", "
-    << fb.getFulcrumTwoValue() << endl;
+  // FlatBoard fb(srv_port, -3, -1, 30, 3);
+  if (ishuman) {
+    human = new HumanPlayer();
+    pfb = new FlatBoard(srv_port, -3, -1, 30, 3, human);
+  } else {
+    pfb = new FlatBoard(srv_port, -3, -1, 30, 3);
+  }
 
-  // GreedyPlayer* pGreedy = dynamic_cast<GreedyPlayer*>(fb.getP1());
-  // // pGreedy->fullScoreDistri();
-  // cout << "Add to pos: " << pGreedy->greedyAdd().boardArrPos << " Weight: "
-  //   << pGreedy->greedyAdd().wt << endl;
+  cout << "Only Board Fulcrum values: " << pfb->getFulcrumOneValue() << ", "
+    << pfb->getFulcrumTwoValue() << endl;
+  pfb->addGamePosWt(-4, 3);
+  cout << "Init Fulcrum values: " << pfb->getFulcrumOneValue() << ", "
+    << pfb->getFulcrumTwoValue() << endl;
 
-  fb.clientPlayer(teamName);
+  // pfb->startGame();
+  pfb->clientPlayer(teamName);
 
   /*
   // example how to used dp_remove

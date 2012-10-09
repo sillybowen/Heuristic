@@ -27,13 +27,15 @@ public:
   int addGamePosWt(int gamePos, int weight);
   int startGame();
   void clientPlayer(std::string& teamName);
-  int otherPlayerAdd(int gamePos, int weight);
+
+  void outputboard() const;
 
   enum game_status { playing, oneWin, twoWin, equal };
   enum game_stage { addblock, removeblock };
 
 private:
   ClientSocket* registerSrv(int srv_port);
+  void readSrvUpdateBoard(const std::string& fromSrv);
 
   const int     board_len_;
   const int     f1_pos_;  // Relative to board arr index, from 0 to board_len_

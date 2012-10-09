@@ -1,7 +1,7 @@
 #ifndef PLAYER_HEADER_
 #define PLAYER_HEADER_
 
-#define PLAYERNUMOFBLOCKS 7
+#define PLAYERNUMOFBLOCKS 12
 
 class FlatBoard;
 
