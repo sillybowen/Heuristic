@@ -5,6 +5,7 @@
 #include <sstream>
 #include "flat_board.h"
 #include "greedy_player.h"
+#include "dp_remove.h"
 
 using std::cout;
 using std::endl;
@@ -164,7 +165,10 @@ int FlatBoard::startGame() {
 
 // Only use ply_two_;
 void FlatBoard::clientPlayer(std::string& teamName) {
+  bool firstRemove = true;
   std::string fromSrv, fromPly;
+  DPRemove* pdpRemove = NULL;
+
   teamName.push_back('\n');
   Player::MovePos amove(0);
 
@@ -192,13 +196,20 @@ void FlatBoard::clientPlayer(std::string& teamName) {
           (*arch_clt_) << fromPly;
         }
       } else if (fromSrv.compare(0, 6, "REMOVE") == 0) {
+        if (firstRemove) {
+          pdpRemove = new DPRemove(board_len_ + 1, fl_board_);
+          pdpRemove->work();
+          firstRemove = false;
+        }
         readSrvUpdateBoard(fromSrv);
-        amove.boardArrPos = ply_two_->nextRemove();
+        // amove.boardArrPos = ply_two_->nextRemove();
+        amove.boardArrPos = pdpRemove->decision(fl_board_);
         cout << "Remove to pos: " << amove.boardArrPos - board_len_ / 2
           << " Wt = " << fl_board_[amove.boardArrPos]
           << " Current val at this pos: " << fl_board_[amove.boardArrPos] << endl;
         stringstream ss;
-        ss << fl_board_[amove.boardArrPos] << ',' << amove.boardArrPos - board_len_ / 2 << '\n';
+        ss << fl_board_[amove.boardArrPos] << ','
+          << amove.boardArrPos - board_len_ / 2 << '\n';
         fromPly = ss.str();
 
         if (!fromPly.empty()) {
@@ -213,6 +224,9 @@ void FlatBoard::clientPlayer(std::string& teamName) {
   } catch ( SocketException& ) {
     assert(0);
   }
+
+  if (pdpRemove != NULL)
+    delete pdpRemove;
 }
 
 void FlatBoard::outputboard() const {
