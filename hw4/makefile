@@ -1,18 +1,19 @@
 .SUFFIXES: .h .o .cpp
 
-CC = dp_remove.cpp flat_board.cpp greedy_player.cpp main.cpp
+CC = ClientSocket.cpp Socket.cpp dp_remove.cpp flat_board.cpp greedy_player.cpp main.cpp
 CC = g++
 #CXXFLAGS = -O2 -std=c++0x
-CXXFLAGS = -g -O2
+CXXFLAGS = -g 
+socklibs = -lnsl
 LIBS = 
-OBJS = dp_remove.o flat_board.o greedy_player.o main.o
+OBJS = ClientSocket.o Socket.o dp_remove.o flat_board.o greedy_player.o main.o
 CCEXEC = notipping
 
 all:	$(CCEXEC)
 
 $(CCEXEC):	$(OBJS) makefile
 	@echo Linking $@ . . .
-	$(CC) $(CXXFLAGS) $(OBJS) -o $@ $(LIBS)
+	$(CC) $(CXXFLAGS) $(socklibs) $(OBJS) -o $@ $(LIBS)
 
 %.o:	%.c
 	@echo Compiling $< . . .

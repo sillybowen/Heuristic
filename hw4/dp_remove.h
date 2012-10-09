@@ -20,7 +20,7 @@ class DPRemove {
   int translateBoardToBit(int * board);
   int translateBoardToBit();
   bool tippedBoard(int stat);
-  void generateSet(int d,int index,int ans,int d);
+  void generateSet(int d,int index,int ans,int degree);
   void workOn(int bitN,int degree);
 };
 

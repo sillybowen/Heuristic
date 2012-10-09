@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <climits>
 #include <iostream>
 #include "flat_board.h"
@@ -7,12 +8,17 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-  // Board length must be Even number, so we can get equal half length
-  cout << "INT_MIN= " << INT_MIN << endl;
+  if (argc < 3) {
+    cout << "Format: ./notipping  srv_port  team_name" << endl;
+    return 1;
+  }
 
-  FlatBoard fb(-3, -1, 20, 3);
-  // Player* human = new HumanPlayer();
-  // FlatBoard fb(-3, -1, 20, 3, human);
+  int srv_port = atoi(argv[1]);
+  string teamName(argv[2]);
+  // Board length must be Even number, so we can get equal half length
+  // FlatBoard fb(srv_port, -3, -1, 20, 3);
+  Player* human = new HumanPlayer();
+  FlatBoard fb(srv_port, -3, -1, 20, 3, human);
   cout << "Only Board Fulcrum values: " << fb.getFulcrumOneValue() << ", "
     << fb.getFulcrumTwoValue() << endl;
   fb.addGamePosWt(-4, 3);
@@ -24,8 +30,9 @@ int main(int argc, char* argv[]) {
   // cout << "Add to pos: " << pGreedy->greedyAdd().boardArrPos << " Weight: "
   //   << pGreedy->greedyAdd().wt << endl;
 
-  fb.startGame();
+  fb.clientPlayer(teamName);
 
+  /*
   // example how to used dp_remove
   int boardLen = 31;
   int x[31];
@@ -48,5 +55,6 @@ int main(int argc, char* argv[]) {
       x[move] = 0;
     }
   }
+  */
   return 0;
 }
