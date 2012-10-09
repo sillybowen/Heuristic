@@ -38,8 +38,8 @@ int main(int argc, char* argv[]) {
   // pfb->startGame();
   pfb->clientPlayer(teamName);
 
-  /*
   // example how to used dp_remove
+  /*
   int boardLen = 31;
   int x[31];
   for (int i = 0; i<31;i++)

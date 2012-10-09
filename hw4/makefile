@@ -3,7 +3,7 @@
 CC = ClientSocket.cpp Socket.cpp dp_remove.cpp flat_board.cpp greedy_player.cpp main.cpp
 CC = g++
 #CXXFLAGS = -O2 -std=c++0x
-CXXFLAGS = -g 
+CXXFLAGS = -g -O2
 socklibs = -lnsl
 LIBS = 
 OBJS = ClientSocket.o Socket.o dp_remove.o flat_board.o greedy_player.o main.o

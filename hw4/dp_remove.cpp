@@ -38,7 +38,7 @@ int DPRemove::translateBoardToBit() {
   return ret;
 }
 bool DPRemove::tippedBoard(int stat) {
-  int f1 = 0;
+  int f1 = -9;
   int f2 = 3;
   int tmp = stat;
   int index = weights_.size()-1;
@@ -112,6 +112,7 @@ void DPRemove::work() {
   winStat[0] = true;
 
   for (int d = 1;d<=weights_.size();d++) {
+    cout << d << endl;
     generateSet(d,0,0,d);
   }
 }

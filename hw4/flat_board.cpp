@@ -180,6 +180,16 @@ void FlatBoard::clientPlayer(std::string& teamName) {
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
       cout << "#Server: \"" << fromSrv << "\"\n";
+      // Locate '\n', get substring
+      if (fromSrv.compare(0, 3, "ADD") != 0 &&
+          fromSrv.compare(0, 6, "REMOVE") != 0) {
+        int i;
+        for (i = 0; i < fromSrv.size(); ++i)
+          if (fromSrv[i] == '\n')
+            break;
+        std::string subfromsrv = fromSrv.substr(i + 1);
+        fromSrv = subfromsrv;
+      }
 
       if (fromSrv.compare(0, 3, "ADD") == 0) {
         readSrvUpdateBoard(fromSrv);
@@ -200,11 +210,14 @@ void FlatBoard::clientPlayer(std::string& teamName) {
           pdpRemove = new DPRemove(board_len_ + 1, fl_board_);
           pdpRemove->work();
           firstRemove = false;
+          cout << "ccc------------------------------------" << endl;
         }
+        cout << "aaa------------------------------------" << endl;
         readSrvUpdateBoard(fromSrv);
+        cout << "bbb------------------------------------" << endl;
         // amove.boardArrPos = ply_two_->nextRemove();
         amove.boardArrPos = pdpRemove->decision(fl_board_);
-        cout << "Remove to pos: " << amove.boardArrPos - board_len_ / 2
+        cout << "Remove to pos: Origin: " << amove.boardArrPos << " GamePos: " << amove.boardArrPos - board_len_ / 2
           << " Wt = " << fl_board_[amove.boardArrPos]
           << " Current val at this pos: " << fl_board_[amove.boardArrPos] << endl;
         stringstream ss;
