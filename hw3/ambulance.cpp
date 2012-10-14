@@ -31,6 +31,7 @@ void Ambulance::move2() {
   while (couldSaveMore() || onboard_.size()>0) {
     if (onboard_.size()<4) {
       nextToSave = findNextToSave2();
+      //nextToSave = findNextToSave3();
       if (nextToSave!=NULL)
         goToSave(nextToSave);
       else if (onboard_.size()>0)
@@ -144,4 +145,75 @@ Patient* Ambulance::findNextToSave2() {
   }
   //  cout<<ind<<endl;
   return ps[ind];
+}
+
+Patient* Ambulance::findNextToSave3() {
+  Patient * select = NULL;
+  int min_point = INT_MAX;
+  int onboard = onboard_.size()-1;
+
+  vector<Patient*> candidates;
+  for (int i = 0; i<patients->size();i++) {
+    if (couldSave(patients->at(i)))
+      candidates.push_back(patients->at(i));
+  }
+
+  for(int i=0; i<candidates.size(); i++){
+    Patient * candidate = candidates[i];
+    vector<Patient *> scinario;
+    int total_point = INT_MAX;
+    bool isAvailable = true;
+    int curPassTime = 0;
+
+    Patient * cur_candidate = candidate;
+    while(isAvailable){
+      int min = INT_MAX;
+      Patient * min_p = NULL;
+
+      for(int k=0; k<candidates.size(); k++){
+	Patient * tmp = candidates[k];
+	if(k != i){
+	  int goThereTime = cur_candidate->distance(tmp)+1;
+	  int thenToHosTime = tmp->distance(tmp->getNearestHospital())+1;
+	  int totalTime = goThereTime + thenToHosTime;
+	  int temp_point = totalTime + tmp->getRescueTime();
+
+	  if(totalTime > tmp->getRescueTime())
+	  {
+	    bool flag = true;
+	    for(int c=0; c<scinario.size(); c++){
+	      if(scinario[c]->getRescueTime() - curPassTime < totalTime){
+		flag = false;
+	      }
+	    }
+	    if(min > temp_point && flag){
+	      min = temp_point;
+	      min_p = tmp;
+	    }
+	  }
+	}
+      }
+
+      if(min_p != NULL){
+	scinario.push_back(min_p);
+	curPassTime += cur_candidate->distance(min_p)+1;
+	total_point += cur_candidate->distance(min_p)+1
+	  + min_p->getRescueTime();
+        cur_candidate = min_p;
+	onboard--;
+      }
+      if(scinario.size() >= onboard || min_p == NULL)
+	isAvailable = false;
+      else{
+	Patient * last = scinario[scinario.size()-1];
+	total_point += last->distance(last->getNearestHospital())+1;
+      }
+    }
+
+    if(total_point < min_point){
+      select = candidate;
+      min_point = total_point;
+    }
+  }
+  return select;
 }

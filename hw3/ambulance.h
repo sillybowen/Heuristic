@@ -2,7 +2,7 @@
 #define ambulance_h_
 #include "patient.h"
 #include <vector>
-
+#include "limits.h"
 
 using namespace std;
 class Ambulance {
@@ -25,6 +25,7 @@ class Ambulance {
   bool couldSave(Patient*p);
   Patient* findNextToSave();
   Patient* findNextToSave2();
+  Patient* findNextToSave3();
   bool couldSaveMore();
   int getSavedCount() {return saved_count_;}
   void setPatient(vector<Patient*>*p) {
