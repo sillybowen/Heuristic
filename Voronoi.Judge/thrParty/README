@@ -1,0 +1,4 @@
+1) To compile
+   javac *.java
+2) To run
+   java VoronoiGame
