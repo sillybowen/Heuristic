@@ -1,7 +1,4 @@
-/**
-   @version 1.4
-   @author Indrit Selimi
-*/
+package voronoi;
 
 import java.awt.*;
 import java.awt.event.*;
