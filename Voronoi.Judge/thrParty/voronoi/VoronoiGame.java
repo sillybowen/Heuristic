@@ -1687,6 +1687,8 @@ public class VoronoiGame extends JApplet {
     randomButton.setToolTipText("Insert 16 points at random");
     diagramma = new Diagramma(dim_X, dim_Y);
     game = new Pannello(diagramma);
+    // Set initial zoom level
+    game.setZoom(game.getZoom() * Constants.INIT_GAME_ZOOM_LEVEL);
 
 
     scroll = new JScrollPane(game);
@@ -2294,7 +2296,8 @@ public class VoronoiGame extends JApplet {
     frameT = new JFrame();
     frameT.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frameT.getContentPane().add(voro);
-    frameT.setSize(1590, 704);   // ----------------------Unknow meaning
+    // Set initial window size
+    frameT.setSize(Constants.INIT_WINDOW_WIDTH, Constants.INIT_WINDOW_LENGTH);
     frameT.setTitle("Voronoi Game");
     Toolkit strum = Toolkit.getDefaultToolkit();
     Image imgIc = strum.getImage(VoronoiGame.class.getResource("Unipg.GIF"));
@@ -2404,6 +2407,3 @@ public class VoronoiGame extends JApplet {
   private JCheckBoxMenuItem oneRoundItem = null;
   private ImageIcon bluIcon = null;
 }
-
-
-	

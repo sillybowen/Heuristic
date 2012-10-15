@@ -6,5 +6,8 @@ public final class Constants {
    * String objects to an JSON object, then convert to "event" string
    */
   public final static int WIDTH_OF_SQUARE = 1000;
+  public final static int INIT_WINDOW_WIDTH = 860;
+  public final static int INIT_WINDOW_LENGTH = 750;
+  public final static double INIT_GAME_ZOOM_LEVEL = 0.65;
   public final static int RIGHT_CONTROL_PANEL_WIDTH = 180;
 }
