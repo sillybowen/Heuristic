@@ -11,7 +11,7 @@ int main() {
   while (1) {
     if (fgets(tmpstr, MAXTMPARRLEN, stdin) != NULL) {
       sscanf(tmpstr, "%d,%d", &x, &y);
-      printf("%d,%d \n", x + 1, y + 1);
+      printf("%d,%d \n", x + 10, y + 10);
     } else {
       break;
     }

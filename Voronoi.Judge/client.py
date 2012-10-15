@@ -5,20 +5,26 @@ TODO: verbose mode to print all input and output. No way when bridging.
 TODO: make host and port as arguments.
 """
 
+import sys
 import socket
 import subprocess
 
 HOST = 'localhost'
-PORT = 50007
+PORT = 5678
 
 def main():
+  if len(sys.argv) < 3:
+    print 'Usage: python dummy.py  PORT_NUM  TEAM_NAME'
+    sys.exit(1)
+  PORT = int(sys.argv[1])
+
   client_socket = socket.create_connection((HOST, PORT))
 
   # Bridge the socket and stdin/stdout.
   # Run dummy program
   # -u means no buffer for input and output, neccesary with python script.
-  #proc = subprocess.Popen(["python", "-u", "dummy.py"],
-  proc = subprocess.Popen(["./a.out"],
+  proc = subprocess.Popen(["python", "-u", "dummy.py", sys.argv[2]],
+  # proc = subprocess.Popen(["./a.out"],
     stdin=client_socket,
     stdout=client_socket,
     close_fds=True)

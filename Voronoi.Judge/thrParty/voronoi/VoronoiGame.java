@@ -37,7 +37,9 @@ import java.awt.print.*;
 import java.beans.*;
 import java.net.URL;
 //import java.net.MalformedURLException;
+
 import voronoi.utils.Constants;
+import java.awt.Robot;
 
 public class VoronoiGame extends JApplet {
 
@@ -166,6 +168,10 @@ public class VoronoiGame extends JApplet {
           zoom = game.getZoom();
           sitoCorrente = diagramma.trovaSitoDragged((new Point2D.Double(evento.getX()/zoom,
                   evento.getY() / zoom)), zoom);
+          // ------------------------------
+          // System.out.println("Clicked stone: x= " + evento.getX() / zoom +
+          //     " y = " + evento.getY() / zoom);
+          // ----------------------------
           if((sitoCorrente != null) && (evento.getClickCount() >= 2))
           {
             diagramma.cancellaCella(sitoCorrente);
@@ -2286,6 +2292,47 @@ public class VoronoiGame extends JApplet {
     return "Voronoi Game Judge Applet";
   }
 
+  public static void artificialMouseClick(int x, int y, double zoomLevel) {
+    try {
+      Robot robot = new Robot();
+   
+    //    coordinate.setText("(" + Math.round((float)(evento.getX()/zoom)) + 
+      //      ", " + Math.round((float)(evento.getY() / zoom))+ ")");
+  
+      double xwhole, ywhole;
+      xwhole = x + 8;
+      ywhole = y + 151;
+      // ywhole = y;
+      System.out.println("Zoom level= " + zoomLevel);
+      robot.mouseMove((int)(xwhole * zoomLevel), (int)(ywhole * zoomLevel));
+      // Simulate a mouse click
+      robot.mousePress(InputEvent.BUTTON1_MASK);
+      robot.mouseRelease(InputEvent.BUTTON1_MASK);
+    } catch (AWTException awte) {
+      awte.printStackTrace();
+    }
+  }
+
+  public static void startGame() {
+    isApplication = true;
+    JApplet voro = new VoronoiGame();
+    frameT = new JFrame();
+    frameT.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frameT.getContentPane().add(voro);
+    // Set initial window size
+    frameT.setSize(Constants.INIT_WINDOW_WIDTH, Constants.INIT_WINDOW_LENGTH);
+    frameT.setTitle("Voronoi Game");
+    Toolkit strum = Toolkit.getDefaultToolkit();
+    Image imgIc = strum.getImage(VoronoiGame.class.getResource("Unipg.GIF"));
+    frameT.setIconImage(imgIc);
+    voro.init();
+    frameT.setVisible(true);
+
+    // VoronoiGame.artificialMouseClick(300, 300, game.getZoom());
+    // VoronoiGame.artificialMouseClick(500, 500, game.getZoom());
+    // VoronoiGame.artificialMouseClick(768, 323, game.getZoom());
+  }
+
   public static void main(String[] args) {
     isApplication = true;
     JApplet voro = new VoronoiGame();
@@ -2306,9 +2353,9 @@ public class VoronoiGame extends JApplet {
   private int dim_Y = Constants.WIDTH_OF_SQUARE; //inizializza l'applet. Bisogna dare come parametri!
 
 
-  private Diagramma diagramma;
-  private Pannello game;
-  private Cella sitoCorrente; //Sperimantale!!
+  private static Diagramma diagramma;
+  private static Pannello game;
+  private static Cella sitoCorrente; //Sperimantale!!
 
 
   private boolean isDragged = false;

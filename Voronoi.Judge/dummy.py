@@ -4,8 +4,14 @@ Readline from input, increase it and output to stdout with a newline.
 EOF in stdin means game over.
 """
 import time
+import sys
 
 def main():
+  if len(sys.argv) == 1:
+    print 'Usage: python dummy.py TEAM_NAME'
+    sys.exit(1)
+  print sys.argv[1]
+
   while True:
     try:
       s = raw_input()
@@ -26,7 +32,7 @@ def main():
     # raw_input doesn't return \n
 
     time.sleep(1)
-    print "%d,%d " % (firstx + 1, firsty + 1)
+    print "%d,%d " % (firstx + 10, firsty + 10)
 
 if __name__ == "__main__":
   main()
