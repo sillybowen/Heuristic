@@ -2282,12 +2282,8 @@ public class VoronoiGame extends JApplet {
       bColore = !bColore;
   }
 
-
-
-
-  public String getAppletInfo() 
-  {
-    return "Applet costruito da Indrit Selimi";
+  public String getAppletInfo() {
+    return "Voronoi Game Judge Applet";
   }
 
   public static void main(String[] args) {

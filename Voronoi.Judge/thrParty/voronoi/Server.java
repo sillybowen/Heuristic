@@ -18,22 +18,18 @@ import javax.activation.*;
 //import java.io.BufferedReader;
 
 public class Server {
+  private static final int VORONOI_PORT = 1212; 
+
   public static void main(String[] args) {
-    try
-    {
+    try {
       ServerSocket s = new ServerSocket(VORONOI_PORT);
       String root;
       String sisOperativo = System.getProperty("os.name");
-      if((sisOperativo.toLowerCase()).startsWith("win"))
-      {
+      if((sisOperativo.toLowerCase()).startsWith("win")) {
         root = "C:";
-      }
-      else if((sisOperativo.toLowerCase()).startsWith("lin"))
-      {
+      } else if ((sisOperativo.toLowerCase()).startsWith("lin")) {
         root = "/home/indrit";
-      }
-      else
-      {
+      } else {
         root = "mac";
       }
 
@@ -43,7 +39,6 @@ public class Server {
       File autentFile = new File(voronoiFile, "AUTHENTICATION.txt");
       FileWriter  fileBaseDatiO = new FileWriter(autentFile);
       FileReader  fileBaseDatiI = new FileReader(autentFile);           
-
 
       PrintWriter writeBase = new PrintWriter(fileBaseDatiO, true);
       BufferedReader readBase = new BufferedReader(fileBaseDatiI);
@@ -57,8 +52,7 @@ public class Server {
       time.setPriority(10);
       time.start();            
 
-      while(true)
-      {
+      while(true) {
         Socket canale = s.accept();
         Thread t = new ThreadCommunication(canale, writeBase, readBase, proprieta, root);
         t.setDaemon(true);
@@ -66,23 +60,16 @@ public class Server {
         t.start(); 
       }
 
-
-    }
-    catch(IOException  e)
-    {
+    } catch(IOException e) {
       e.printStackTrace();
       //writeBase.close();            
     }
   }
-
-
-  private static final int VORONOI_PORT = 1212; 
 }
 
-class ThreadCommunication extends Thread
-{
-  public ThreadCommunication(Socket unSocket, PrintWriter unWriter, BufferedReader unReader, Properties leProprieta,String root)
-  {
+class ThreadCommunication extends Thread {
+  public ThreadCommunication(Socket unSocket, PrintWriter unWriter,
+      BufferedReader unReader, Properties leProprieta, String root) {
     canale = unSocket;
     this.writeBase = unWriter;
     this.readBase = unReader;
@@ -90,10 +77,8 @@ class ThreadCommunication extends Thread
     this.root = root;
   }
 
-  public void run()
-  {
-    try
-    {
+  public void run() {
+    try {
       InputStream inStream = canale.getInputStream();
       BufferedReader in = new BufferedReader(new InputStreamReader(inStream));
       PrintWriter out = new PrintWriter(canale.getOutputStream(), true);
