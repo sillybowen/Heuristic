@@ -1,5 +1,4 @@
 #!/usr/bin/python -u
-
 """Dummy program.
 Readline from input, increase it and output to stdout with a newline.
 
@@ -14,6 +13,7 @@ def main():
     sys.exit(1)
   print sys.argv[1]
 
+  i = 0
   while True:
     try:
       s = raw_input()
@@ -34,7 +34,12 @@ def main():
     # raw_input doesn't return \n
 
     time.sleep(3)
-    print "%d,%d " % (firstx + 50, firsty + 50)
+    if (i % 2):
+      print "%d,%d " % (firstx + 50, firsty + 50)
+    else:
+      print "%d,%d " % (firstx, firsty)
+    i = i + 1
+    #print "i = ", i
 
 if __name__ == "__main__":
   main()

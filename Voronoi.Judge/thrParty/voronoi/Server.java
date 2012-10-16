@@ -23,6 +23,7 @@ public class Server {
   private static boolean isApplication = false;
   private static JFrame frameT;
   private static VoronoiGame gameGui;
+  private static PairSet placedStonesSet;
 
   private static int VORONOI_PORT = Constants.DEFAULT_GAME_PORT;
   private static volatile int numOfPlys = 0;
@@ -32,6 +33,7 @@ public class Server {
 
   public Server(int srvPort) {
     gameGui = startVoronoiGame();
+    placedStonesSet = new PairSet();
 
     try {
       serverSocket = new ServerSocket(srvPort);
@@ -73,6 +75,18 @@ public class Server {
 
   public static VoronoiGame startVoronoiGame() {
     return VoronoiGame.startGame();
+  }
+
+  // Check whether a stone is a legal placement, if true, record it
+  public static boolean checkNewStoneThenAdd(int x, int y) {
+    if (x < 0 || x > Constants.WIDTH_OF_SQUARE || y < 0
+        || y > Constants.WIDTH_OF_SQUARE) {
+      return false;
+    }
+    if (placedStonesSet.find(x, y)) {  // Place already taken
+      return false;
+    }
+    return placedStonesSet.insert(x, y);
   }
 
   public static VoronoiGame getVoronoiGame() {
@@ -154,8 +168,14 @@ class ServerConnection extends Thread {
         if (splitStrs.length == 2) {
           x = Integer.parseInt(splitStrs[0]);
           y = Integer.parseInt(splitStrs[1]);
-          System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
-              + y + ")");
+          if (Server.checkNewStoneThenAdd(x, y)) {
+            System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
+                + y + ")");
+            stonesData = line + stonesData;
+          } else {
+            System.out.println("Illegal placement! " + players_[ind_] +
+                " wasted a stone!");
+          }
 
           // VoronoiGame.artificialMouseClick(x, y, 0.65);
           Server.getVoronoiGame().humanPutStone(x, y, players_[ind_]);
@@ -163,7 +183,6 @@ class ServerConnection extends Thread {
           System.out.println("Wrong input, lose this stone!");
         }
 
-        stonesData = line + stonesData;
         // System.out.println("Server got From ply: " + ind_ + " : " + line + '\n');
       } catch (IOException e) {
         System.out.println("Read failed");
