@@ -42,6 +42,21 @@ import voronoi.utils.Constants;
 import java.awt.Robot;
 
 public class VoronoiGame extends JApplet {
+  public void humanPutStone(int x, int y, String plyName) {
+    System.out.println(plyName + " put a stone at (" + x + ", " + y + ")\n");
+    // sitoCorrente = diagramma.trovaSitoDragged((new
+    //       Point2D.Double(x / zoom, y / zoom)), zoom);
+
+    Cella nuova = new Cella(x, y);
+    aggiungiCella(nuova);
+
+    setCampoBlue();
+    setCampoRosso();
+
+    game.revalidate();
+    game.repaint(); 
+    repaint();
+  }
 
   public void init() {
     sisOperativo = System.getProperty("os.name");
@@ -2292,6 +2307,7 @@ public class VoronoiGame extends JApplet {
     return "Voronoi Game Judge Applet";
   }
 
+  // Don't call, use humanPutStone instead
   public static void artificialMouseClick(int x, int y, double zoomLevel) {
     try {
       Robot robot = new Robot();
@@ -2313,9 +2329,9 @@ public class VoronoiGame extends JApplet {
     }
   }
 
-  public static void startGame() {
+  public static VoronoiGame startGame() {
     isApplication = true;
-    JApplet voro = new VoronoiGame();
+    VoronoiGame voro = new VoronoiGame();
     frameT = new JFrame();
     frameT.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frameT.getContentPane().add(voro);
@@ -2328,9 +2344,9 @@ public class VoronoiGame extends JApplet {
     voro.init();
     frameT.setVisible(true);
 
-    // VoronoiGame.artificialMouseClick(300, 300, game.getZoom());
-    // VoronoiGame.artificialMouseClick(500, 500, game.getZoom());
-    // VoronoiGame.artificialMouseClick(768, 323, game.getZoom());
+    // voro.humanPutStone(250, 100, "aaa");
+    // voro.humanPutStone(750, 100, "ccc");
+    return voro;
   }
 
   public static void main(String[] args) {

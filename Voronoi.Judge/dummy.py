@@ -31,8 +31,8 @@ def main():
       firsty = 100
     # raw_input doesn't return \n
 
-    time.sleep(1)
-    print "%d,%d " % (firstx + 10, firsty + 10)
+    time.sleep(3)
+    print "%d,%d " % (firstx + 50, firsty + 50)
 
 if __name__ == "__main__":
   main()

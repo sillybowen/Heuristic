@@ -19,8 +19,10 @@ import java.awt.Image;
 import java.applet.Applet;
 
 public class Server {
+  static final int numOfStonesEach = Constants.NUM_OF_STONES_EACH;
   private static boolean isApplication = false;
   private static JFrame frameT;
+  private static VoronoiGame gameGui;
 
   private static int VORONOI_PORT = Constants.DEFAULT_GAME_PORT;
   private static volatile int numOfPlys = 0;
@@ -29,6 +31,8 @@ public class Server {
   public Server() { this(VORONOI_PORT); }
 
   public Server(int srvPort) {
+    gameGui = startVoronoiGame();
+
     try {
       serverSocket = new ServerSocket(srvPort);
     } catch (IOException ioe) {
@@ -56,8 +60,6 @@ public class Server {
   }
 
   public static void main(String[] args) {
-    startVoronoiGame();
-
     try {
       if (args.length > 0) {
         VORONOI_PORT = Integer.parseInt(args[0]);
@@ -69,8 +71,12 @@ public class Server {
     }
   }
 
-  public static void startVoronoiGame() {
-    VoronoiGame.startGame();
+  public static VoronoiGame startVoronoiGame() {
+    return VoronoiGame.startGame();
+  }
+
+  public static VoronoiGame getVoronoiGame() {
+    return gameGui;
   }
 
   public static int getNumOfPlys() {
@@ -84,6 +90,7 @@ public class Server {
 }
 
 class ServerConnection extends Thread {
+  private static int stonesUsed = 0;
   private static Socket[] cltSockets_ = new Socket[Constants.MAX_NUM_PLAYERS];
   private static String[] players_ = new String[Constants.MAX_NUM_PLAYERS];
   private static String stonesData = new String();
@@ -128,13 +135,17 @@ class ServerConnection extends Thread {
         continue;
 
       try {
-        if ((ind_ == 0) ^ taketurn)
+        if ((ind_ == 1) ^ taketurn)
           continue;
+        if (stonesUsed == Server.numOfStonesEach * 2) {
+          Server.forceClose();
+        }
 
         //Send aggregated data back to client
         System.out.println("#Server: " + stonesData);
         out.println(stonesData);
 
+        ++stonesUsed;
         String line = in.readLine();
         String strippedLine = line.replace("\n","").replace(" ", "");
         String[] splitStrs = strippedLine.split(",");
@@ -144,9 +155,10 @@ class ServerConnection extends Thread {
           x = Integer.parseInt(splitStrs[0]);
           y = Integer.parseInt(splitStrs[1]);
           System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
-              + y + ")\n");
+              + y + ")");
 
-          VoronoiGame.artificialMouseClick(x, y, 0.65);
+          // VoronoiGame.artificialMouseClick(x, y, 0.65);
+          Server.getVoronoiGame().humanPutStone(x, y, players_[ind_]);
         } else {
           System.out.println("Wrong input, lose this stone!");
         }
