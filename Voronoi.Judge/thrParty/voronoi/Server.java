@@ -144,6 +144,7 @@ class ServerConnection extends Thread {
   }
 
   public void run() {
+      String area = new String();
     while (true) {
       if (Server.getNumOfPlys() != Constants.MAX_NUM_PLAYERS)
         continue;
@@ -156,9 +157,8 @@ class ServerConnection extends Thread {
         }
 
         //Send aggregated data back to client
-        System.out.println("#Server: " + stonesData);
-        out.println(stonesData);
-
+        out.println(stonesData+area);
+        System.out.println("#Server: " + stonesData + area);
         ++stonesUsed;
         String line = in.readLine();
         String strippedLine = line.replace("\n","").replace(" ", "");
@@ -172,6 +172,9 @@ class ServerConnection extends Thread {
             System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
                 + y + ")");
             stonesData = line + stonesData;
+            area = " | "
+                +Double.toString(Server.getVoronoiGame().RedArea()) + ","
+                +Double.toString(Server.getVoronoiGame().BlueArea()) ;
           } else {
             System.out.println("Illegal placement! " + players_[ind_] +
                 " wasted a stone!");

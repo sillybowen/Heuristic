@@ -65,7 +65,17 @@ public class VoronoiGame extends JApplet {
     game.revalidate();
     game.repaint(); 
     repaint();
+    System.out.println("Red:"+game.areaTotaleRosso());
+    System.out.println("Bllue:"+game.areaTotaleBlue());
   }
+    public double RedArea()  {
+        return game.AreaRed();
+    }
+    public double BlueArea()  {
+        return game.AreaBlue();
+    }
+
+
 
   public void init() {
     sisOperativo = System.getProperty("os.name");

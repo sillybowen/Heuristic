@@ -32,6 +32,7 @@ def main():
       firstx = 100
       firsty = 100
     # raw_input doesn't return \n
+    sys.stderr.write("%s\n" % s)
 
     time.sleep(3)
     print "%d,%d " % (firstx + 50, firsty + 50)
