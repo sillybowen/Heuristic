@@ -42,8 +42,17 @@ import voronoi.utils.Constants;
 import java.awt.Robot;
 
 public class VoronoiGame extends JApplet {
+    int move = 0;
   public void humanPutStone(int x, int y, String plyName) {
     System.out.println(plyName + " put a stone at (" + x + ", " + y + ")\n");
+    if (move == 0) {
+        areaBlu.setText("Blue's ("+plyName+") score");
+        move++;
+    }
+    else  if (move == 1) {
+      areaRed.setText("Red's ("+plyName+") score");
+      move++;
+  }
     // sitoCorrente = diagramma.trovaSitoDragged((new
     //       Point2D.Double(x / zoom, y / zoom)), zoom);
 
@@ -1847,9 +1856,9 @@ public class VoronoiGame extends JApplet {
     }
 
     areaBlue.setToolTipText("Shows blue player area");
-    JLabel areaRed = new JLabel("Red's Score");
+    areaRed = new JLabel("Red's Score");
     areaRed.setForeground(new Color(250, 72, 72));
-    JLabel areaBlu = new JLabel("Blu's Score");
+    areaBlu = new JLabel("Blu's Score");
     areaBlu.setForeground(new Color(31, 75, 153));
     coordinate = new JLabel("(300,300)", SwingConstants.CENTER);
     coordinate.setForeground(coloreT);
@@ -2445,6 +2454,8 @@ public class VoronoiGame extends JApplet {
 
   private int diam = 8; //Serve per aggiornare il rettangolo di dragged
 
+  private JLabel areaRed;
+  private JLabel areaBlu;
   private Rectangle2D.Double retta;
   private ImageIcon gridOkIcon, gridExitIcon;
   private JToolBar bar;
