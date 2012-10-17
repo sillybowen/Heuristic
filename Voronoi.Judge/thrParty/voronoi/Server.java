@@ -98,7 +98,7 @@ public class Server {
   }
 
   public static void forceClose() {
-    System.exit(-1);
+    // System.exit(-1);
   }
 
 }
@@ -153,12 +153,14 @@ class ServerConnection extends Thread {
         if ((ind_ == 1) ^ taketurn)
           continue;
         if (stonesUsed == Server.numOfStonesEach * 2) {
+          in.close();
+          out.close();
           Server.forceClose();
         }
 
         //Send aggregated data back to client
         out.println(stonesData+area);
-        System.out.println("#Server: " + stonesData + area);
+        System.out.println("#Server# " + stonesData + area + "\n");
         ++stonesUsed;
         String line = in.readLine();
         String strippedLine = line.replace("\n","").replace(" ", "");
@@ -172,21 +174,19 @@ class ServerConnection extends Thread {
             System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
                 + y + ")");
             stonesData = line + stonesData;
+            // VoronoiGame.artificialMouseClick(x, y, 0.65);
+            Server.getVoronoiGame().humanPutStone(x, y, players_[ind_]);
             area = " | "
                 +Double.toString(Server.getVoronoiGame().RedArea()) + ","
-                +Double.toString(Server.getVoronoiGame().BlueArea()) ;
+                +Double.toString(Server.getVoronoiGame().BlueArea());
           } else {
             System.out.println("Illegal placement! " + players_[ind_] +
                 " wasted a stone!");
           }
-
-          // VoronoiGame.artificialMouseClick(x, y, 0.65);
-          Server.getVoronoiGame().humanPutStone(x, y, players_[ind_]);
         } else {
           System.out.println("Wrong input, lose this stone!");
         }
 
-        // System.out.println("Server got From ply: " + ind_ + " : " + line + '\n');
       } catch (IOException e) {
         System.out.println("Read failed");
         System.exit(-1);

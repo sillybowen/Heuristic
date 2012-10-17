@@ -102,31 +102,30 @@ public class Pannello extends JPanel implements Printable {
     area = Math.abs(area / 2.0);
     return(area);
   }
-    public double AreaRed(){
-        ArrayList confini;        
-        Cella sitoCorrente;
-        double areaTotaleRosso = 0;
-        int indice = 0;
-        if(voronoi.getVCelle().isEmpty())
-            {
-                return 0;
-            }
-        Iterator listaSiti = voronoi.getVCelle().iterator();
-        while(listaSiti.hasNext())
-            {
-                ArrayList lista;
-                sitoCorrente = (Cella)listaSiti.next();             
-                confini = sitoCorrente.getVfrontiere();
-                lista = ordinaPunti(confini, sitoCorrente.getKernel());
-                
-                if(sitoCorrente.getColore())
-                    areaTotaleRosso += calcolaArea(lista); 
-            }
 
-        return areaTotaleRosso;
+  public double AreaRed() {
+    ArrayList confini;        
+    Cella sitoCorrente;
+    double areaTotaleRosso = 0;
+    int indice = 0;
+    if(voronoi.getVCelle().isEmpty()) {
+      return 0;
     }
-  public String areaTotaleRosso()
-  {
+    Iterator listaSiti = voronoi.getVCelle().iterator();
+    while (listaSiti.hasNext()) {
+      ArrayList lista;
+      sitoCorrente = (Cella)listaSiti.next();             
+      confini = sitoCorrente.getVfrontiere();
+      lista = ordinaPunti(confini, sitoCorrente.getKernel());
+
+      if(sitoCorrente.getColore())
+        areaTotaleRosso += calcolaArea(lista); 
+    }
+
+    return areaTotaleRosso;
+  }
+
+  public String areaTotaleRosso() {
     ArrayList confini;        
     Cella sitoCorrente;
     double areaTotaleRosso = 0;
@@ -151,10 +150,7 @@ public class Pannello extends JPanel implements Printable {
     return myFormatter.format(areaTotaleRosso);
   }
 
-
-
-  public double AreaBlue()
-  {
+  public double AreaBlue() {
     ArrayList confini;        
     Cella sitoCorrente;
     double areaTotaleBlue = 0;

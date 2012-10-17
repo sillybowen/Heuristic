@@ -14,7 +14,7 @@ HOST = 'localhost'
 PORT = 5678
 
 def main():
-  if len(sys.argv) < 3:
+  if len(sys.argv) < 4:
     print 'Usage: ./client.py  YOUR_PROGRAM  PORT_NUM  TEAM_NAME'
     sys.exit(1)
   PORT = int(sys.argv[2])

@@ -44,7 +44,7 @@ import java.awt.Robot;
 public class VoronoiGame extends JApplet {
     int move = 0;
   public void humanPutStone(int x, int y, String plyName) {
-    System.out.println(plyName + " put a stone at (" + x + ", " + y + ")\n");
+    System.out.println(plyName + " put a stone at (" + x + ", " + y + ")");
     if (move == 0) {
         areaBlu.setText("Blue's ("+plyName+") score");
         move++;
