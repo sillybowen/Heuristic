@@ -82,7 +82,7 @@ public class Server {
     if (x < 0 || x > Constants.WIDTH_OF_SQUARE || y < 0
         || y > Constants.WIDTH_OF_SQUARE) {
       return false;
-    }
+        }
     if (placedStonesSet.find(x, y)) {  // Place already taken
       return false;
     }
@@ -99,6 +99,7 @@ public class Server {
 
   public static void forceClose() {
     // System.exit(-1);
+    while (true) { }
   }
 
 }
@@ -144,7 +145,7 @@ class ServerConnection extends Thread {
   }
 
   public void run() {
-      String area = new String();
+    String area = new String();
     while (true) {
       if (Server.getNumOfPlys() != Constants.MAX_NUM_PLAYERS)
         continue;
@@ -155,6 +156,9 @@ class ServerConnection extends Thread {
         if (stonesUsed == Server.numOfStonesEach * 2) {
           in.close();
           out.close();
+          System.out.println("Game Over: " + ((Server.getVoronoiGame().RedArea() >
+                  Server.getVoronoiGame().BlueArea())?
+                (players_[1] + " wins") : (players_[0] + " wins")));
           Server.forceClose();
         }
 
