@@ -21,6 +21,8 @@ def main():
       # print "EOFError"
       # Don't pollute output, output anything to stderr.
       break;
+    # Write server's output to stderr, for debugging
+    # sys.stderr.write("%s %s\n" % ("Server send:", s))
     # Get the first tuple of the server input
     tuples = s.split()
     if len(tuples):
