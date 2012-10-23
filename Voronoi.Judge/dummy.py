@@ -26,7 +26,7 @@ def main():
     # Get the first tuple of the server input
     tuples = s.split()
     if len(tuples):
-      firstTuple = tuples[1]
+      firstTuple = tuples[0]
       splitFirTuple = firstTuple.split(',')
       firstx = int(splitFirTuple[0])
       firsty = int(splitFirTuple[1])
@@ -36,7 +36,7 @@ def main():
     # raw_input doesn't return \n
     #sys.stderr.write("%s\n" % s)
 
-    time.sleep(3)
+    time.sleep(1)
     print "%d,%d" % (firstx + 50, firsty + 50)
 
 if __name__ == "__main__":

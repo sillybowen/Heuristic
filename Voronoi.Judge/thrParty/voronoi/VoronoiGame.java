@@ -41,23 +41,23 @@ import java.net.URL;
 import voronoi.utils.Constants;
 import java.awt.Robot;
 import java.util.concurrent.Semaphore;
+import java.text.*;
 
 public class VoronoiGame extends JApplet {
-    int move = 0;
+  int move = 0;
+
   public void humanPutStone(int x, int y, String plyName) {
     System.out.println(plyName + " put a stone at (" + x + ", " + y + ")");
     if (move == 0) {
         areaBlu.setText("Blue's ("+plyName+") score");
         move++;
     }
-    else  if (move == 1) {
+    else if (move == 1) {
       areaRed.setText("Red's ("+plyName+") score");
       move++;
-  }
-    // sitoCorrente = diagramma.trovaSitoDragged((new
-    //       Point2D.Double(x / zoom, y / zoom)), zoom);
+    }
 
-    Cella nuova = new Cella(x, y);
+    Cella nuova = new Cella(2.0 * (double)x, 2.0 * (double)y);
     aggiungiCella(nuova);
 
     setCampoBlue();
@@ -66,45 +66,46 @@ public class VoronoiGame extends JApplet {
     game.revalidate();
     game.repaint(); 
     repaint();
-    System.out.println(areaRed.getText() + ": " + game.areaTotaleRosso());
-    System.out.println(areaBlu.getText() + ": " + game.areaTotaleBlue());
-    // System.out.println("Red:"+game.areaTotaleRosso());
-    // System.out.println("Bllue:"+game.areaTotaleBlue());
+
+    DecimalFormat df = new DecimalFormat("#.##");
+    System.out.println(areaRed.getText() + ": " + df.format(game.AreaRed()/4.0));
+    System.out.println(areaBlu.getText() + ": " + df.format(game.AreaBlue()/4.0));
   }
-    String plyName1;
 
-   public void humanPutStone2(int x, int y, String plyName,int plyID) {
-      System.out.println(plyName + " put a stone at (" + x + ", " + y + ")");
-      if (move == 0 ) {
-          areaBlu.setText("Blue's ("+plyName+") score");
-          move++;
-          plyName1 = plyName;
-      }
-      else  if (move == 1) {
-          areaRed.setText("Red's ("+plyName+") score");
-          move++;
-      }
-      else if (move == 2) {
-          areaBlu.setText("Blue's ("+plyName1+" and "+plyName+") score");
-          move++;
-          plyName1 = plyName;
-      }
-      // sitoCorrente = diagramma.trovaSitoDragged((new
-      //       Point2D.Double(x / zoom, y / zoom)), zoom);
+  String plyName1;
 
-      Cella nuova = new Cella(x, y);
-      aggiungiCella2(nuova,plyID);
+  public void humanPutStone2(int x, int y, String plyName,int plyID) {
+    System.out.println(plyName + " put a stone at (" + x + ", " + y + ")");
+    if (move == 0 ) {
+      areaBlu.setText("Blue's ("+plyName+") score");
+      move++;
+      plyName1 = plyName;
+    }
+    else  if (move == 1) {
+      areaRed.setText("Red's ("+plyName+") score");
+      move++;
+    }
+    else if (move == 2) {
+      areaBlu.setText("Blue's ("+plyName1+" and "+plyName+") score");
+      move++;
+      plyName1 = plyName;
+    }
+    // sitoCorrente = diagramma.trovaSitoDragged((new
+    //       Point2D.Double(x / zoom, y / zoom)), zoom);
 
-      setCampoBlue();
-      setCampoRosso();
+    Cella nuova = new Cella(x, y);
+    aggiungiCella2(nuova,plyID);
 
-      game.revalidate();
-      game.repaint(); 
-      repaint();
-      System.out.println(areaRed.getText() + ": " + game.areaTotaleRosso());
-      System.out.println(areaBlu.getText() + ": " + game.areaTotaleBlue());
-      // System.out.println("Red:"+game.areaTotaleRosso());
-    // System.out.println("Bllue:"+game.areaTotaleBlue());
+    setCampoBlue();
+    setCampoRosso();
+
+    game.revalidate();
+    game.repaint(); 
+    repaint();
+
+    DecimalFormat df = new DecimalFormat("#.##");
+    System.out.println(areaRed.getText() + ": " + df.format(game.AreaRed()/4.0));
+    System.out.println(areaBlu.getText() + ": " + df.format(game.AreaBlue()/4.0));
   }
 
     public double RedArea()  {
@@ -265,8 +266,8 @@ public class VoronoiGame extends JApplet {
       {
         zoom = game.getZoom();
 
-        coordinate.setText("(" + Math.round((float)(evento.getX()/zoom)) + 
-            ", " + Math.round((float)(evento.getY() / zoom))+ ")");
+        coordinate.setText("(" + (Math.round((float)(evento.getX()/zoom)) / 2.0) + 
+            ", " + (Math.round((float)(evento.getY() / zoom)) / 2.0) + ")");
 
         if(diagramma.trovaSito(new Point2D.Double(evento.getX()/zoom,
                 evento.getY() / zoom)) != null)
@@ -311,8 +312,8 @@ public class VoronoiGame extends JApplet {
       public void mouseDragged(MouseEvent even)
       {
         zoom = game.getZoom();
-        coordinate.setText("(" + Math.round((float)(even.getX()/zoom)) + ", "
-            + Math.round((float)(even.getY() / zoom))+ ")");
+        coordinate.setText("(" + (Math.round((float)(even.getX()/zoom)) / 2.0)
+            + ", " + (Math.round((float)(even.getY() / zoom)) / 2.0) + ")");
 
         if(even.getModifiers() == even.BUTTON1_MASK)
         {
@@ -2203,14 +2204,14 @@ public class VoronoiGame extends JApplet {
     return pulsante;
   }
 
-  public void setCampoBlue()
-  {
-    areaBlue.setText(game.areaTotaleBlue());
+  public void setCampoBlue() {
+    DecimalFormat df = new DecimalFormat("#.##");
+    areaBlue.setText(df.format(game.AreaBlue() / 4.0));
   }
 
-  public void setCampoRosso()
-  {
-    areaRosso.setText(game.areaTotaleRosso());
+  public void setCampoRosso() {
+    DecimalFormat df = new DecimalFormat("#.##");
+    areaRosso.setText(df.format(game.AreaRed() / 4.0));
   }
 
   /**
@@ -2223,9 +2224,9 @@ public class VoronoiGame extends JApplet {
     {
 
       double coordX
-        = Double.parseDouble(ascissaField.getText());
+        = 2.0 * Double.parseDouble(ascissaField.getText());
       double coordY
-        = Double.parseDouble(ordinataField.getText());
+        = 2.0 * Double.parseDouble(ordinataField.getText());
 
       if(isChecked)
       {
@@ -2438,7 +2439,7 @@ public class VoronoiGame extends JApplet {
 
   public static void main(String[] args) {
     isApplication = true;
-    JApplet voro = new VoronoiGame();
+    VoronoiGame voro = new VoronoiGame();
     frameT = new JFrame();
     frameT.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frameT.getContentPane().add(voro);
@@ -2450,6 +2451,18 @@ public class VoronoiGame extends JApplet {
     frameT.setIconImage(imgIc);
     voro.init();
     frameT.setVisible(true);
+
+    voro.humanPutStone(311,477, "0");
+    voro.humanPutStone(314,479, "1");
+
+    voro.humanPutStone(725,525, "0");
+    voro.humanPutStone(308,475, "1");
+
+    voro.humanPutStone(275,475, "0");
+    voro.humanPutStone(728,524, "1");
+
+    voro.humanPutStone(825, 475, "0");
+    voro.humanPutStone(274, 475, "1");
   }
 
   private int dim_X = Constants.WIDTH_OF_SQUARE; //Qua esiste un problema!!Se non sono final non si

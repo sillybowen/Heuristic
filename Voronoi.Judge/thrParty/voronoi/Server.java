@@ -177,7 +177,8 @@ class CompetitionResult{
     }
 
     public String makeString(){
-	String s = name1 + " " + point1 + " " + time1_sum + " " + name2 + " " + point2 + " " + time2_sum;
+	String s = name1 + " " + (point1 / 4.0) + " " + time1_sum + " " + name2 +
+      " " + (point2 / 4.0) + " " + time2_sum;
 	return s;
     }
 
