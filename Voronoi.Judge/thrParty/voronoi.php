@@ -48,7 +48,7 @@
 </head>
 <body>
 
-<?
+<?php
    $result_arr = array();
    $fp = fopen("result.txt", "r") or die("File cannot open");
 
@@ -130,7 +130,7 @@
 	     <center>
 		<br><br>	     
 	   	<font size="30" color="blue"><b>Congraturation!!!!</b></font><br><br><br><br>
-	        <b><?=$winner?></b>
+	        <b><?php echo $winner; ?></b>
 		
 	     </center>
 	</div>
