@@ -44,14 +44,21 @@ public class Server {
 	send_time = System.currentTimeMillis();
     }
 
-    public static int getRespondTime(int id){
+    public static void setRespondTime(int id){
 	long respond_time = System.currentTimeMillis() - send_time;
 	if(id == 0) // blue
 	    blue_time_vec.add(respond_time);
 	else
 	    red_time_vec.add(respond_time);
 	send_time = System.currentTimeMillis();
-	return (int)(respond_time / 1000);
+    }
+
+    public static Vector<Long> getBlueTimeVec(){
+	return blue_time_vec;
+    }
+
+    public static Vector<Long> getRedTimeVec(){
+	return red_time_vec;
     }
 
   public Server() { this(VORONOI_PORT); }
@@ -145,6 +152,48 @@ public class Server {
     while (true) { }
   }
 
+}
+
+class CompetitionResult{
+    public String name1, name2;
+    public double point1, point2;
+    public Vector<Long> time1, time2;
+    public long time1_sum, time2_sum;
+    public CompetitionResult(String name1, double point1, Vector<Long> time1, String name2, double point2, Vector<Long> time2){
+	this.name1 = name1;
+	this.point1 = point1;
+	this.time1 = time1;
+	this.name2 = name2;
+	this.point2 = point2;
+	this.time2 = time2;
+    }
+    
+    public void getTimeSum(){
+	time1_sum = time2_sum = 0;
+	for(int i=0; i<time1.size(); i++)
+	    time1_sum += time1.get(i);
+	for(int i=0; i<time2.size(); i++)
+	    time2_sum += time2.get(i);
+    }
+
+    public String makeString(){
+	String s = name1 + " " + point1 + " " + time1_sum + " " + name2 + " " + point2 + " " + time2_sum;
+	return s;
+    }
+
+    public void saveResult(){
+	getTimeSum();
+	String s = makeString();
+	try{
+	    BufferedWriter out = new BufferedWriter(new FileWriter("result.txt", true));
+	    out.write(s);
+	    out.newLine();
+	    out.close();
+	}catch (IOException e){
+	    System.err.println(e);
+	    System.exit(1);
+	}
+    }
 }
 
 class ServerConnection extends Thread {
@@ -270,6 +319,12 @@ class ServerConnection extends Thread {
           System.out.println("Game Over: " + ((Server.getVoronoiGame().RedArea() >
                   Server.getVoronoiGame().BlueArea())?
                 (players_[1] + " wins") : (players_[0] + " wins")));
+
+	  // save the result
+	  CompetitionResult result = new CompetitionResult(players_[0], Server.getVoronoiGame().BlueArea(), Server.getBlueTimeVec(),
+							   players_[1], Server.getVoronoiGame().RedArea(), Server.getRedTimeVec());
+	  result.saveResult();
+
           Server.forceClose();
         }
 
@@ -285,22 +340,16 @@ class ServerConnection extends Thread {
         if (splitStrs.length == 2) {
 
 	    // Set time
-	    int respond_time = Server.getRespondTime(ind_);
+	    Server.setRespondTime(ind_);
 	    
           x = Integer.parseInt(splitStrs[0]);
           y = Integer.parseInt(splitStrs[1]);
           if (Server.checkNewStoneThenAdd(x, y)) {
             System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
-<<<<<<< HEAD
-			       + y + ") ; respond time : " + respond_time + "(s)");
-            stonesData = ((ind_ + 1) % (Server.getNumOfPlys())) + " "
-              + strippedLine + "," + ind_ + " " + stonesData;
-=======
                 + y + ")");
             // stonesData = ((ind_ + 1) % (Server.getNumOfPlys())) + " "
             //   + strippedLine + "," + ind_ + " " + stonesData;
             stonesData = strippedLine + " " + stonesData;
->>>>>>> 62a30db4945b3d6257e112b04734262be6d7d3d3
             // VoronoiGame.artificialMouseClick(x, y, 0.65);
 
             try {
@@ -329,3 +378,4 @@ class ServerConnection extends Thread {
     }
   }
 }
+
