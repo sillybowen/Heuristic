@@ -37,6 +37,7 @@
 		$("#shutdown_layer").click(function(e){
 			$("#shutdown_layer").css("display", "none");
 			$("#shutdown_popup").css("display", "none");
+	                $("#error_popup").css("display", "none");
 		});
 
 		$("#main_table").click(function(e){
@@ -44,6 +45,10 @@
 			$("#shutdown_popup").css("display", "inline");
 		});
 	   })
+	   function clickErrorPopup(){
+	      $("#shutdown_layer").css("display", "inline");
+	      $("#error_popup").css("display", "inline");
+	   }
 	</script>
 </head>
 <body>
@@ -80,6 +85,10 @@
    $team1_time = (int)(($line1[2] + $line2[5])/1000);
    $team2_time = (int)(($line1[5] + $line2[2])/1000);
 
+   $name_check = false;
+   if(strcmp($line1[0], $line2[3]) || strcmp($line1[3], $line2[0])){
+	$name_check = true;
+   }
    $winner="";
    if($team1_score > $team2_score)
       $winner = '<font size="10">'.$team1_name.'</font>';
@@ -123,6 +132,8 @@
 	      </table>
 	      <br><br>";
 	echo "</div>";
+
+       
 ?>
 
 	<div id="shutdown_layer" class="blurLayer"></div>
@@ -134,6 +145,22 @@
 		
 	     </center>
 	</div>
-
+	<div id="error_popup" class="popup">
+	    <center>
+	      <font size="30" color="blue"><b>Oops!!!!</b></font><br><br><br><br>
+	      <font size="5">
+	      <b>This is first round. Please One more round!!</b><br><br>
+	      <b>Or, please check your teams submitted different name.</b><br><br>
+	      </font>
+	    </center>
+	</div>
+<?php
+   // Error Detection
+   if($name_check || $numOfResult<2){
+      echo "<script>
+	       clickErrorPopup();
+	    </script>";
+   }
+?>
 </body>
 </html>
