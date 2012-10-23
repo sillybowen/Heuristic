@@ -72,7 +72,7 @@ public class VoronoiGame extends JApplet {
   }
     String plyName1;
 
-   public void humanPutStone3ply(int x, int y, String plyName,int plyID) {
+   public void humanPutStone2(int x, int y, String plyName,int plyID) {
       System.out.println(plyName + " put a stone at (" + x + ", " + y + ")");
       if (move == 0 ) {
           areaBlu.setText("Blue's ("+plyName+") score");
@@ -83,7 +83,7 @@ public class VoronoiGame extends JApplet {
           areaRed.setText("Red's ("+plyName+") score");
           move++;
       }
-      if (move == 2) {
+      else if (move == 2) {
           areaBlu.setText("Blue's ("+plyName1+" and "+plyName+") score");
           move++;
           plyName1 = plyName;

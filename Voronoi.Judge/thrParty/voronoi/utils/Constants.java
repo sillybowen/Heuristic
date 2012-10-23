@@ -13,5 +13,6 @@ public final class Constants {
 
   public final static int DEFAULT_GAME_PORT = 5678;
   public final static int MAX_NUM_PLAYERS = 2;
+  public final static int MAX_NUM_PLAYERS2 = 3;
   public final static int NUM_OF_STONES_EACH = 5;
 }

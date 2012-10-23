@@ -27,8 +27,12 @@ public class Server {
 
   private static int VORONOI_PORT = Constants.DEFAULT_GAME_PORT;
   private static volatile int numOfPlys = 0;
-  private ServerSocket serverSocket = null;
+  private static boolean thirdPlayer = false;
 
+  private ServerSocket serverSocket = null;
+    public static boolean isThirdPlayer() {
+        return thirdPlayer;
+    }
   public Server() { this(VORONOI_PORT); }
 
   public Server(int srvPort) {
@@ -42,7 +46,8 @@ public class Server {
     }
     System.out.println("Accepting conns on port: " + srvPort);
 
-    while (numOfPlys < Constants.MAX_NUM_PLAYERS) {
+    while ((!thirdPlayer&& numOfPlys < Constants.MAX_NUM_PLAYERS)
+           ||(thirdPlayer && numOfPlys<Constants.MAX_NUM_PLAYERS2)) {
       Socket cltsocket = null;
       try {
         // Establish client conn, waits until one connect
@@ -58,13 +63,22 @@ public class Server {
       Thread cltThr = new Thread(sconn);
       cltThr.start();
       ++numOfPlys;
+      System.out.println("# of ply"+numOfPlys);
     }
+    System.out.println("outside while");
   }
 
   public static void main(String[] args) {
+      thirdPlayer = false;
     try {
       if (args.length > 0) {
         VORONOI_PORT = Integer.parseInt(args[0]);
+      }
+      if (args.length >1) {
+         if (Integer.parseInt(args[1]) == 3) {
+             thirdPlayer = true;
+             System.out.println("3ply");
+         }
       }
     } catch (Exception e) {
       System.out.println("Invalid port");
@@ -106,10 +120,12 @@ public class Server {
 
 class ServerConnection extends Thread {
   private static int stonesUsed = 0;
-  private static Socket[] cltSockets_ = new Socket[Constants.MAX_NUM_PLAYERS];
-  private static String[] players_ = new String[Constants.MAX_NUM_PLAYERS];
+  private static Socket[] cltSockets_ = new Socket[Constants.MAX_NUM_PLAYERS2];
+  private static String[] players_ = new String[Constants.MAX_NUM_PLAYERS2];
   private static String stonesData = new String();
   private static boolean taketurn = false;
+  private static int taketurn2 = 0;
+
   // private static final Semaphore mutex = new Semaphore(1);
 
   private BufferedReader in = null;
@@ -143,13 +159,69 @@ class ServerConnection extends Thread {
   public static void setPlayerName(int index, String name) {
     players_[index] = name;
   }
+    public void run2() {
+      System.out.println("int run 2");
+        String area = new String();
+        while (true) {
+            if (Server.getNumOfPlys() != Constants.MAX_NUM_PLAYERS2)
+                continue;
+            try {
+                if (ind_ !=  (taketurn2%3))
+                    continue;
+                if (stonesUsed == Server.numOfStonesEach * 3) {
+                    in.close();
+                    out.close();
+                    System.out.println("Game Over: " + ((Server.getVoronoiGame().RedArea()*2 >
+                                                         Server.getVoronoiGame().BlueArea())?
+                                                        (players_[1] + " wins") : 
+                                                        (players_[0] +" and "+players_[2]+ " wins")));
+                    Server.forceClose();
+                }
+                //Send aggregated data back to client
+                out.println(stonesData+area);
+                System.out.println("#Server# " + stonesData + area + "\n");
+                ++stonesUsed;
+                String line = in.readLine();
+                String strippedLine = line.replace("\n","").replace(" ", "");
+                String[] splitStrs = strippedLine.split(",");
+                int x;
+                int y;
+                if (splitStrs.length == 2) {
+                    x = Integer.parseInt(splitStrs[0]);
+                    y = Integer.parseInt(splitStrs[1]);
+                    if (Server.checkNewStoneThenAdd(x, y)) {
+                        System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
+                                           + y + ")");
+                        stonesData = line + stonesData;
+            // VoronoiGame.artificialMouseClick(x, y, 0.65);
+                        Server.getVoronoiGame().humanPutStone2(x, y, players_[ind_],ind_);
+                        area = " | "
+                            +Double.toString(Server.getVoronoiGame().RedArea()) + ","
+                            +Double.toString(Server.getVoronoiGame().BlueArea());
+                    } else {
+                        System.out.println("Illegal placement! " + players_[ind_] +
+                                           " wasted a stone!");
+                    }
+                } else {
+                    System.out.println("Wrong input, lose this stone!");
+                }
+            } catch (IOException e) {
+                System.out.println("Read failed");
+                System.exit(-1);
+            }
+            taketurn2 = (taketurn2+1) % 3;
+        }
+    }
+    public void run() {
+        if (Server.isThirdPlayer()) {
+            run2();
+            return ;
+        }
 
-  public void run() {
     String area = new String();
     while (true) {
       if (Server.getNumOfPlys() != Constants.MAX_NUM_PLAYERS)
         continue;
-
       try {
         if ((ind_ == 1) ^ taketurn)
           continue;
@@ -195,9 +267,7 @@ class ServerConnection extends Thread {
         System.out.println("Read failed");
         System.exit(-1);
       }
-
       taketurn = !taketurn;
     }
-  }
-
+    }
 }
