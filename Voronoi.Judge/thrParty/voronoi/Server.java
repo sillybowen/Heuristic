@@ -186,7 +186,8 @@ class CompetitionResult{
 	getTimeSum();
 	String s = makeString();
 	try{
-	    BufferedWriter out = new BufferedWriter(new FileWriter("result.txt", true));
+	    BufferedWriter out = new BufferedWriter(new
+            FileWriter("/home/th1133/public_html/result.txt", true));
 	    out.write(s);
 	    out.newLine();
 	    out.close();
