@@ -70,6 +70,42 @@ public class VoronoiGame extends JApplet {
     // System.out.println("Red:"+game.areaTotaleRosso());
     // System.out.println("Bllue:"+game.areaTotaleBlue());
   }
+    String plyName1;
+
+   public void humanPutStone3ply(int x, int y, String plyName,int plyID) {
+      System.out.println(plyName + " put a stone at (" + x + ", " + y + ")");
+      if (move == 0 ) {
+          areaBlu.setText("Blue's ("+plyName+") score");
+          move++;
+          plyName1 = plyName;
+      }
+      else  if (move == 1) {
+          areaRed.setText("Red's ("+plyName+") score");
+          move++;
+      }
+      if (move == 2) {
+          areaBlu.setText("Blue's ("+plyName1+" and "+plyName+") score");
+          move++;
+          plyName1 = plyName;
+      }
+      // sitoCorrente = diagramma.trovaSitoDragged((new
+      //       Point2D.Double(x / zoom, y / zoom)), zoom);
+
+      Cella nuova = new Cella(x, y);
+      aggiungiCella2(nuova,plyID);
+
+      setCampoBlue();
+      setCampoRosso();
+
+      game.revalidate();
+      game.repaint(); 
+      repaint();
+      System.out.println(areaRed.getText() + ": " + game.areaTotaleRosso());
+      System.out.println(areaBlu.getText() + ": " + game.areaTotaleBlue());
+      // System.out.println("Red:"+game.areaTotaleRosso());
+    // System.out.println("Bllue:"+game.areaTotaleBlue());
+  }
+
     public double RedArea()  {
         return game.AreaRed();
     }
@@ -1791,13 +1827,13 @@ public class VoronoiGame extends JApplet {
     {
       if(bOneRound)
       bColore = true;
-    blu.setIcon(redIcon);
+      blu.setIcon(redIcon);
     }
     else
     {
       if(bOneRound)
       bColore = false;
-    blu.setIcon(bluIcon);                    
+      blu.setIcon(bluIcon);                    
     }
     }
     });
@@ -2283,7 +2319,7 @@ public class VoronoiGame extends JApplet {
   {
     diagramma.clear();
     setCampoBlue();
-    setCampoRosso();                 
+    setCampoRosso();
 
     game.revalidate();
     game.repaint();
@@ -2300,6 +2336,29 @@ public class VoronoiGame extends JApplet {
     dim_Y = Integer.parseInt(unInt);
   }
 
+    public void aggiungiCella2(Cella c,int id) {
+        Cella cellaNuova = c;
+        cellaNuova.setColore(bColore);
+        diagramma.aggiungiCella(cellaNuova);
+        if (id == 2) return;
+        if(bOneRound)
+            {
+                if(token == 1)
+                    {
+                        bOneRound = false;
+                        bColore = !bColore;
+                        oneRoundItem.setSelected(false); 
+                        item7.setForeground(Color.black);
+                        item7.setText("OneRound Off");
+                        LABEL_ONEROUND.setVisible(false);
+                    }
+
+                token--;
+                spinner.setValue(new Integer(token));
+            }
+        else
+            bColore = !bColore;
+    }
   public void aggiungiCella(Cella c)
   {
     Cella cellaNuova = c;
