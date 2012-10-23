@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
   char tmpstr[MAXTMPARRLEN];
-  int x = 100, y = 100;
+  int x, y, index;
   setvbuf(stdin, NULL, _IONBF, 0); 
   setvbuf(stdout, NULL, _IONBF, 0);
 
@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     // sleep(5);
 
     if (fgets(tmpstr, MAXTMPARRLEN, stdin) != NULL) {
-      sscanf(tmpstr, "%d,%d", &x, &y);
+      sscanf(tmpstr, "%d %d,%d", &index, &x, &y);
       printf("%d,%d\n", x + 10, y + 10);
     } else {
       break;
