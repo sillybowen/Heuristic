@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
   printf("%s\n", argv[1]);
 
   while (1) {
-    sleep(5);
+    // sleep(5);
 
     if (fgets(tmpstr, MAXTMPARRLEN, stdin) != NULL) {
       sscanf(tmpstr, "%d,%d", &x, &y);

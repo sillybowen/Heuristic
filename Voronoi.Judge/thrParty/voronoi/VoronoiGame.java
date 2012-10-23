@@ -40,6 +40,7 @@ import java.net.URL;
 
 import voronoi.utils.Constants;
 import java.awt.Robot;
+import java.util.concurrent.Semaphore;
 
 public class VoronoiGame extends JApplet {
     int move = 0;
@@ -1764,7 +1765,7 @@ public class VoronoiGame extends JApplet {
     randomButton.setForeground(coloreT);
     randomButton.setToolTipText("Insert 16 points at random");
     diagramma = new Diagramma(dim_X, dim_Y);
-    game = new Pannello(diagramma);
+    game = new Pannello(diagramma, this);
     // Set initial zoom level
     game.setZoom(game.getZoom() * Constants.INIT_GAME_ZOOM_LEVEL);
 
@@ -2428,6 +2429,12 @@ public class VoronoiGame extends JApplet {
     // voro.humanPutStone(750, 100, "ccc");
     return voro;
   }
+
+  public static Semaphore getIsPaintingSemaphore() {
+    return isPainting_;
+  }
+
+  private static final Semaphore isPainting_ = new Semaphore(1);
 
   public static void main(String[] args) {
     isApplication = true;

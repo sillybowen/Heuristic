@@ -19,7 +19,7 @@ import java.awt.Image;
 import java.applet.Applet;
 
 public class Server {
-  static final int numOfStonesEach = Constants.NUM_OF_STONES_EACH;
+  static int numOfStonesEach = Constants.NUM_OF_STONES_EACH;
   private static boolean isApplication = false;
   private static JFrame frameT;
   private static VoronoiGame gameGui;
@@ -30,9 +30,11 @@ public class Server {
   private static boolean thirdPlayer = false;
 
   private ServerSocket serverSocket = null;
-    public static boolean isThirdPlayer() {
-        return thirdPlayer;
-    }
+
+  public static boolean isThirdPlayer() {
+    return thirdPlayer;
+  }
+
   public Server() { this(VORONOI_PORT); }
 
   public Server(int srvPort) {
@@ -44,7 +46,8 @@ public class Server {
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
-    System.out.println("Accepting conns on port: " + srvPort);
+    System.out.println("Game Start:\nNum of Stones Each: " + numOfStonesEach
+        + "\nAccepting conns on port: " + srvPort);
 
     while ((!thirdPlayer&& numOfPlys < Constants.MAX_NUM_PLAYERS)
            ||(thirdPlayer && numOfPlys<Constants.MAX_NUM_PLAYERS2)) {
@@ -69,21 +72,28 @@ public class Server {
   }
 
   public static void main(String[] args) {
-      thirdPlayer = false;
+    thirdPlayer = false;
+    if (args.length < 2) {
+      System.out.println("Format: java -cp compiledClasses/ voronoi.Server"
+          + " srv_port  num_stones_each  num_of_players(2 or 3)");
+      System.exit(1);
+    }
+
     try {
-      if (args.length > 0) {
+      if (args.length > 1) {
         VORONOI_PORT = Integer.parseInt(args[0]);
+        numOfStonesEach = Integer.parseInt(args[1]);
       }
-      if (args.length >1) {
-         if (Integer.parseInt(args[1]) == 3) {
-             thirdPlayer = true;
-             System.out.println("3ply");
-         }
+      if (args.length > 2) {
+        if (Integer.parseInt(args[2]) == 3) {
+          thirdPlayer = true;
+          System.out.println("Sandwich Game: 3 players");
+        }
       }
     } catch (Exception e) {
       System.out.println("Invalid port");
     } finally {
-      Server srv = new Server();
+      Server srv = new Server(VORONOI_PORT);
     }
   }
 
@@ -159,64 +169,73 @@ class ServerConnection extends Thread {
   public static void setPlayerName(int index, String name) {
     players_[index] = name;
   }
-    public void run2() {
-      System.out.println("int run 2");
-        String area = new String();
-        while (true) {
-            if (Server.getNumOfPlys() != Constants.MAX_NUM_PLAYERS2)
-                continue;
-            try {
-                if (ind_ !=  (taketurn2%3))
-                    continue;
-                if (stonesUsed == Server.numOfStonesEach * 3) {
-                    in.close();
-                    out.close();
-                    System.out.println("Game Over: " + ((Server.getVoronoiGame().RedArea()*2 >
-                                                         Server.getVoronoiGame().BlueArea())?
-                                                        (players_[1] + " wins") : 
-                                                        (players_[0] +" and "+players_[2]+ " wins")));
-                    Server.forceClose();
-                }
-                //Send aggregated data back to client
-                out.println(stonesData+area);
-                System.out.println("#Server# " + stonesData + area + "\n");
-                ++stonesUsed;
-                String line = in.readLine();
-                String strippedLine = line.replace("\n","").replace(" ", "");
-                String[] splitStrs = strippedLine.split(",");
-                int x;
-                int y;
-                if (splitStrs.length == 2) {
-                    x = Integer.parseInt(splitStrs[0]);
-                    y = Integer.parseInt(splitStrs[1]);
-                    if (Server.checkNewStoneThenAdd(x, y)) {
-                        System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
-                                           + y + ")");
-                        stonesData = line + stonesData;
+
+  public void run2() {
+    System.out.println("int run 2 (Sandwich Voronoi Game)");
+    String area = new String();
+    while (true) {
+      if (Server.getNumOfPlys() != Constants.MAX_NUM_PLAYERS2)
+        continue;
+      try {
+        if (ind_ !=  (taketurn2%3))
+          continue;
+        if (stonesUsed == Server.numOfStonesEach * 3) {
+          in.close();
+          out.close();
+          System.out.println("Game Over: " + ((Server.getVoronoiGame().RedArea()*2 >
+                  Server.getVoronoiGame().BlueArea())?
+                (players_[1] + " wins") : 
+                (players_[0] +" and "+players_[2]+ " wins")));
+          Server.forceClose();
+        }
+        //Send aggregated data back to client
+        out.println(stonesData+area);
+        System.out.println("#Server# " + stonesData + area + "\n");
+        ++stonesUsed;
+        String line = in.readLine();
+        String strippedLine = line.replace("\n","").replace(" ", "");
+        String[] splitStrs = strippedLine.split(",");
+        int x;
+        int y;
+        if (splitStrs.length == 2) {
+          x = Integer.parseInt(splitStrs[0]);
+          y = Integer.parseInt(splitStrs[1]);
+          if (Server.checkNewStoneThenAdd(x, y)) {
+            System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
+                + y + ")");
+            stonesData = line + stonesData;
             // VoronoiGame.artificialMouseClick(x, y, 0.65);
-                        Server.getVoronoiGame().humanPutStone2(x, y, players_[ind_],ind_);
-                        area = " | "
-                            +Double.toString(Server.getVoronoiGame().RedArea()) + ","
-                            +Double.toString(Server.getVoronoiGame().BlueArea());
-                    } else {
-                        System.out.println("Illegal placement! " + players_[ind_] +
-                                           " wasted a stone!");
-                    }
-                } else {
-                    System.out.println("Wrong input, lose this stone!");
-                }
-            } catch (IOException e) {
-                System.out.println("Read failed");
-                System.exit(-1);
+
+            try {
+              Server.getVoronoiGame().getIsPaintingSemaphore().acquire();
+            } catch (InterruptedException ie) {
+              ie.printStackTrace();
             }
-            taketurn2 = (taketurn2+1) % 3;
+            Server.getVoronoiGame().humanPutStone2(x, y, players_[ind_],ind_);
+
+            area = " | "
+              +Double.toString(Server.getVoronoiGame().RedArea()) + ","
+              +Double.toString(Server.getVoronoiGame().BlueArea());
+          } else {
+            System.out.println("Illegal placement! " + players_[ind_] +
+                " wasted a stone!");
+          }
+        } else {
+          System.out.println("Wrong input, lose this stone!");
         }
+      } catch (IOException e) {
+        System.out.println("Read failed");
+        System.exit(-1);
+      }
+      taketurn2 = (taketurn2+1) % 3;
     }
-    public void run() {
-        if (Server.isThirdPlayer()) {
-            run2();
-            return ;
-        }
+  }
+
+  public void run() {
+    if (Server.isThirdPlayer()) {
+      run2();
+      return ;
+    }
 
     String area = new String();
     while (true) {
@@ -251,10 +270,17 @@ class ServerConnection extends Thread {
                 + y + ")");
             stonesData = line + stonesData;
             // VoronoiGame.artificialMouseClick(x, y, 0.65);
+
+            try {
+              Server.getVoronoiGame().getIsPaintingSemaphore().acquire();
+            } catch (InterruptedException ie) {
+              ie.printStackTrace();
+            }
             Server.getVoronoiGame().humanPutStone(x, y, players_[ind_]);
+
             area = " | "
-                +Double.toString(Server.getVoronoiGame().RedArea()) + ","
-                +Double.toString(Server.getVoronoiGame().BlueArea());
+              +Double.toString(Server.getVoronoiGame().RedArea()) + ","
+              +Double.toString(Server.getVoronoiGame().BlueArea());
           } else {
             System.out.println("Illegal placement! " + players_[ind_] +
                 " wasted a stone!");
@@ -269,5 +295,5 @@ class ServerConnection extends Thread {
       }
       taketurn = !taketurn;
     }
-    }
+  }
 }

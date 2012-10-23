@@ -16,13 +16,17 @@ import java.awt.image.BufferedImage;
 import java.awt.print.*;
 import javax.print.*;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Pannello extends JPanel implements Printable {
+  // Reference to Owning VoronoiGame() class
+  private final VoronoiGame parVoroniGame_;
   /**
    * Costruisce una panello disegnando un diagramma di voronoi.
    * @param diagramma  il Diagramma di Voronoi da disegnare
    */
-  public Pannello(Diagramma  unDiagramma)
-  {
+  public Pannello(Diagramma  unDiagramma, VoronoiGame parVoroniGame) {
+    parVoroniGame_ = parVoroniGame;
     voronoi = unDiagramma;
   }
 
@@ -212,7 +216,20 @@ public class Pannello extends JPanel implements Printable {
       g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
 
-    disegnaCelle(g2);
+    // System.out.println("Calling paintComponent: " + componentsPaint + " th time!");
+    if (componentsPaint.incrementAndGet() < 3) {  // Init game painting
+      try {
+        parVoroniGame_.getIsPaintingSemaphore().acquire();
+      } catch (InterruptedException ie) {
+        ie.printStackTrace();
+      }
+      disegnaCelle(g2);
+      parVoroniGame_.getIsPaintingSemaphore().release();
+    } else {  // Puting stone painting
+      disegnaCelle(g2);
+      parVoroniGame_.getIsPaintingSemaphore().release();
+    }
+
 
     if(viewGriglia)  griglia.disegna(g2);
     if(isCancellabile) disegnaAreaCancellabile(g2);        
@@ -222,29 +239,7 @@ public class Pannello extends JPanel implements Printable {
     disegnaArena(g2);
   }
 
-  /*
-     public void disegnaSiti(Graphics2D gg)
-     {
-     Graphics2D g3 = gg;
-     Cella cella = null;
-     int x, y; // Controllare se int vanno bene, forse meglio double!!!      
-
-     Iterator enum = voronoi.getCelle();     
-     while(enum.hasNext())
-     {
-     cella = (Cella) enum.next();
-     x = (int) (cella.getKernel().getX()*zoom);
-     y = (int) (cella.getKernel().getY()*zoom);
-     Ellipse2D.Double circle = new Ellipse2D.Double(x, y, diametro, diametro);
-     g3.setPaint(Color.yellow);
-     g3.setStroke(new BasicStroke(1.0F));
-     g3.fill(circle);
-     }
-     }
-     */
-
-  public void disegnaCelle(Graphics2D gg)
-  {
+  public void disegnaCelle(Graphics2D gg) {
     Graphics2D g3 = gg;
     ArrayList frontiere;
     Frontiera frontiera;
@@ -253,8 +248,7 @@ public class Pannello extends JPanel implements Printable {
     int x, y = 0;
 
     Iterator listaSiti = voronoi.getCelle();
-    while(listaSiti.hasNext())
-    {
+    while(listaSiti.hasNext()) {
       ArrayList lista;
       cellaFine = (Cella)listaSiti.next();
       if(cellaFine.getColore())
@@ -661,7 +655,8 @@ public class Pannello extends JPanel implements Printable {
   }
 
 
-
+  // Alternating semaphore release
+  private static AtomicInteger componentsPaint = new AtomicInteger();
 
   private Point2D.Double kernel; //Sperimentale!!!
   private Graphics2D g2;
