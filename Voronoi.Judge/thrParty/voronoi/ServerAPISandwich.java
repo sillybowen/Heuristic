@@ -203,7 +203,8 @@ class ServerConnection extends Thread {
           if (Server.checkNewStoneThenAdd(x, y)) {
             System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
                 + y + ")");
-            stonesData = strippedLine + " " + stonesData;
+            stonesData = ((ind_ + 1) % (Server.getNumOfPlys())) + " "
+              + strippedLine + "," + ind_ + " " + stonesData;
             // VoronoiGame.artificialMouseClick(x, y, 0.65);
 
             try {
@@ -268,9 +269,8 @@ class ServerConnection extends Thread {
           if (Server.checkNewStoneThenAdd(x, y)) {
             System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
                 + y + ")");
-            // stonesData = ((ind_ + 1) % (Server.getNumOfPlys())) + " "
-            //   + strippedLine + "," + ind_ + " " + stonesData;
-            stonesData = strippedLine + " " + stonesData;
+            stonesData = ((ind_ + 1) % (Server.getNumOfPlys())) + " "
+              + strippedLine + "," + ind_ + " " + stonesData;
             // VoronoiGame.artificialMouseClick(x, y, 0.65);
 
             try {
