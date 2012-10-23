@@ -284,8 +284,8 @@ class ServerConnection extends Thread {
             Server.getVoronoiGame().humanPutStone2(x, y, players_[ind_],ind_);
 
             area = " | "
-              +Double.toString(Server.getVoronoiGame().RedArea()) + ","
-              +Double.toString(Server.getVoronoiGame().BlueArea());
+              +Double.toString(Server.getVoronoiGame().RedArea() / 4.0) + ","
+              +Double.toString(Server.getVoronoiGame().BlueArea() / 4.0);
           } else {
             System.out.println("Illegal placement! " + players_[ind_] +
                 " wasted a stone!");
@@ -361,8 +361,8 @@ class ServerConnection extends Thread {
             Server.getVoronoiGame().humanPutStone(x, y, players_[ind_]);
 
             area = " | "
-              +Double.toString(Server.getVoronoiGame().RedArea()) + ","
-              +Double.toString(Server.getVoronoiGame().BlueArea());
+              +Double.toString(Server.getVoronoiGame().RedArea() / 4.0) + ","
+              +Double.toString(Server.getVoronoiGame().BlueArea() / 4.0);
           } else {
             System.out.println("Illegal placement! " + players_[ind_] +
                 " wasted a stone!");
