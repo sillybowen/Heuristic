@@ -5,6 +5,7 @@ import java.io.*;
 import java.nio.channels.*;
 import java.util.*;
 import java.util.concurrent.Semaphore;
+import java.util.Vector;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.mail.*;
@@ -31,9 +32,27 @@ public class Server {
 
   private ServerSocket serverSocket = null;
 
+  private static Vector<Long> blue_time_vec = new Vector<Long>();
+  private static Vector<Long> red_time_vec = new Vector<Long>();
+  private static long send_time = System.currentTimeMillis();
+
   public static boolean isThirdPlayer() {
     return thirdPlayer;
   }
+
+    public static void setInitialTime(){
+	send_time = System.currentTimeMillis();
+    }
+
+    public static int getRespondTime(int id){
+	long respond_time = System.currentTimeMillis() - send_time;
+	if(id == 0) // blue
+	    blue_time_vec.add(respond_time);
+	else
+	    red_time_vec.add(respond_time);
+	send_time = System.currentTimeMillis();
+	return (int)(respond_time / 1000);
+    }
 
   public Server() { this(VORONOI_PORT); }
 
@@ -68,7 +87,7 @@ public class Server {
       ++numOfPlys;
       System.out.println("# of ply"+numOfPlys);
     }
-    System.out.println("outside while");
+    Server.setInitialTime();
   }
 
   public static void main(String[] args) {
@@ -198,6 +217,7 @@ class ServerConnection extends Thread {
         int x;
         int y;
         if (splitStrs.length == 2) {
+
           x = Integer.parseInt(splitStrs[0]);
           y = Integer.parseInt(splitStrs[1]);
           if (Server.checkNewStoneThenAdd(x, y)) {
@@ -264,11 +284,15 @@ class ServerConnection extends Thread {
         int x;
         int y;
         if (splitStrs.length == 2) {
+
+	    // Set time
+	    int respond_time = Server.getRespondTime(ind_);
+	    
           x = Integer.parseInt(splitStrs[0]);
           y = Integer.parseInt(splitStrs[1]);
           if (Server.checkNewStoneThenAdd(x, y)) {
             System.out.println("Server got From ply: " + ind_ + " : (" + x + ", "
-                + y + ")");
+			       + y + ") ; respond time : " + respond_time + "(s)");
             stonesData = ((ind_ + 1) % (Server.getNumOfPlys())) + " "
               + strippedLine + "," + ind_ + " " + stonesData;
             // VoronoiGame.artificialMouseClick(x, y, 0.65);
