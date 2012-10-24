@@ -149,7 +149,7 @@
 	<div id="shutdown_popup" class="popup">
 	     <center>
 		<br><br>	     
-	   	<font size="30" color="blue"><b>Congraturation!!!!</b></font><br><br><br><br>
+	   	<font size="30" color="blue"><b>Congratulation!!!!</b></font><br><br><br><br>
 	        <b><?php echo $winner; ?></b>
 		
 	     </center>
