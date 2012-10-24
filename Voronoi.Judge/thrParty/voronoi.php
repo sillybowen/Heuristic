@@ -82,9 +82,14 @@
    $team2_name = $line1[3];
    $team1_score = $line1[1] + $line2[4];
    $team2_score = $line1[4] + $line2[1];
-   $team1_time = (int)(($line1[2] + $line2[5])/1000);
-   $team2_time = (int)(($line1[5] + $line2[2])/1000);
+   //$team1_time = (int)(($line1[2] + $line2[5])/1000);
+   //$team2_time = (int)(($line1[5] + $line2[2])/1000);
 
+   $team1_time1 = (int)($line1[2]/1000);
+   $team1_time2 = (int)($line2[5]/1000);
+   $team2_time1 = (int)($line1[5]/1000);
+   $team2_time2 = (int)($line2[2]/1000);
+	
    $name_check = false;
    if(strcmp($line1[0], $line2[3]) || strcmp($line1[3], $line2[0])){
 	$name_check = true;
@@ -119,13 +124,17 @@
 		    <td>
 			<br><br><br>
 			<font size='10'>".number_format($team1_score)."</font><br><br>
-		    	<font size='5'>".(int)($team1_time/60)."(m) ".(int)($team1_time%60)."(s)</font>
+		    	<font size='5'>".(int)($team1_time1/60)."(m) ".(int)($team1_time1%60)."(s)<br><br>
+			               ".(int)($team1_time2/60)."(m) ".(int)($team1_time2%60)."(s)
+			</font>
 			<br><br><br>
 		    </td>
 		    <td>
 			<br><br><br>
 			<font size='10'>".number_format($team2_score)."</font><br><br>
-		    	<font size='5'>".(int)($team2_time/60)."(m) ".(int)($team2_time%60)."(s)</font>
+		    	<font size='5'>".(int)($team2_time1/60)."(m) ".(int)($team2_time1%60)."(s)<br><br>
+			               ".(int)($team2_time2/60)."(m) ".(int)($team2_time2%60)."(s)
+			</font>
 			<br><br><br>
 		    </td>
 		 </tr>
