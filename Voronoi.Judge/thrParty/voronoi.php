@@ -125,7 +125,7 @@
 		    <td>
 			<br><br><br>
 			<font size='10'>".number_format($team2_score)."</font><br><br>
-		    	<font size='5'>".(int)($team1_time/60)."(m) ".(int)($team1_time%60)."(s)</font>
+		    	<font size='5'>".(int)($team2_time/60)."(m) ".(int)($team2_time%60)."(s)</font>
 			<br><br><br>
 		    </td>
 		 </tr>
