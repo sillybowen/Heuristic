@@ -21,6 +21,7 @@ public:
   enum game_status { playing, HunterWin, PreyWin, equal };
 
 private:
+  // -----------incomplete
   void readSrvUpdateStates(const string& fromSrv);
   ClientSocket* registerSrv(int srv_port);
 

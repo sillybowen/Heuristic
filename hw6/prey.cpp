@@ -7,6 +7,6 @@ void Prey::output() const {
 
 bool Prey::isHunter() const { return false; }
 
-bool Prey::tryMove() {
+Moveable::HuntPreyOutput Prey::tryMove() {
   return true;
 }

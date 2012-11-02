@@ -12,7 +12,7 @@ public:
   bool isHunter() const;
   // Hunter cannot control his move directly. He can only change his direction by
   // bouncing, so this method is mainly for creating/removing walls
-  bool tryMove();
+  HuntPreyOutput tryMove();
 
 private:
 };

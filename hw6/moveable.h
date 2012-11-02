@@ -5,12 +5,26 @@
 
 class Moveable {
 public:
+  union HuntPreyOutput {
+    struct {
+      int x1, y1, x2, y2;
+    };
+    struct {
+      int dx, dy;
+    };
+    HuntPreyOutput(int xx1, int yy1, int xx2, int yy2)
+      : x1(xx1), y1(yy1), x2(xx2), y2(yy2) { }
+    HuntPreyOutput(int ddx, int ddy) : dx(ddx), dy(ddy), x2(-1), y2(-1) { }
+  private:
+    HuntPreyOutput();  // Forbidden this method
+  };
+
   Moveable(int initx, int inity, int nn, int mm)
     : x_(initx), y_(inity), N_(nn), M_(mm) { }
   virtual ~Moveable();
   virtual void output() const = 0;
   virtual bool isHunter() const = 0;
-  virtual bool tryMove() = 0;
+  virtual HuntPreyOutput tryMove() = 0;
 
   double distance(Moveable* anoObj) {
     double sumSquares = double((anoObj->x_ - x_) * (anoObj->x_ - x_))

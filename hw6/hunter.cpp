@@ -11,5 +11,5 @@ bool Hunter::isHunter() const {
   return true;
 }
 
-bool Hunter::tryMove() {
+Moveable::HuntPreyOutput Hunter::tryMove() {
 }

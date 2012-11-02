@@ -10,7 +10,7 @@ public:
 
   void output() const;
   bool isHunter() const;
-  bool tryMove();
+  HuntPreyOutput tryMove();
 
 private:
 };
