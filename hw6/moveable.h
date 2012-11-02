@@ -19,29 +19,12 @@ public:
     HuntPreyOutput();  // Forbidden this method
   };
 
-  Moveable(int initx, int inity, int nn, int mm)
-    : x_(initx), y_(inity), N_(nn), M_(mm) { }
-  virtual ~Moveable();
-  virtual void output() const = 0;
-  virtual bool isHunter() const = 0;
-  virtual HuntPreyOutput tryMove() = 0;
-
-  double distance(Moveable* anoObj) {
-    double sumSquares = double((anoObj->x_ - x_) * (anoObj->x_ - x_))
-      + double((anoObj->y_ - y_) * (anoObj->y_ - y_));
-    return sqrt(sumSquares);
-  };
-
   struct Wall {
+    // If 0 <= index <= 3, this wall is game border, NO thickness, eg: (0, 0, 500, 0)
     Wall(int stx, int sty, int endx, int endy, int index)
-      : wid_(index), x1(stx), y1(sty), x2(endx), y2(endy) {
-        if (y1 == y2) {  // Wall is horizontal
-
-        }
-      }
+        : wid_(index), x1(stx), y1(sty), x2(endx), y2(endy) { }
     bool willHitThisWall(Moveable* obj, int dx, int dy) {  // dx, dy moving direction
       double newx = double(obj->x_ + dx), newy = double(obj->y_ + dy);
-
       if (newx <= double(x2) + 0.5 && newx >= double(x1) - 0.5 &&
           newy <= double(y2) + 0.5 && newy >= double(y1) - 0.5) {
         return true;
@@ -54,11 +37,24 @@ public:
     const int x1, y1, x2, y2;  // Wall starts from (x1, y1) to (x2, y2)
   };
 
+  Moveable(int initx, int inity, int nn, int mm)
+    : x_(initx), y_(inity), N_(nn), M_(mm) { }
+  virtual ~Moveable() { }
+  virtual void output() const = 0;
+  virtual bool isHunter() const = 0;
+  virtual HuntPreyOutput tryMove() = 0;
+
+  double distance(Moveable* anoObj) {
+    double sumSquares = double((anoObj->x_ - x_) * (anoObj->x_ - x_))
+      + double((anoObj->y_ - y_) * (anoObj->y_ - y_));
+    return sqrt(sumSquares);
+  };
+
 protected:
   int x_;
   int y_;
-  const int N_;
-  const int M_;
+  const int N_;  // Hunter creat/rm a wall no more frequently than every N timesteps
+  const int M_;  // At any given time the maximum number of walls there can be is M
 };
 
 #endif  // MOVEABLE_HEADER_

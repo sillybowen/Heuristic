@@ -2,6 +2,8 @@
 #include <climits>
 #include <iostream>
 #include "evasion.h"
+#include "hunter.h"
+#include "prey.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -27,7 +29,8 @@ int main(int argc, char* argv[]) {
     cout << "Prey clt N= " << Ntimesteps << " ;M= " << MmaxWalls
       << " ;teamName= " << teamName << " ;srv_port= " << srv_port << endl;
   }
-  Evasion* pEva = new Evasion(pMyObj, Ntimesteps, MmaxWalls);
+  Evasion* pEva = new Evasion(pMyObj, Ntimesteps, MmaxWalls, srv_port);
+  pEva->dumpAdjWallsMatrixGraph();
 
   // Start game
   pEva->startGame(teamName);

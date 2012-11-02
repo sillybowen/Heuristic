@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ $# -lt 4 ]
+then
+	echo "Usage: start_server N M L P"
+	echo "    N: H may create or remove a wall not more frequently than every N time steps."
+	echo "    M: At any given time the maximum number of walls there can be is M."
+	echo "    L: If L >= 0, GUI is enabled. Otherwise, GUI is disabled."
+	echo "    P: Listen port."
+	echo "Example:"
+	echo "    start_server 10 5 -1 12345"
+	exit 1
+fi
+
+java -cp bin noon.EvasionServer $@
