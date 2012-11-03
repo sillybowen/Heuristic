@@ -10,6 +10,10 @@
 using std::string;
 using std::vector;
 
+struct Pos{
+  int x, y;
+};
+
 class Evasion {
 public:
   // Transfer ownership of @moveable to this class
@@ -38,6 +42,9 @@ private:
   vector<Moveable::Wall*> hor_walls_;
   vector<Moveable::Wall*> ver_walls_;
   int**                   adj_walls_;
+  Pos h_pos;  // Hunter Position
+  Pos p_pos;  // Prey Position
+  int wall_index;
 };
 
 #endif

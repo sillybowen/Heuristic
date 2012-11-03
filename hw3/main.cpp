@@ -96,8 +96,12 @@ void output() {
 
 }
 int main() {
+  clock_t t1,t2;
+  t1 = clock();
   init();
   work();
   output();
   workdone();
+  t2 = clock();
+  //  cout<<((float)t2-float(t1))/CLOCKS_PER_SEC<<endl;
 }

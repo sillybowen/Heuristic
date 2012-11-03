@@ -29,6 +29,7 @@ Evasion::Evasion(Moveable* moveable, int n, int m, int srv_port)
     adj_walls_[i][(i + 1) % 4] = 1;
     adj_walls_[(i + 1) % 4][i] = 1;
   }
+  wall_index = 4;
 }
 
 Evasion::~Evasion() {
@@ -45,7 +46,7 @@ int Evasion::startGame(string& teamName) {
   int gameResult = playing;
   string fromSrv, fromPly;
   teamName.push_back('\n');
-  
+
   try {
     (*arch_clt_) << teamName;
 
@@ -53,6 +54,8 @@ int Evasion::startGame(string& teamName) {
       (*arch_clt_) >> fromSrv;
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
+
+
     } while (1);
   } catch (SocketException& se) {
     assert(false);
@@ -66,6 +69,34 @@ void Evasion::readSrvUpdateStates(const string& fromSrv) {
   stringstream ss;
   ss << fromSrv;
 
+  Moveable::Wall *wall;
+  string temp;
+  while(!ss.eof()){
+    ss >> temp;
+    if(temp == "H"){
+      ss >> h_pos.x;
+      ss >> h_pos.y;
+    }else if(temp == "P"){
+      ss >> p_pos.x;
+      ss >> p_pos.y;
+    }else if(temp == "W" || temp == ","){
+      while(true){
+	int x1, y1, x2, y2;
+	ss >> x1;
+	ss >> y1;
+	ss >> x2;
+	ss >> y2;
+	if(y1 == y2){
+	  hor_walls_.push_back(new Moveable::Wall(x1, y1, x2, y2, wall_index++));
+	}else if(x1 == x2){
+	  ver_walls_.push_back(new Moveable::Wall(x1, y1, x2, y2, wall_index++));
+	}
+	if(ss.get() != ',')
+	  break;
+      }
+    }
+  }
+  /*
   int tmp, wt, gamePos, ind = 0;
   while ((tmp = ss.get()) != '|');
 
@@ -76,6 +107,7 @@ void Evasion::readSrvUpdateStates(const string& fromSrv) {
 
     ++ind;
   }
+  */
 }
 
 // DFS adj_walls_ matrix graph, find all undirected circles
