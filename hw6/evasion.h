@@ -19,6 +19,7 @@ public:
   int startGame(string& teamName);
   // Listen to socket to get other player's move
   bool otherPlyMove();
+  void findWallCircles();
 
   enum game_status { playing, HunterWin, PreyWin, equal };
 

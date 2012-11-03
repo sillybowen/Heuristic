@@ -10,6 +10,8 @@ using std::setw;
 
 Evasion::Evasion(Moveable* moveable, int n, int m, int srv_port)
     : N_(n), M_(m), my_obj_(moveable), arch_clt_(registerSrv(srv_port)) {
+  my_obj_->setEvadeGamePtr(this);
+  // Insert game borders as special walls (No thickness)
   hor_walls_.push_back(new Moveable::Wall(0, 0, 500, 0, 0));
   hor_walls_.push_back(new Moveable::Wall(0, 500, 500, 500, 2));
   ver_walls_.push_back(new Moveable::Wall(0, 0, 0, 500, 1));
@@ -21,14 +23,6 @@ Evasion::Evasion(Moveable* moveable, int n, int m, int srv_port)
     memset(adj_walls_[i], 0, sizeof(int) * (M_ + 4));
   }
   // Set init adjacency between game borders
-  // adj_walls_[0][1] = 0;
-  // adj_walls_[1][0] = 0;
-  // adj_walls_[0][3] = 0;
-  // adj_walls_[3][0] = 0;
-  // adj_walls_[1][2] = 0;
-  // adj_walls_[2][1] = 0;
-  // adj_walls_[2][3] = 0;
-  // adj_walls_[3][2] = 0;
   for (int i = 1; i < 4; ++i) {
     adj_walls_[i - 1][i] = 1;
     adj_walls_[i][i - 1] = 1;
@@ -82,6 +76,10 @@ void Evasion::readSrvUpdateStates(const string& fromSrv) {
 
     ++ind;
   }
+}
+
+// DFS adj_walls_ matrix graph, find all undirected circles
+void Evasion::findWallCircles() {
 }
 
 // Register with the architecture server

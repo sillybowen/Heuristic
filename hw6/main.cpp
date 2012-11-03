@@ -32,6 +32,22 @@ int main(int argc, char* argv[]) {
   Evasion* pEva = new Evasion(pMyObj, Ntimesteps, MmaxWalls, srv_port);
   pEva->dumpAdjWallsMatrixGraph();
 
+  /* Test for wall-adjacency function
+  char tmp = ' ';
+  int x1, y1, x2, y2;
+  Moveable::Wall staticWall(100, 100, 200, 100, 0);
+  while (tmp != 'q') {
+    cout << "Enter a wall: x1 y1  x2 y2: ";
+    cin >> x1 >> y1 >> x2 >> y2;
+    Moveable::Wall newWall(x1, y1, x2, y2, 1);
+    cout << "Created a wall: (" << newWall.x1 << ", " << newWall.y1 << ") -> ("
+      << newWall.x2 << ", " << newWall.y2 << ")  Contact? "
+      << staticWall.isTwoWallAdjacent(&newWall, x1, y1, x2, y2) << endl;
+    cout << "Enter anything to continue, q to quit: ";
+    cin >> tmp;
+  }
+  */
+
   // Start game
   pEva->startGame(teamName);
 

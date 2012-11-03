@@ -1,12 +1,12 @@
 .SUFFIXES: .h .o .cpp
 
-CC = ClientSocket.cpp Socket.cpp evasion.cpp hunter.cpp prey.cpp main.cpp
+CC = ClientSocket.cpp Socket.cpp moveable.cpp evasion.cpp hunter.cpp prey.cpp main.cpp
 CC = g++
 #CXXFLAGS = -O2 -std=c++0x
 CXXFLAGS = -g
 socklibs = -lnsl
 LIBS = 
-OBJS = ClientSocket.o Socket.o evasion.o hunter.o prey.o main.o
+OBJS = ClientSocket.o Socket.o moveable.o evasion.o hunter.o prey.o main.o
 CCEXEC = evasion
 
 all:	$(CCEXEC)
