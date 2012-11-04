@@ -1,4 +1,6 @@
+#include <iostream>
 #include "moveable.h"
+using std::cout;
 
 /* Wall struct methods implementation */
 Moveable::Wall::Wall(int stx, int sty, int endx, int endy, int index)
@@ -19,15 +21,17 @@ bool Moveable::Wall::willHitThisWall(const Moveable* obj, int dx, int dy) const 
 int Moveable::Wall::isTwoWallAdjacent(const Wall* anoWall, int& p1x, int& p1y,
     int& p2x, int& p2y) const {
   if (x1 == x2 && (anoWall->x1 == anoWall->x2)) {  // Two vertical walls
-    if (abs(x1 - anoWall->x1) == 1) {  // Adjacent
+    if (abs(x1 - anoWall->x1) == 1 && anoWall->y2 + 1 >= y1 &&
+        anoWall->y1 - 1 <= y2) {  // Adjacent
       return 1;
     } else if (abs(x1 - anoWall->x1) == 0 &&
         (anoWall->y2 - y1 == -1 || y2 - anoWall->y1 == -1)) { // two segments of a line
       return 1;
-    } else if (abs(x1 - anoWall->x1) > 1) {  // Not adj
-      return 0;
-    } else {
+    } else if (abs(x1 - anoWall->x1) == 0 && anoWall->y2 >= y1 &&
+        anoWall->y1 <= y2) {  // Collision
       return -1;
+    } else {
+      return 0;
     }
   } else if (y1 == y2 && (anoWall->y1 == anoWall->y2)) {  // Two horizontal walls
     if (abs(y1 - anoWall->y1) == 1 &&
@@ -43,21 +47,24 @@ int Moveable::Wall::isTwoWallAdjacent(const Wall* anoWall, int& p1x, int& p1y,
       return 0;
     }
   } else if (x1 == x2 && (anoWall->y1 == anoWall->y2)) {  // anoWall hori, this vert
-    if ((((y2 - anoWall->y1) == -1 || (anoWall->y1 - y1) == -1)) &&
-        (x1 - anoWall->x1) >= -1 && (x1 - anoWall->x2) <= 1) {
+    if (((((y2 - anoWall->y1) == -1 || (anoWall->y1 - y1) == -1)) &&
+        (x1 - anoWall->x1) >= -1 && (x1 - anoWall->x2) <= 1) || (anoWall->y1 >= y1 &&
+        anoWall->y1 <= y2 && (anoWall->x2 == x1 - 1 || anoWall->x1 == x1 + 1))) {
       return 1;
-    } else if ((y2 - anoWall->y1) > -1 && (y1 - anoWall->y1) < 1 &&
-        (x1 - anoWall->x1) >= -1 && (x1 - anoWall->x2) <= 1) {  // Conflict
+    } else if (anoWall->y1 <= y2 && anoWall->y1 >= y1 &&
+        anoWall->x1 <= x1 && anoWall->x2 >= x1) {  // Conflict
       return -1;
     } else {
       return 0;
     }
   } else {  // anoWall vertical, this horizontal
-    if ((((y2 - anoWall->y1) == -1 || (anoWall->y1 - y1) == 1)) &&
-        (x2 - anoWall->x1) >= -1 && (x1 - anoWall->x2) <= 1) {
+    if (((((y2 - anoWall->y2) == 1 || (anoWall->y1 - y1) == 1)) &&
+        (x2 - anoWall->x1) >= -1 && (x1 - anoWall->x1) <= 1) ||
+        ((x2 - anoWall->x1 == -1 || x1 - anoWall->x1 == 1) && y2 - anoWall->y1 >= -1
+         && y2 - anoWall->y2 <= 1)) {
       return 1;
     } else if ((y2 - anoWall->y1) > -1 && (anoWall->y2 - y1) > -1 &&
-        (x2 - anoWall->x1) >= -1 && (x1 - anoWall->x2) <= 1) {
+        (x2 - anoWall->x1) > -1 && (x1 - anoWall->x2) < 1) {
       return -1;
     } else {
       return 0;
