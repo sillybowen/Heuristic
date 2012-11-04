@@ -46,7 +46,7 @@ int Evasion::startGame(string& teamName) {
   int gameResult = playing;
   string fromSrv, fromPly;
   teamName.push_back('\n');
-
+  
   try {
     (*arch_clt_) << teamName;
 
@@ -55,7 +55,9 @@ int Evasion::startGame(string& teamName) {
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
+      my_obj_->tryMove();
 
+   
     } while (1);
   } catch (SocketException& se) {
     assert(false);
@@ -68,6 +70,13 @@ int Evasion::startGame(string& teamName) {
 void Evasion::readSrvUpdateStates(const string& fromSrv) {
   stringstream ss;
   ss << fromSrv;
+  // Initialization ; because walls can be created/removed.
+  hor_walls_.clear();
+  ver_walls_.clear();
+  hor_walls_.push_back(new Moveable::Wall(0, 0, 500, 0, 0));
+  hor_walls_.push_back(new Moveable::Wall(0, 500, 500, 500, 2));
+  ver_walls_.push_back(new Moveable::Wall(0, 0, 0, 500, 1));
+  ver_walls_.push_back(new Moveable::Wall(500, 0, 500, 500, 3));
 
   Moveable::Wall *wall;
   string temp;

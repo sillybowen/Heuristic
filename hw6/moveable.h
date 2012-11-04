@@ -2,6 +2,9 @@
 #define MOVEABLE_HEADER_
 #include <cstdlib>
 #include <cmath>
+#include <vector>
+
+using std::vector;
 
 class Evasion;
 class Moveable {
@@ -32,8 +35,12 @@ public:
     const int x1, y1, x2, y2;  // Wall starts from (x1, y1) to (x2, y2)
   };
 
+  struct Pos{
+    int x, y;
+  };
+
   Moveable(int initx, int inity, int nn, int mm);
-  virtual ~Moveable() { }
+  virtual ~Moveable(){}
   virtual void output() const = 0;
   virtual bool isHunter() const = 0;
   virtual HuntPreyOutput tryMove() = 0;
@@ -47,6 +54,7 @@ protected:
   const int N_;  // Hunter creat/rm a wall no more frequently than every N timesteps
   const int M_;  // At any given time the maximum number of walls there can be is M
   Evasion*  evade_game_;
+
 };
 
 #endif  // MOVEABLE_HEADER_
