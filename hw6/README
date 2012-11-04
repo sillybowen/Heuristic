@@ -1,0 +1,2 @@
+Please install gtest for adj_wall_test.cpp
+Use "apt or yum" depository for installing gtest

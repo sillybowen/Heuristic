@@ -1,5 +1,6 @@
 #include <iostream>
 #include "hunter.h"
+#include "evasion.h"
 
 using std::cout;
 using std::endl;
@@ -11,6 +12,7 @@ void Hunter::output() const {
 }
 
 bool Hunter::isHunter() const {
+  evade_game_->dumpAdjWallsMatrixGraph();
   return true;
 }
 

@@ -8,8 +8,10 @@ socklibs = -lnsl
 LIBS = 
 OBJS = ClientSocket.o Socket.o moveable.o evasion.o hunter.o prey.o bowen_hunter.o bowen_prey.o jinil_hunter.o jinil_prey.o main.o
 CCEXEC = evasion
+MOVEABLETESTFILE = adj_wall_test.cpp
+MOVEABLETEST = moveable_test
 
-all:	$(CCEXEC)
+all:	$(CCEXEC) $(MOVEABLETEST)
 
 $(CCEXEC):	$(OBJS) makefile
 	@echo Linking $@ . . .
@@ -19,10 +21,13 @@ $(CCEXEC):	$(OBJS) makefile
 	@echo Compiling $< . . .
 	$(CC) $(CXXFLAGS) $<
 
+$(MOVEABLETEST): $(MOVEABLETESTFILE)
+	$(CC) $(MOVEABLETESTFILE) moveable.o -lgtest -lpthread -o $(MOVEABLETEST)
+
 run:	all
 	./$(CCEXEC)
 
 clean:
 	rm -f $(OBJS)
-	rm -f $(CCEXEC)
+	rm -f $(CCEXEC) $(MOVEABLETEST)
 	rm -f core
