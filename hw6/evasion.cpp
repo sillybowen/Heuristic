@@ -46,7 +46,7 @@ int Evasion::startGame(string& teamName) {
   int gameResult = playing;
   string fromSrv, fromPly;
   teamName.push_back('\n');
-
+  
   try {
     (*arch_clt_) << teamName;
 
@@ -55,8 +55,9 @@ int Evasion::startGame(string& teamName) {
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
-      my_obj_->updateStates(hor_walls_, ver_walls_, h_pos, p_pos);
+      my_obj_->tryMove();
 
+   
     } while (1);
   } catch (SocketException& se) {
     assert(false);
