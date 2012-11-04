@@ -15,4 +15,5 @@ bool Jinil_Hunter::isHunter() const {
 }
 
 Moveable::HuntPreyOutput Jinil_Hunter::tryMove() {
+  
 }

@@ -70,6 +70,13 @@ int Moveable::Wall::isTwoWallAdjacent(const Wall* anoWall, int& p1x, int& p1y,
 Moveable::Moveable(int initx, int inity, int nn, int mm)
   : x_(initx), y_(inity), N_(nn), M_(mm), evade_game_(NULL) { }
 
+Moveable::~Moveable(){
+  hor_walls_.clear();
+  ver_walls_.clear();
+  h_pos_history.clear();
+  p_pos_history.clear();
+}
+
 double Moveable::distance(const Moveable* anoObj) const {
   double sumSquares = double((anoObj->x_ - x_) * (anoObj->x_ - x_))
     + double((anoObj->y_ - y_) * (anoObj->y_ - y_));
@@ -77,3 +84,12 @@ double Moveable::distance(const Moveable* anoObj) const {
 }
 
 void Moveable::setEvadeGamePtr(Evasion* pEva) { evade_game_ = pEva; }
+
+void Moveable::updateStates(vector<Wall*> hor_walls, vector<Wall*> ver_walls, Pos H, Pos P){
+  hor_walls_ = hor_walls;
+  ver_walls_ = ver_walls;
+  h_pos = H;
+  p_pos = P;
+  h_pos_history.push_back(H);
+  p_pos_history.push_back(P);
+}
