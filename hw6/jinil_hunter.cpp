@@ -51,12 +51,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(h_cur.x, -1);
-	  return;
+	  if(checkCreateWallSafe(h_cur.x, -1)){
+	    createWall(h_cur.x, -1);
+	    return;
+	  }
 	}
       }else if(h_cur.y == p_cur.y-2){
-	createWall(-1, h_cur.y);
-	return;
+	if(checkCreateWallSafe(-1, h_cur.y)){
+	  createWall(-1, h_cur.y);
+	  return;
+	}
       }
       break;
     case LRD_DOWN:
@@ -79,12 +83,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(-1, h_cur.y);
-	  return;
+	  if(checkCreateWallSafe(-1, h_cur.y)){
+	    createWall(-1, h_cur.y);
+	    return;
+	  }
 	}
       }else if(h_cur.x == p_cur.x-2){
-	createWall(h_cur.x, -1);
-	return;
+	if(checkCreateWallSafe(h_cur.x, -1)){
+	  createWall(h_cur.x, -1);
+	  return;
+	}
       }
       break;
     case RLU_UP:
@@ -107,12 +115,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(-1, h_cur.y);
-	  return;
+	  if(checkCreateWallSafe(-1, h_cur.y)){
+	    createWall(-1, h_cur.y);
+	    return;
+	  }
 	}
       }else if(h_cur.x == p_cur.x+2){
-	createWall(h_cur.x, -1);
-	return;
+	if(checkCreateWallSafe(h_cur.x, -1)){
+	  createWall(h_cur.x, -1);
+	  return;
+	}
       }
       break;
     case RLU_DOWN:
@@ -135,12 +147,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(h_cur.x, -1);
-	  return;
+	  if(checkCreateWallSafe(h_cur.x, -1)){
+	    createWall(h_cur.x, -1);
+	    return;
+	  }
 	}
       }else if(h_cur.y == p_cur.y+2){
-	createWall(-1, h_cur.y);
-	return;
+	if(checkCreateWallSafe(-1, h_cur.y)){
+	  createWall(-1, h_cur.y);
+	  return;
+	}
       }
       break;
     case LRU_UP:
@@ -163,12 +179,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(-1, h_cur.y);
-	  return;
+	  if(checkCreateWallSafe(-1, h_cur.y)){
+	    createWall(-1, h_cur.y);
+	    return;
+	  }
 	}
       }else if(h_cur.x == p_cur.x-2){
-	createWall(h_cur.x, -1);
-	return;
+	if(checkCreateWallSafe(h_cur.x, -1)){
+	  createWall(h_cur.x, -1);
+	  return;
+	}
       }
       break;
     case LRU_DOWN:
@@ -191,12 +211,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(h_cur.x, -1);
-	  return;
+	  if(checkCreateWallSafe(h_cur.x, -1)){
+	    createWall(h_cur.x, -1);
+	    return;
+	  }
 	}
       }else if(h_cur.y == p_cur.y+2){
-	createWall(-1, h_cur.y);
-	return;
+	if(checkCreateWallSafe(-1, h_cur.y)){
+	  createWall(-1, h_cur.y);
+	  return;
+	}
       }
       break;
     case RLD_UP:
@@ -219,12 +243,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(h_cur.x, -1);
-	  return;
+	  if(checkCreateWallSafe(h_cur.x, -1)){
+	    createWall(h_cur.x, -1);
+	    return;
+	  }
 	}
       }else if(h_cur.y == p_cur.y-2){
-	createWall(-1, h_cur.y);
-	return;
+	if(checkCreateWallSafe(-1, h_cur.y)){
+	  createWall(-1, h_cur.y);
+	  return;
+	}
       }
       break;
     case RLD_DOWN:
@@ -247,12 +275,16 @@ void Jinil_Hunter::algorithm1(){
 	  }
 	}
 	if(remainRange < ano_opt_remainRange){
-	  createWall(-1, h_cur.y);
-	  return;
+	  if(checkCreateWallSafe(-1, h_cur.y)){
+	    createWall(-1, h_cur.y);
+	    return;
+	  }
 	}
       }else if(h_cur.x == p_cur.x+2){
-	createWall(h_cur.x, -1);
-	return;
+	if(checkCreateWallSafe(h_cur.x, -1)){
+	  createWall(h_cur.x, -1);
+	  return;
+	}
       }
       break;
     }
@@ -308,7 +340,7 @@ void Jinil_Hunter::removeWall(int index){
   vector<Moveable::Wall*> hor_walls = evade_game_->hor_walls_;
   vector<Moveable::Wall*> ver_walls = evade_game_->ver_walls_;
   bool find = false;
-  for(int k=0; k<hor_walls.size(); k++){
+  for(int k=2; k<hor_walls.size(); k++){
     if(hor_walls[k]->wid_ == index){
       st_x = hor_walls[k]->x1;
       st_y = hor_walls[k]->y1;
@@ -321,7 +353,7 @@ void Jinil_Hunter::removeWall(int index){
   if(find)
     goto removeWall_end;
 
-  for(int k=0; k<ver_walls.size(); k++){
+  for(int k=2; k<ver_walls.size(); k++){
     if(ver_walls[k]->wid_ == index){
       st_x = ver_walls[k]->x1;
       st_y = ver_walls[k]->y1;
@@ -497,11 +529,25 @@ void Jinil_Hunter::updateTempBitmap(int x, int y){
   }
 }
 
-bool Jinil_Hunter::checkCreateWallSafe(){
+bool Jinil_Hunter::checkCreateWallSafe(int x, int y){
+  // Check squiz
+  // If the next hunter's position is bounced
+  // it should be squized. 
+  if(x != -1){     // vertical wall
+    if(h_cur.x == h_next.x)
+      return false;
+  }else{           // horizontal wall
+    if(h_cur.y == h_next.y)
+      return false;
+  }
+  return true;
+
+  /*
   if(temp_bitmap[h_next.x][h_next.y].isAvail)
     return true;
   else
     return false;
+  */
 }
 
 void Jinil_Hunter::updatePosition(){
@@ -521,10 +567,38 @@ void Jinil_Hunter::updatePosition(){
 
   // anticipated next prey's position
   // next = current + (current - past)       // Need more specific, especially reflex on the wall
-  p_next.x = p_cur.x + p_vector_x;
-  p_next.y = p_cur.y + p_vector_y;
+  getNextPosition();
+  
+}
+
+void Jinil_Hunter::getNextPosition(){
+  vector<Moveable::Wall*> hor_walls = evade_game_->hor_walls_;
+  vector<Moveable::Wall*> ver_walls = evade_game_->ver_walls_;
+
   h_next.x = h_cur.x + h_vector_x;
   h_next.y = h_cur.y + h_vector_y;
+  p_next.x = p_cur.x + p_vector_x;
+  p_next.y = p_cur.y + p_vector_y;
+
+  // horizontal wall check
+  for(int k=0; k<hor_walls.size(); k++){
+    if(hor_walls[k]->y1 == h_next.y){
+      h_next.y = h_cur.y;
+    }
+    if(hor_walls[k]->y1 == p_next.y){
+      p_next.y = p_cur.y;
+    }
+  }
+
+  // vertical wall check
+  for(int k=0; k<ver_walls.size(); k++){
+    if(ver_walls[k]->x1 == h_next.x){
+      h_next.x = h_cur.x;
+    }
+    if(ver_walls[k]->x1 == p_next.x){
+      p_next.x = p_cur.x;
+    }
+  }
 }
 
 void Jinil_Hunter::getHunterDirection(){

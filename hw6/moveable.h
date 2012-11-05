@@ -51,6 +51,13 @@ public:
   
     Bitmap()
     : weight(-1), isWall(false), isAvail(false), avgWeight(-1) { }
+
+    void clear(){
+      weight = -1;
+      isWall = false;
+      isAvail = false;
+      avgWeight = -1;
+    }
   };
   
   Bitmap bitmap[501][501];   // Save all information of each position (500 by 500)

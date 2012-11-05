@@ -24,8 +24,9 @@ public:
   void createWall(int x, int y);
   void removeWall(int index);
   int checkRemovableWall();
-  bool checkCreateWallSafe();
+  bool checkCreateWallSafe(int x, int y);
   void updateTempBitmap(int x, int y);
+  void getNextPosition();
 
 private:
   Pos p_past, h_past;

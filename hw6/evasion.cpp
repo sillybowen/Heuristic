@@ -132,6 +132,48 @@ void Evasion::readSrvUpdateStates(const string& fromSrv) {
       }
     }
   }
+
+  // update bitmap
+  for(int i=0; i<=500; i++){
+    for(int j=0; j<=500; j++){
+      my_obj_->bitmap[i][j].clear();
+    }
+  }
+
+  // horizontal walls
+  for(int k=0; k<hor_walls_.size(); k++){
+    int x1, x2, y;
+    if(hor_walls_[k]->x1 < hor_walls_[k]->x2){
+      x1 = hor_walls_[k]->x1;
+      x2 = hor_walls_[k]->x2;
+      y = hor_walls_[k]->y1;
+    }else{
+      x1 = hor_walls_[k]->x2;
+      x2 = hor_walls_[k]->x1;
+      y = hor_walls_[k]->y1;
+    }
+    for(int i=x1; i<=x2; i++){
+      my_obj_->bitmap[i][y].isWall = true;
+    }
+  }
+
+  // vertical walls
+  for(int k=0; k<ver_walls_.size(); k++){
+    int x, y1, y2;
+    if(ver_walls_[k]->y1 < ver_walls_[k]->y2){
+      y1 = ver_walls_[k]->y1;
+      y2 = ver_walls_[k]->y2;
+      x = ver_walls_[k]->x1;
+    }else{
+      y1 = ver_walls_[k]->y2;
+      y2 = ver_walls_[k]->y1;
+      x = ver_walls_[k]->x1;
+    }
+    for(int j=y1; j<=y2; j++){
+      my_obj_->bitmap[x][j].isWall = true;
+    }
+  }
+
   /*
   int tmp, wt, gamePos, ind = 0;
   while ((tmp = ss.get()) != '|');
