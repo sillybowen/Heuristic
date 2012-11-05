@@ -67,7 +67,6 @@ int main(int argc, char* argv[]) {
 
   Evasion* pEva = new Evasion(pMyObj, Ntimesteps, MmaxWalls, srv_port);
   pEva->dumpAdjWallsMatrixGraph();
-
   /* Test for wall-adjacency function
   char tmp = ' ';
   int x1, y1, x2, y2;

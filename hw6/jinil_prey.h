@@ -11,7 +11,9 @@ public:
   void output() const;
   bool isHunter() const;
   HuntPreyOutput tryMove();
+
 private:
+  
 };
 
 #endif  // PREY_HEADER_

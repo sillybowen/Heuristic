@@ -26,21 +26,27 @@ public:
   // For testing
   void dumpAdjWallsMatrixGraph() const;
 
+  int n_count;
+  int m_count;
+  int wall_index;
+  Moveable::Pos h_pos;  // Hunter Position
+  Moveable::Pos p_pos;  // Prey Position
+  vector<Moveable::Pos> h_pos_history_;
+  vector<Moveable::Pos> p_pos_history_;
+  vector<Moveable::Wall*> hor_walls_;
+  vector<Moveable::Wall*> ver_walls_;
+
+  const int N_;  // Hunter creat/rm a wall no more frequently than every N timesteps
+  const int M_;  // At any given time the maximum number of walls there can be is M
+
 private:
   // -----------incomplete
   void readSrvUpdateStates(const string& fromSrv);
   ClientSocket* registerSrv(int srv_port);
-
-  const int N_;  // Hunter creat/rm a wall no more frequently than every N timesteps
-  const int M_;  // At any given time the maximum number of walls there can be is M
   Moveable*               my_obj_;  // Hunter/Prey that I am playing(Controlled here)
   ClientSocket*           arch_clt_;
-  vector<Moveable::Wall*> hor_walls_;
-  vector<Moveable::Wall*> ver_walls_;
   int**                   adj_walls_;
-  Moveable::Pos h_pos;  // Hunter Position
-  Moveable::Pos p_pos;  // Prey Position
-  int wall_index;
+
 };
 
 #endif
