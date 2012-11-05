@@ -30,6 +30,8 @@ Evasion::Evasion(Moveable* moveable, int n, int m, int srv_port)
     adj_walls_[(i + 1) % 4][i] = 1;
   }
   wall_index = 4;
+  n_count = 0;
+  m_count = 0;
 }
 
 Evasion::~Evasion() {
@@ -47,6 +49,7 @@ int Evasion::startGame(string& teamName) {
   string fromSrv, fromPly;
   teamName.push_back('\n');
   
+
   try {
     (*arch_clt_) << teamName;
 
@@ -55,8 +58,26 @@ int Evasion::startGame(string& teamName) {
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
-      my_obj_->tryMove();
-
+      n_count++;
+      // Prey Mode
+      if(!my_obj_->isHunter()){ 
+	Moveable::HuntPreyOutput output = my_obj_->tryMove();
+      }
+      // Hunter mode
+      else if(my_obj_->isHunter() && n_count >= N_){  
+	Moveable::HuntPreyOutput output = my_obj_->tryMove();
+	if(output.x1 != -1 && output.y1 != -1 && output.x2 != -1 && output.y2 != -1){
+	  stringstream ss;
+	  ss << output.x1 << " " << output.y1 << " " << output.x2 << " " << output.y2;
+	  (*arch_clt_) << ss.str();
+	}else{
+	  (*arch_clt_) << 0;
+	}
+      }
+      // Hunter mode - no wall
+      else{
+	(*arch_clt_) << 0;
+      }
    
     } while (1);
   } catch (SocketException& se) {
@@ -83,11 +104,17 @@ void Evasion::readSrvUpdateStates(const string& fromSrv) {
   while(!ss.eof()){
     ss >> temp;
     if(temp == "H"){
-      ss >> h_pos.x;
-      ss >> h_pos.y;
+      int x, y;
+      ss >> x;
+      ss >> y;
+      h_pos.set(x, y);
+      h_pos_history_.push_back(h_pos);
     }else if(temp == "P"){
-      ss >> p_pos.x;
-      ss >> p_pos.y;
+      int x, y;
+      ss >> x;
+      ss >> y;
+      p_pos.set(x, y);
+      p_pos_history_.push_back(p_pos);
     }else if(temp == "W" || temp == ","){
       while(true){
 	int x1, y1, x2, y2;

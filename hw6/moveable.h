@@ -37,7 +37,23 @@ public:
 
   struct Pos{
     int x, y;
+    void set(int x_, int y_){
+      x = x_;
+      y = y_;
+    }
   };
+
+  struct Bitmap{
+    int weight;       // How many step the hunter can come here.
+    bool isWall;      // true : it is wall
+    bool isAvail;     // true : the same area with prey & hunter
+    int avgWeight;    // the average of the weight in the mask.    
+  
+    Bitmap()
+    : weight(-1), isWall(false), isAvail(false), avgWeight(-1) { }
+  };
+  
+  Bitmap bitmap[501][501];   // Save all information of each position (500 by 500)
 
   Moveable(int initx, int inity, int nn, int mm);
   virtual ~Moveable(){}
@@ -47,7 +63,7 @@ public:
 
   double distance(const Moveable* anoObj) const;
   void setEvadeGamePtr(Evasion* pEva);
-
+  
 protected:
   int       x_;
   int       y_;

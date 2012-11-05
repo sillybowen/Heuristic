@@ -1,6 +1,8 @@
 #include "jinil_prey.h"
 
-Jinil_Prey::~Jinil_Prey() { }
+Jinil_Prey::~Jinil_Prey() {
+  
+}
 
 void Jinil_Prey::output() const {
 }

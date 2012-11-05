@@ -74,7 +74,15 @@ int Moveable::Wall::isTwoWallAdjacent(const Wall* anoWall, int& p1x, int& p1y,
 
 /* Moveable class methods implementation */
 Moveable::Moveable(int initx, int inity, int nn, int mm)
-  : x_(initx), y_(inity), N_(nn), M_(mm), evade_game_(NULL) { }
+  : x_(initx), y_(inity), N_(nn), M_(mm), evade_game_(NULL) { 
+
+  /*
+  for(int i=0; i<=500; i++){
+    for(int j=0; j<=500; j++)
+      bitmap[i][j] = new Bitmap;
+  }
+  */
+}
 
 double Moveable::distance(const Moveable* anoObj) const {
   double sumSquares = double((anoObj->x_ - x_) * (anoObj->x_ - x_))
