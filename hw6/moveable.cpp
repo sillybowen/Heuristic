@@ -5,7 +5,6 @@ using std::cout;
 /* Wall struct methods implementation */
 Moveable::Wall::Wall(int stx, int sty, int endx, int endy, int index)
   : wid_(index), x1(stx), y1(sty), x2(endx), y2(endy) { }
-
 // dx, dy moving direction
 bool Moveable::Wall::willHitThisWall(const Moveable* obj, int dx, int dy) const {
   double newx = double(obj->x_ + dx), newy = double(obj->y_ + dy);
