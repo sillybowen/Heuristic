@@ -211,19 +211,28 @@ int Moveable::hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
 
     // horizontal wall check
     for (int k=0; k<hor_walls.size(); k++) {
-      if (hor_walls[k]->wid_ < 4 && hor_walls[k]->y1 < h_next.y) {
-        h_next.y = h_cur.y - h_vector_y;
-      } else if (hor_walls[k]->y1 == h_next.y) {
+      // collision on horizontal border
+      if (hor_walls[k]->wid_ < 4) {  // special wall -- borders
+        if (hor_walls[k]->y1 == h_cur.y && (h_next.y < 0 || h_next.y > 500)) {
+          h_next.y = h_cur.y - h_vector_y;
+        }
+      } else if (hor_walls[k]->y1 == h_next.y && h_next.x >= hor_walls[k]->x1 &&
+          h_next.x <= hor_walls[k]->x2) {
         h_next.y = h_cur.y;
+        h_next.x += h_vector_x;
       }
     }
 
     // vertical wall check
     for (int k=0; k<ver_walls.size(); k++) {
-      if (ver_walls[k]->wid_ < 4 && ver_walls[k]->x1 < h_next.x) {
-        h_next.x = h_cur.x - h_vector_x;
-      } else if (ver_walls[k]->x1 == h_next.x) {
+      if (ver_walls[k]->wid_ < 4) {
+        if (ver_walls[k]->x1 == h_cur.x && (h_next.x < 0 || h_next.x > 500)) {
+          h_next.x = h_cur.x - h_vector_x;
+        }
+      } else if (ver_walls[k]->x1 == h_next.x && h_next.y >= ver_walls[k]->y1 &&
+          h_next.y <= ver_walls[k]->y2) {
         h_next.x = h_cur.x;
+        h_next.y += h_vector_y;
       }
     }
 

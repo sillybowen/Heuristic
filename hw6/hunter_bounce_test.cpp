@@ -63,6 +63,47 @@ namespace {
     }
   }
 
+  TEST_F(HunterBounceTest, SimpleHorVertWall) {
+    const int MaxNumOfSteps = 1;
+    vector<Moveable::Pos> hFutureSteps;
+    vector<Moveable::Pos> hPosHis;
+    Moveable::Pos hStartPos;
+    ver_walls_.push_back(new Moveable::Wall(100, 50, 100, 150, 4));
+
+    // Tests against ver_walls_
+    hStartPos.set(99, 99);
+    Moveable::hunterNStepPrediction(MaxNumOfSteps, hFutureSteps, hor_walls_,
+        ver_walls_, hStartPos, hPosHis);
+    EXPECT_EQ(99, hFutureSteps[1].x);
+    EXPECT_EQ(101, hFutureSteps[1].y);
+
+    hStartPos.set(99, 49);  // will bounce to left down direction
+    hFutureSteps.clear();
+    Moveable::hunterNStepPrediction(2, hFutureSteps, hor_walls_,
+        ver_walls_, hStartPos, hPosHis);
+    EXPECT_EQ(99, hFutureSteps[1].x);
+    EXPECT_EQ(51, hFutureSteps[1].y);
+    EXPECT_EQ(98, hFutureSteps[2].x);
+    EXPECT_EQ(52, hFutureSteps[2].y);
+
+    hStartPos.set(99, 150);
+    hFutureSteps.clear();
+    Moveable::hunterNStepPrediction(MaxNumOfSteps, hFutureSteps, hor_walls_,
+        ver_walls_, hStartPos, hPosHis);
+    EXPECT_EQ(100, hFutureSteps[1].x);
+    EXPECT_EQ(151, hFutureSteps[1].y);
+
+    hStartPos.set(99, 48);
+    hFutureSteps.clear();
+    Moveable::hunterNStepPrediction(2, hFutureSteps, hor_walls_,
+        ver_walls_, hStartPos, hPosHis);
+    EXPECT_EQ(100, hFutureSteps[1].x);
+    EXPECT_EQ(49, hFutureSteps[1].y);
+    EXPECT_EQ(101, hFutureSteps[2].x);
+    EXPECT_EQ(50, hFutureSteps[2].y);
+
+  }
+
   TEST_F(HunterBounceTest, TestAgainstVerticalWall) {
     const int wallLen = 5;
     int x1, y1, x2, y2;
