@@ -69,6 +69,10 @@ public:
   double distance(const Moveable* anoObj) const;
   void setEvadeGamePtr(Evasion* pEva);
   Pos getNextHunterPosition(int n);   // the position of hunter after 'n' time stemp
+  // Hunter's future route with 'prey's guess about wall create/rm, return #of steps
+  // if could capture prey (== nstep is could NOT capture)
+  int hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
+    const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls);
   
 protected:
   int       x_;
