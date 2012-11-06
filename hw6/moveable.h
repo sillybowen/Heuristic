@@ -68,6 +68,7 @@ public:
 
   double distance(const Moveable* anoObj) const;
   void setEvadeGamePtr(Evasion* pEva);
+  Pos getNextHunterPosition(int n);   // the position of hunter after 'n' time stemp
   
 protected:
   int       x_;
