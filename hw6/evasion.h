@@ -24,6 +24,7 @@ public:
   enum game_status { playing, HunterWin, PreyWin, equal };
 
   // For testing
+  void jsonCppTester() const;
   void dumpAdjWallsMatrixGraph() const;
 
   int n_count;
