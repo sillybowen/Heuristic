@@ -10,8 +10,10 @@ OBJS = ClientSocket.o Socket.o moveable.o evasion.o hunter.o prey.o bowen_hunter
 CCEXEC = evasion
 MOVEABLETESTFILE = adj_wall_test.cpp
 MOVEABLETEST = adj_wall_test
+HUNTERBOUNCETEST = hunt_bounce_test
+HUNTERBOUNCETESTFILE = hunter_bounce_test.cpp
 
-all:	$(CCEXEC) $(MOVEABLETEST)
+all:	$(CCEXEC) $(MOVEABLETEST) $(HUNTERBOUNCETEST)
 
 $(CCEXEC):	$(OBJS) makefile
 	@echo Linking $@ . . .
@@ -21,13 +23,16 @@ $(CCEXEC):	$(OBJS) makefile
 	@echo Compiling $< . . .
 	$(CC) $(CXXFLAGS) $<
 
-$(MOVEABLETEST): $(MOVEABLETESTFILE)
+$(MOVEABLETEST): $(MOVEABLETESTFILE) moveable.o
 	$(CC) $(MOVEABLETESTFILE) moveable.o -lgtest -lpthread -o $(MOVEABLETEST)
+
+$(HUNTERBOUNCETEST) : $(HUNTERBOUNCETESTFILE) moveable.o
+	$(CC) $(HUNTERBOUNCETESTFILE) moveable.o -lgtest -lpthread -o $(HUNTERBOUNCETEST)
 
 run:	all
 	./$(CCEXEC)
 
 clean:
 	rm -f $(OBJS)
-	rm -f $(CCEXEC) $(MOVEABLETEST)
+	rm -f $(CCEXEC) $(MOVEABLETEST) $(HUNTERBOUNCETEST)
 	rm -f core

@@ -71,8 +71,9 @@ public:
   Pos getNextHunterPosition(int n);   // the position of hunter after 'n' time stemp
   // Hunter's future route with 'prey's guess about wall create/rm, return #of steps
   // if could capture prey (== nstep is could NOT capture)
-  int hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
-    const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls);
+  static int hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
+    const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls, Pos h_cur,
+    const vector<Pos>& h_pos_history);
   
 protected:
   int       x_;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <string>
 #include "moveable.h"
 #include "gtest/gtest.h"
@@ -8,11 +9,17 @@ namespace {
   using std::cout;
   using std::endl;
   using std::string;
-  // The fixture for testing class Foo.
+  using std::vector;
   class HunterBounceTest : public ::testing::Test {
     protected:
       // You can do set-up work for each test here.
-      HunterBounceTest() : border_len_(500) { }
+      HunterBounceTest() : border_len_(500) {
+        // Insert game borders as special walls (No thickness)
+        hor_walls_.push_back(new Moveable::Wall(0, 0, 500, 0, 0));
+        hor_walls_.push_back(new Moveable::Wall(0, 500, 500, 500, 2));
+        ver_walls_.push_back(new Moveable::Wall(0, 0, 0, 500, 1));
+        ver_walls_.push_back(new Moveable::Wall(500, 0, 500, 500, 3));
+      }
 
       virtual ~HunterBounceTest() {
         // You can do clean-up work that doesn't throw exceptions here.
@@ -32,7 +39,29 @@ namespace {
 
       // Objects declared here can be used by all tests in the test case for Foo.
       const int border_len_;
+      vector<Moveable::Wall*> hor_walls_;
+      vector<Moveable::Wall*> ver_walls_;
   };
+
+  TEST_F(HunterBounceTest, NoWallJust4Borders) {
+    const int MaxNumOfSteps = 2000;
+    vector<Moveable::Pos> hFutureSteps;
+    vector<Moveable::Pos> hPosHis;
+    Moveable::Pos hStartPos;
+    hStartPos.set(0, 0);
+
+    Moveable::hunterNStepPrediction(MaxNumOfSteps, hFutureSteps, hor_walls_,
+        ver_walls_, hStartPos, hPosHis);
+
+    int diagIndex = 0, direction = 1;
+    for (int i = 0; i < MaxNumOfSteps; ++i) {
+      EXPECT_EQ(diagIndex, hFutureSteps[i].x);
+      EXPECT_EQ(diagIndex, hFutureSteps[i].y);
+      diagIndex += direction;
+      if (diagIndex == border_len_ || diagIndex == 0)
+        direction = -direction;
+    }
+  }
 
   TEST_F(HunterBounceTest, TestAgainstVerticalWall) {
     const int wallLen = 5;

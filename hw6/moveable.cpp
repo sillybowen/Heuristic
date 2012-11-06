@@ -164,16 +164,17 @@ Moveable::Pos Moveable::getNextHunterPosition(int n){
 
 // Changed api of jinil's getNextHunterPosition for prey.cpp
 int Moveable::hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
-    const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls) {
+    const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls, Pos h_cur, 
+    const vector<Pos>& h_pos_history) {
   int count = nstep;
   // vector<Wall*> hor_walls = evade_game_->hor_walls_;
   // vector<Wall*> ver_walls = evade_game_->ver_walls_;
-  vector<Pos> h_pos_history = evade_game_->h_pos_history_;
-  Pos h_next, h_cur, h_past, h_past_past;
+  // vector<Pos> h_pos_history = evade_game_->h_pos_history_;
+  Pos h_next, h_past, h_past_past;
   int h_vector_x, h_vector_y;
 
   // Initialization -- @hFutureRoute starts with hunter's current position
-  h_cur = evade_game_->h_pos;
+  // h_cur = evade_game_->h_pos;
   hFutureRoute.push_back(h_cur);
 
   if(h_pos_history.size()>=3){
@@ -205,17 +206,23 @@ int Moveable::hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
       h_vector_x = h_cur.x - h_past.x;
       h_vector_y = h_cur.y - h_past.y;
     }
+    // Copy h_vector_x/y values to h_next
+    h_next.set(h_cur.x + h_vector_x, h_cur.y + h_vector_y);
 
     // horizontal wall check
-    for(int k=0; k<hor_walls.size(); k++){
-      if(hor_walls[k]->y1 == h_next.y){
+    for (int k=0; k<hor_walls.size(); k++) {
+      if (hor_walls[k]->wid_ < 4 && hor_walls[k]->y1 < h_next.y) {
+        h_next.y = h_cur.y - h_vector_y;
+      } else if (hor_walls[k]->y1 == h_next.y) {
         h_next.y = h_cur.y;
       }
     }
 
     // vertical wall check
-    for(int k=0; k<ver_walls.size(); k++){
-      if(ver_walls[k]->x1 == h_next.x){
+    for (int k=0; k<ver_walls.size(); k++) {
+      if (ver_walls[k]->wid_ < 4 && ver_walls[k]->x1 < h_next.x) {
+        h_next.x = h_cur.x - h_vector_x;
+      } else if (ver_walls[k]->x1 == h_next.x) {
         h_next.x = h_cur.x;
       }
     }
