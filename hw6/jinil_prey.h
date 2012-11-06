@@ -20,7 +20,7 @@ public:
   void updatePosition();
   void getHunterDirection();
   void updateTempBitmap();
-  void updateHunterFuturePosition();
+  void updateHunterFuturePosition(int n);
   struct h_dir_info{
     int direction;
     Moveable::Pos start_pos;
@@ -37,7 +37,7 @@ private:
   h_dir_info hunterDirection[3];
   int p_vector_x, p_vector_y;   // the vector of the p's movement
   int h_vector_x, h_vector_y;
-  int result_x, result_y;
+  int result_x, result_y;       // Return value
   Bitmap temp_bitmap[500][500];
   vector<Moveable::Wall*> hor_walls;
   vector<Moveable::Wall*> ver_walls;

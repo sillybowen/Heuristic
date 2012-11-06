@@ -67,7 +67,7 @@ int Evasion::startGame(string& teamName) {
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
-
+      readSrvUpdateStates(fromSrv);
       // Prey Mode
       if(!my_obj_->isHunter()){
         Moveable::HuntPreyOutput output = my_obj_->tryMove();

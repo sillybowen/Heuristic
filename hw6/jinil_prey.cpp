@@ -16,11 +16,12 @@ Moveable::HuntPreyOutput Jinil_Prey::tryMove() {
   ver_walls = evade_game_->ver_walls_;
   result_x = result_y = 0;
 
+  int Max_future = 10;    // After some test, change the number 10.
   // Update
   updatePosition();
   getHunterDirection();
   updateTempBitmap();
-  updateHunterFuturePosition();
+  updateHunterFuturePosition(Max_future);
 
   // Algorithm
   algorithm1();
@@ -29,14 +30,193 @@ Moveable::HuntPreyOutput Jinil_Prey::tryMove() {
 }
 
 void Jinil_Prey::algorithm1(){
+  Moveable::Pos aim_pos;
+
+  // If hunterDirection has junst one way
+  switch(hunterDirection[0].direction){
+  case LRD:
+    aim_pos.set(h_cur.x-3, h_cur.y-3);
+    if(aim_pos.x > p_cur.x){
+      result_x = 1;
+    }else if(aim_pos.x < p_cur.x){
+      result_x = -1;
+    }else{
+      result_x = 0;
+    }
+    if(aim_pos.y > p_cur.y){
+      result_y = 1;
+    }else if(aim_pos.y < p_cur.y){
+      result_y = -1;
+    }else{
+      result_y = 0;
+    }
+    // escape danger : LRD direction
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
+      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=3) ||
+	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=3)){
+	if(bitmap[p_cur.x-1][p_cur.y+1].weight > bitmap[p_cur.x+1][p_cur.y-1].weight){
+	  result_x = -1;
+	  result_y = 1;
+	}else{
+	  result_x = 1;
+	  result_y = -1;
+	}
+      }else if((p_cur.y+1 <=500 && bitmap[p_cur.x][p_cur.y+1].weight>=3) ||
+	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=3)){
+	if(bitmap[p_cur.x][p_cur.y+1].weight > bitmap[p_cur.x+1][p_cur.y].weight){
+	  result_x = 0;
+	  result_y = 1;
+	}else{
+	  result_x = 1;
+	  result_y = 0;
+	}
+      }else{
+	result_x = 1;
+	result_y = 1;
+      }
+    }
+    break;
+
+  case RLU:
+    aim_pos.set(h_cur.x+3, h_cur.y+3);
+    if(aim_pos.x > p_cur.x){
+      result_x = 1;
+    }else if(aim_pos.x < p_cur.x){
+      result_x = -1;
+    }else{
+      result_x = 0;
+    }
+    if(aim_pos.y > p_cur.y){
+      result_y = 1;
+    }else if(aim_pos.y < p_cur.y){
+      result_y = -1;
+    }else{
+      result_y = 0;
+    }
+    // escape danger : RLU direction
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
+      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=3) ||
+	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=3)){
+	if(bitmap[p_cur.x+1][p_cur.y-1].weight > bitmap[p_cur.x-1][p_cur.y+1].weight){
+	  result_x = 1;
+	  result_y = -1;
+	}else{
+	  result_x = -1;
+	  result_y = 1;
+	}
+      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=3) ||
+	       (p_cur.x-1 >=0 && bitmap[p_cur.x-1][p_cur.y].weight>=3)){
+	if(bitmap[p_cur.x][p_cur.y-1].weight > bitmap[p_cur.x-1][p_cur.y].weight){
+	  result_x = 0;
+	  result_y = -1;
+	}else{
+	  result_x = -1;
+	  result_y = 0;
+	}
+      }else{
+	result_x = -1;
+	result_y = -1;
+      }
+    }
+    break;
+
+  case LRU:
+    aim_pos.set(h_cur.x-3, h_cur.y+3);
+    if(aim_pos.x > p_cur.x){
+      result_x = 1;
+    }else if(aim_pos.x < p_cur.x){
+      result_x = -1;
+    }else{
+      result_x = 0;
+    }
+    if(aim_pos.y > p_cur.y){
+      result_y = 1;
+    }else if(aim_pos.y < p_cur.y){
+      result_y = -1;
+    }else{
+      result_y = 0;
+    }
+    // escape danger : LRU direction
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
+      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=3) ||
+	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=3)){
+	if(bitmap[p_cur.x-1][p_cur.y-1].weight > bitmap[p_cur.x+1][p_cur.y+1].weight){
+	  result_x = -1;
+	  result_y = -1;
+	}else{
+	  result_x = 1;
+	  result_y = 1;
+	}
+      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=3) ||
+	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=3)){
+	if(bitmap[p_cur.x][p_cur.y-1].weight > bitmap[p_cur.x+1][p_cur.y].weight){
+	  result_x = 0;
+	  result_y = -1;
+	}else{
+	  result_x = 1;
+	  result_y = 0;
+	}
+      }else{
+	result_x = 1;
+	result_y = -1;
+      }
+    }
+    break;
+
+  case RLD:
+    aim_pos.set(h_cur.x+3, h_cur.y-3);
+    if(aim_pos.x > p_cur.x){
+      result_x = 1;
+    }else if(aim_pos.x < p_cur.x){
+      result_x = -1;
+    }else{
+      result_x = 0;
+    }
+    if(aim_pos.y > p_cur.y){
+      result_y = 1;
+    }else if(aim_pos.y < p_cur.y){
+      result_y = -1;
+    }else{
+      result_y = 0;
+    }
+    // escape danger : RLD direction
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
+      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=3) ||
+	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=3)){
+	if(bitmap[p_cur.x+1][p_cur.y+1].weight > bitmap[p_cur.x-1][p_cur.y-1].weight){
+	  result_x = 1;
+	  result_y = 1;
+	}else{
+	  result_x = -1;
+	  result_y = -1;
+	}
+      }else if((p_cur.y+1 >=0 && bitmap[p_cur.x][p_cur.y+1].weight>=3) ||
+	       (p_cur.x-1 <=500 && bitmap[p_cur.x-1][p_cur.y].weight>=3)){
+	if(bitmap[p_cur.x][p_cur.y+1].weight > bitmap[p_cur.x-1][p_cur.y].weight){
+	  result_x = 0;
+	  result_y = 1;
+	}else{
+	  result_x = -1;
+	  result_y = 0;
+	}
+      }else{
+	result_x = -1;
+	result_y = 1;
+      }
+    }
+    break;
   
+  default:
+    result_x = 0;
+    result_y = 0;
+  }
 }
 
 void Jinil_Prey::updateTempBitmap(){
   // Initialization
   for(int i=0; i<=500; i++){
     for(int j=0; j<=500; j++){
-      bitmap[i][j].weight = -1;
+      bitmap[i][j].weight = 99;
     }
   }
 
@@ -56,37 +236,36 @@ void Jinil_Prey::updateTempBitmap(){
 
     for(int i=x1-1; i<=x2-1; i++){
       for(int j=y1-2; j<=y2-2; j++){
-	if(i>=0 && i<=500 && j>=0 && j<=500 && bitmap[i][j].weight==-1)
+	if(i>=0 && i<=500 && j>=0 && j<=500 && bitmap[i][j].weight==99)
 	  bitmap[i][j].weight = s/2;   // because hunter can move 2 times than prey move
       }
     }
     if(y1+1 == y-3){
       for(int i=x1-2; i<=x2-2; i++){
-	if(i>=0 && i<=500 && bitmap[i][y-3].weight==-1)
+	if(i>=0 && i<=500 && bitmap[i][y-3].weight==99)
 	  bitmap[i][y-3].weight = s/2;
       }
     }
     if(y2-1 == y+3){
       for(int i=x1-2; i<=x2-2; i++){
-	if(i>=0 && i<=500 && bitmap[i][y+3].weight==-1)
+	if(i>=0 && i<=500 && bitmap[i][y+3].weight==99)
 	  bitmap[i][y+3].weight = s/2;
       }
     }
-    if(y1 == y-4 && bitmap[x][y1].weight==-1)
+    if(y1 == y-4 && bitmap[x][y1].weight==99)
       bitmap[x][y1].weight = s/2;
-    if(y2 == y+4 && bitmap[x][y2].weight==-1)
+    if(y2 == y+4 && bitmap[x][y2].weight==99)
       bitmap[x][y2].weight = s/2;
-    if(x1 == x-4 && bitmap[x1][y].weight==-1)
+    if(x1 == x-4 && bitmap[x1][y].weight==99)
       bitmap[x1][y].weight = s/2;
-    if(x2 == x+4 && bitmap[x2][y].weight==-1)
+    if(x2 == x+4 && bitmap[x2][y].weight==99)
       bitmap[x2][y].weight = s/2;
   }
 }
 
-void Jinil_Prey::updateHunterFuturePosition(){
-  int Max_future = 10;    // After some test, change the number 10.
+void Jinil_Prey::updateHunterFuturePosition(int n){
   h_future_pos.clear();
-  for(int i=0; i<Max_future; i++){
+  for(int i=0; i<n; i++){
     h_future_pos.push_back( getNextHunterPosition(i) );
   }
 }

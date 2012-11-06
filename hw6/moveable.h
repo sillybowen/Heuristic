@@ -53,12 +53,12 @@ public:
     int weight;
 
     Bitmap()
-    : isWall(false), isAvail(false), weight(0) { }
+    : isWall(false), isAvail(false), weight(99) { }
 
     void clear(){
       isWall = false;
       isAvail = false;
-      weight = -1;
+      weight = 99;
     }
   };
   
