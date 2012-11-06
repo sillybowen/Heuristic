@@ -15,7 +15,7 @@
 
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
-const int MAXRECV = 500;
+const int MAXRECV = 1024;
 const int MY_MSG_NOSIGNAL = 0; // defined by dgame
 
 class Socket

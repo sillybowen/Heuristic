@@ -54,31 +54,46 @@ int Evasion::startGame(string& teamName) {
     (*arch_clt_) << teamName;
 
     do {
-      (*arch_clt_) >> fromSrv;
+      std::cout << "----*----*----------\n";
+      string tmpFromSrv;
+      do {
+        (*arch_clt_) >> tmpFromSrv;
+        std::cout << "oneLine  ";
+        fromSrv += tmpFromSrv;
+      } while (tmpFromSrv.size() > 1);
+      std::cout << "#Srv sent: \n" << fromSrv << std::endl;
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
       n_count++;
       // Prey Mode
-      if(!my_obj_->isHunter()){ 
-	Moveable::HuntPreyOutput output = my_obj_->tryMove();
+      if(!my_obj_->isHunter()){
+        Moveable::HuntPreyOutput output = my_obj_->tryMove();
+        stringstream ss;
+        ss << output.dx << " " << output.dy;
+        fromPly = ss.str();
+        std::cout << "Player Prey: " << ss.str() << std::endl;
       }
       // Hunter mode
-      else if(my_obj_->isHunter() && n_count >= N_){  
-	Moveable::HuntPreyOutput output = my_obj_->tryMove();
-	if(output.x1 != -1 && output.y1 != -1 && output.x2 != -1 && output.y2 != -1){
-	  stringstream ss;
-	  ss << output.x1 << " " << output.y1 << " " << output.x2 << " " << output.y2;
-	  (*arch_clt_) << ss.str();
-	}else{
-	  (*arch_clt_) << 0;
-	}
+      else if(my_obj_->isHunter() && n_count >= N_){
+        Moveable::HuntPreyOutput output = my_obj_->tryMove();
+        if(output.x1 != -1 && output.y1 != -1 && output.x2 != -1 && output.y2 != -1){
+          stringstream ss;
+          ss << output.x1 << " " << output.y1 << " " << output.x2 << " "
+            << output.y2;
+          fromPly = ss.str();
+        } else {
+          fromPly = "0";
+        }
+        std::cout << "Player Hunter: " << fromPly << std::endl;
+      } else {  // Hunter mode - no wall
+        fromPly = "0";
+        std::cout << "Player Hunter: " << fromPly << std::endl;
       }
-      // Hunter mode - no wall
-      else{
-	(*arch_clt_) << 0;
-      }
-   
+
+      fromPly.push_back('\n');
+      (*arch_clt_) << fromPly;
+      fromSrv.clear();
     } while (1);
   } catch (SocketException& se) {
     assert(false);
