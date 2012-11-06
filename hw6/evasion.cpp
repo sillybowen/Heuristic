@@ -31,7 +31,6 @@ Evasion::Evasion(Moveable* moveable, int n, int m, int srv_port)
     adj_walls_[(i + 1) % 4][i] = 1;
   }
   wall_index = 4;
-  m_count = 0;
   h_pos.set(0, 0);
   p_pos.set(330, 200);
 }

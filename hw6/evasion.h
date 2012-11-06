@@ -27,7 +27,6 @@ public:
   void jsonCppTester() const;
   void dumpAdjWallsMatrixGraph() const;
 
-  int m_count;
   int wall_index;
   Moveable::Pos h_pos;  // Hunter Position
   Moveable::Pos p_pos;  // Prey Position

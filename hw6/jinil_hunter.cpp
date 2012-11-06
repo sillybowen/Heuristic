@@ -7,6 +7,7 @@ using std::endl;
 
 Jinil_Hunter::~Jinil_Hunter() {
   n_count = 0;
+  m_count = M_;
 }
 
 void Jinil_Hunter::output() const {
@@ -31,14 +32,12 @@ Moveable::HuntPreyOutput Jinil_Hunter::tryMove() {
   st_x = st_y = end_x = end_y = -1;  // Initialization
   algorithm1();
 
-  std::cout << "st_x : " << st_x << ", st_y : " << st_y << std::endl;
-
   return Moveable::HuntPreyOutput(st_x, st_y, end_x, end_y);
 }
 
 void Jinil_Hunter::algorithm1(){
   // You can create wall
-  if(evade_game_->m_count < evade_game_->M_){ 
+  if(m_count < evade_game_->M_){ 
     switch(hunterDirection){
     case LRD_UP:
       if(h_cur.x == p_cur.x-2){
@@ -384,9 +383,6 @@ void Jinil_Hunter::algorithm1(){
 }
 
 void Jinil_Hunter::createWall(int x, int y){
-
-  std::cout << "createWall_test1" << std::endl;
-
   vector<Moveable::Wall*> hor_walls = evade_game_->hor_walls_;
   vector<Moveable::Wall*> ver_walls = evade_game_->ver_walls_;
   st_x = end_x = h_cur.x;
@@ -394,46 +390,32 @@ void Jinil_Hunter::createWall(int x, int y){
   bool isContinue = true;
 
   if(x != -1){  // vertical wall
-    
-    std::cout << "createWall_test2" << std::endl;
-
     while(isContinue){
       isContinue = false;
-      if(st_y-1 >=0 && !temp_bitmap[st_x][st_y-1].isWall){
+      if(st_y-1 >=0 && !bitmap[st_x][st_y-1].isWall){
 	st_y--;
 	isContinue = true;
       }
-      if(end_y+1 <=500 && !temp_bitmap[st_x][end_y+1].isWall){
+      if(end_y+1 <=500 && !bitmap[st_x][end_y+1].isWall){
 	end_y++;
 	isContinue = true;
       }
     }
-
-    std::cout << "createWall_test3" << std::endl;
-
   }else{        // horizontal wall
-
-    std::cout << "createWall_test4" << std::endl;
-
     while(isContinue){
       isContinue = false;
-      if(st_x-1 >=0 && !temp_bitmap[st_x-1][st_y].isWall){
+      if(st_x-1 >=0 && !bitmap[st_x-1][st_y].isWall){
 	st_x--;
 	isContinue = true;
       }
-      if(end_x+1 <=500 && !temp_bitmap[end_x+1][st_y].isWall){
+      if(end_x+1 <=500 && !bitmap[end_x+1][st_y].isWall){
 	end_x++;
 	isContinue = true;
       }
     }
-
-    std::cout << "createWall_test5" << std::endl;
-
   }
-
-  std::cout << "createWall_test6" << std::endl;
   
-  evade_game_->m_count++;
+  m_count++;
   n_count = 0;
 }
 
@@ -465,7 +447,7 @@ void Jinil_Hunter::removeWall(int index){
   }
 
  removeWall_end:
-  evade_game_->m_count--;
+  m_count--;
   n_count = 0;
 }
 
