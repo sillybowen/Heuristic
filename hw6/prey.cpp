@@ -50,7 +50,7 @@ Moveable::HuntPreyOutput Prey::tryMove() {
 
   // Choose direction according to dangerMap
   lookforbestMove(evade_game_->p_pos, p_dir_x, p_dir_y);
-  output();
+  // output();
   cout << "Best Move: (" << p_dir_x << ", " << p_dir_y << ")" << endl;
   globalDecay();
 
@@ -75,13 +75,13 @@ void Prey::lookforbestMove(Pos prey, int& p_dir_x, int& p_dir_y) const {
   p_dir_x = bestDir.x - preyX;
   p_dir_y = bestDir.y - preyY;
 
-  assert(abs(p_dir_x) == 1);
-  assert(abs(p_dir_y) == 1);
+  // assert(abs(p_dir_x) == 1);
+  // assert(abs(p_dir_y) == 1);
 }
 
 void Prey::preyAddPreferOnHunterDir(int h_dir_x, int h_dir_y, Pos hunter, Pos prey) {
-  assert(abs(h_dir_x) == 1);
-  assert(abs(h_dir_y) == 1);
+  // assert(abs(h_dir_x) == 1);
+  // assert(abs(h_dir_y) == 1);
 
   // Check whethter hunter's dirction is toward prey or not
   Pos huntToPreyVect;
@@ -137,6 +137,8 @@ void Prey::addPreferNearPrey(Pos prey, int p_dir_x, int p_dir_y) {
       }
     }
   }
+
+  return;
 }
 
 void Prey::preyAddDangerOnHunterPredPath(int stepsWent,

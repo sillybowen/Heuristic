@@ -31,12 +31,12 @@ testType[0:Tao, 1:Bowen-randPrey, 2:Jinil 3:randomPreyTest]"
   switch (testType) {
   case 0:              // Tao version
     if (isHunter) {
-      pMyObj = new Hunter(0, 0, Ntimesteps, MmaxWalls);
-      cout << "Hunter clt N= " << Ntimesteps << " ;M= " << MmaxWalls
+      pMyObj = new Jinil_Hunter(0, 0, Ntimesteps, MmaxWalls);
+      cout << "Jinil Hunter clt N= " << Ntimesteps << " ;M= " << MmaxWalls
 	   << " ;teamName= " << teamName << " ;srv_port= " << srv_port << endl;
     } else {
       pMyObj = new Prey(330, 200, Ntimesteps, MmaxWalls);
-      cout << "Prey clt N= " << Ntimesteps << " ;M= " << MmaxWalls
+      cout << "Tao Prey clt N= " << Ntimesteps << " ;M= " << MmaxWalls
 	   << " ;teamName= " << teamName << " ;srv_port= " << srv_port << endl;
     }
     break;
@@ -79,7 +79,10 @@ testType[0:Tao, 1:Bowen-randPrey, 2:Jinil 3:randomPreyTest]"
 
   Evasion* pEva = new Evasion(pMyObj, Ntimesteps, MmaxWalls, srv_port);
   // pEva->dumpAdjWallsMatrixGraph();
-  pMyObj->tryMove();
+  // Moveable::Pos h, p;
+  // h.set(330, 330);
+  // p.set(100, 50);
+  // dynamic_cast<Prey*>(pMyObj)->preyAddPreferOnHunterDir(1, 1, h, p);
   // pEva->jsonCppTester();
 
   // Start game

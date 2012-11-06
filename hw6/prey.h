@@ -17,10 +17,10 @@ public:
   void output() const;
   bool isHunter() const;
   HuntPreyOutput tryMove();
+  void preyAddPreferOnHunterDir(int h_dir_x, int h_dir_y, Pos hunter, Pos prey);
 
 private:
   void lookforbestMove(Pos prey, int& p_dir_x, int& p_dir_y) const;
-  void preyAddPreferOnHunterDir(int h_dir_x, int h_dir_y, Pos hunter, Pos prey);
   void globalDecay();
   void addPreferNearPrey(Pos prey, int p_dir_x, int p_dir_y);
   void preyAddDangerOnHunterPredPath(int stepsWent, const vector<Pos>& hFutureSteps);
