@@ -20,19 +20,28 @@ public:
   void updatePosition();
   void getHunterDirection();
   void updateTempBitmap();
+  void updateHunterFuturePosition();
+  struct h_dir_info{
+    int direction;
+    Moveable::Pos start_pos;
+    h_dir_info(){
+      direction = -1;
+    }
+  };
 
 private:
   Pos p_past, h_past;
   Pos h_past_past;
   Pos p_cur, h_cur;
   Pos p_next, h_next;                
-  int hunterDirection[3];
+  h_dir_info hunterDirection[3];
   int p_vector_x, p_vector_y;   // the vector of the p's movement
   int h_vector_x, h_vector_y;
   int result_x, result_y;
   Bitmap temp_bitmap[500][500];
   vector<Moveable::Wall*> hor_walls;
   vector<Moveable::Wall*> ver_walls;
+  vector<Moveable::Pos> h_future_pos;
 };
 
 #endif  // PREY_HEADER_

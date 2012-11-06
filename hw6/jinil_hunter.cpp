@@ -5,7 +5,9 @@
 using std::cout;
 using std::endl;
 
-Jinil_Hunter::~Jinil_Hunter() { }
+Jinil_Hunter::~Jinil_Hunter() {
+  n_count = 0;
+}
 
 void Jinil_Hunter::output() const {
   cout << "Hunter pos: (" << x_ << ", " << y_ << ")" << endl;
@@ -16,6 +18,11 @@ bool Jinil_Hunter::isHunter() const {
 }
 
 Moveable::HuntPreyOutput Jinil_Hunter::tryMove() {
+  n_count++;
+  if(n_count < evade_game_->N_){
+    Moveable::HuntPreyOutput ret(0, 0);
+    return ret;
+  }
   
   // Anticipated Next Prey Position
   updatePosition();
@@ -333,7 +340,7 @@ void Jinil_Hunter::createWall(int x, int y){
   }
 
   evade_game_->m_count++;
-  evade_game_->n_count = 0;
+  n_count = 0;
 }
 
 void Jinil_Hunter::removeWall(int index){
@@ -365,7 +372,7 @@ void Jinil_Hunter::removeWall(int index){
 
  removeWall_end:
   evade_game_->m_count--;
-  evade_game_->n_count = 0;
+  n_count = 0;
 }
 
 int Jinil_Hunter::checkRemovableWall(){

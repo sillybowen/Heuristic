@@ -11,15 +11,18 @@ void Jinil_Prey::output() const {
 bool Jinil_Prey::isHunter() const { return false; }
 
 Moveable::HuntPreyOutput Jinil_Prey::tryMove() {
-
+  // Initialization
   hor_walls = evade_game_->hor_walls_;
   ver_walls = evade_game_->ver_walls_;
-
-  updatePosition();
-  getHunterDirection();
-
   result_x = result_y = 0;
 
+  // Update
+  updatePosition();
+  getHunterDirection();
+  updateTempBitmap();
+  updateHunterFuturePosition();
+
+  // Algorithm
   algorithm1();
 
   return Moveable::HuntPreyOutput(result_x, result_y);
@@ -33,12 +36,59 @@ void Jinil_Prey::updateTempBitmap(){
   // Initialization
   for(int i=0; i<=500; i++){
     for(int j=0; j<=500; j++){
-      bitmap[i][j].weight = 0;
+      bitmap[i][j].weight = -1;
     }
   }
 
-  
+  for(int s=0; s<h_future_pos.size(); s++){
+    int x = h_future_pos[s].x;
+    int y = h_future_pos[s].y;
+    int x1, x2, y1, y2;
+    
+    if(x >= 4) x1 = x-4;
+    else       x1 = x;
+    if(x <= 496) x2 = x+4;
+    else       x2 = x;
+    if(y >= 4) y1 = y-4;
+    else       y1 = y;
+    if(y <= 496) y2 = y+4;
+    else       y2 = y;
 
+    for(int i=x1-1; i<=x2-1; i++){
+      for(int j=y1-2; j<=y2-2; j++){
+	if(i>=0 && i<=500 && j>=0 && j<=500 && bitmap[i][j].weight==-1)
+	  bitmap[i][j].weight = s/2;   // because hunter can move 2 times than prey move
+      }
+    }
+    if(y1+1 == y-3){
+      for(int i=x1-2; i<=x2-2; i++){
+	if(i>=0 && i<=500 && bitmap[i][y-3].weight==-1)
+	  bitmap[i][y-3].weight = s/2;
+      }
+    }
+    if(y2-1 == y+3){
+      for(int i=x1-2; i<=x2-2; i++){
+	if(i>=0 && i<=500 && bitmap[i][y+3].weight==-1)
+	  bitmap[i][y+3].weight = s/2;
+      }
+    }
+    if(y1 == y-4 && bitmap[x][y1].weight==-1)
+      bitmap[x][y1].weight = s/2;
+    if(y2 == y+4 && bitmap[x][y2].weight==-1)
+      bitmap[x][y2].weight = s/2;
+    if(x1 == x-4 && bitmap[x1][y].weight==-1)
+      bitmap[x1][y].weight = s/2;
+    if(x2 == x+4 && bitmap[x2][y].weight==-1)
+      bitmap[x2][y].weight = s/2;
+  }
+}
+
+void Jinil_Prey::updateHunterFuturePosition(){
+  int Max_future = 10;    // After some test, change the number 10.
+  h_future_pos.clear();
+  for(int i=0; i<Max_future; i++){
+    h_future_pos.push_back( getNextHunterPosition(i) );
+  }
 }
 
 void Jinil_Prey::updatePosition(){
@@ -98,7 +148,7 @@ void Jinil_Prey::getHunterDirection(){
   Pos h_next, h_cur, h_past, h_past_past;
   int h_vector_x, h_vector_y;
   for(int i=0; i<3; i++)
-    hunterDirection[i] = -1;
+    hunterDirection[i].direction = -1;
   int index = 0;
   int Max_future = 10;    // After some test, change the number 10.
 
@@ -149,17 +199,25 @@ void Jinil_Prey::getHunterDirection(){
 
     // Set hunter direction
     if(h_vector_x>0 && h_vector_y>0){
-      if(hunterDirection[index-1] != LRD)
-	hunterDirection[index++] = LRD;
+      if(hunterDirection[index-1].direction != LRD){
+	hunterDirection[index].direction = LRD;
+	hunterDirection[index++].start_pos = h_cur;
+      }
     }else if(h_vector_x<0 && h_vector_y<0){
-      if(hunterDirection[index-1] != RLU)
-	hunterDirection[index++] = RLU;
+      if(hunterDirection[index-1].direction != RLU){
+	hunterDirection[index].direction = RLU;
+	hunterDirection[index++].start_pos = h_cur;
+      }
     }else if(h_vector_x>0 && h_vector_y<0){
-      if(hunterDirection[index-1] != LRU)
-	hunterDirection[index++] = LRU;
+      if(hunterDirection[index-1].direction != LRU){
+	hunterDirection[index].direction = LRU;
+	hunterDirection[index++].start_pos = h_cur;
+      }
     }else if(h_vector_x<0 && h_vector_y>0){
-      if(hunterDirection[index-1] != RLD)
-	hunterDirection[index++] = RLD;
+      if(hunterDirection[index-1].direction != RLD){
+	hunterDirection[index].direction = RLD;
+	hunterDirection[index++].start_pos = h_cur;
+      }
     }
 
   }

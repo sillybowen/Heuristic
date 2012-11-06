@@ -37,6 +37,10 @@ public:
 
   struct Pos{
     int x, y;
+    Pos(){
+      x = 0;
+      y = 0;
+    }
     void set(int x_, int y_){
       x = x_;
       y = y_;
@@ -54,7 +58,7 @@ public:
     void clear(){
       isWall = false;
       isAvail = false;
-      weight = 0;
+      weight = -1;
     }
   };
   
@@ -72,8 +76,8 @@ public:
   // Hunter's future route with 'prey's guess about wall create/rm, return #of steps
   // if could capture prey (== nstep is could NOT capture)
   int hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
-    const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls);
-  
+			    const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls);
+
 protected:
   int       x_;
   int       y_;
