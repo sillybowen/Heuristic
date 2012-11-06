@@ -40,6 +40,7 @@ public:
 
 private:
   // -----------incomplete
+  void readJsonUpdateStates(const string& jsonStr);
   void readSrvUpdateStates(const string& fromSrv);
   ClientSocket* registerSrv(int srv_port);
   Moveable*               my_obj_;  // Hunter/Prey that I am playing(Controlled here)

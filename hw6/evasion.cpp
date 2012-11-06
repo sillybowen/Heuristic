@@ -47,7 +47,8 @@ Evasion::~Evasion() {
 
 int Evasion::startGame(string& teamName) {
   int gameResult = playing;
-  string fromSrv, fromPly, srvEndMark = string("}\nH ");
+  string fromSrv, fromPly, srvEndMark = string("}\nH "), srvGameStat, jsonStr;
+  string jsonStartMrk = string("# {");
   teamName.push_back('\n');
   
 
@@ -62,11 +63,18 @@ int Evasion::startGame(string& teamName) {
         // std::cout << "oneLine, tmpFromSrv= " << tmpFromSrv << " | ";
         fromSrv += tmpFromSrv;
       } while (fromSrv.find(srvEndMark) == string::npos);
-      std::cout << "#Srv sent: \n" << fromSrv;
+
+      int startFromSrv = fromSrv.find(srvEndMark);
+      int startJson = fromSrv.find(jsonStartMrk);
+      jsonStr = fromSrv.substr(startJson + 2, startFromSrv - startJson -1);
+      srvGameStat = fromSrv.substr(startFromSrv + 2, string::npos);
+      std::cout << "#Srv sent: \n" << srvGameStat;
+      std::cout << "#Srv JSON: \n" << jsonStr;
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
-      readSrvUpdateStates(fromSrv);
+      readJsonUpdateStates(jsonStr);
+      readSrvUpdateStates(srvGameStat);
       // Prey Mode
       if(!my_obj_->isHunter()){
         Moveable::HuntPreyOutput output = my_obj_->tryMove();
@@ -103,6 +111,15 @@ int Evasion::startGame(string& teamName) {
   return gameResult;
 }
 
+void Evasion::readJsonUpdateStates(const string& jsonStr) {
+  Json::Value root;   // will contains the root value after parsing.
+  Json::Reader reader;
+
+  reader.parse(jsonStr, root);
+  Json::Value wallCoolDown = root.get("wallCoolDown", "default value");
+  // std::cout << "wallCoolDown= " << wallCoolDown.asInt() << std::endl;
+}
+
 void Evasion::jsonCppTester() const {
   string input = "{\"hunterPosition\":{\"y\":0,\"x\":0},\"walls\":[],\"time\":0,\
 \"preyPosition\":{\"y\":200,\"x\":330},\"wallMaximum\":4,\"wallCoolDown\":3,\
@@ -118,6 +135,7 @@ void Evasion::jsonCppTester() const {
 void Evasion::readSrvUpdateStates(const string& fromSrv) {
   stringstream ss;
   ss << fromSrv;
+
   // Initialization ; because walls can be created/removed.
   hor_walls_.clear();
   ver_walls_.clear();
