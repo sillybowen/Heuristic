@@ -31,7 +31,6 @@ Evasion::Evasion(Moveable* moveable, int n, int m, int srv_port)
     adj_walls_[(i + 1) % 4][i] = 1;
   }
   wall_index = 4;
-  n_count = 0;
   m_count = 0;
   h_pos.set(0, 0);
   p_pos.set(330, 200);
@@ -68,7 +67,7 @@ int Evasion::startGame(string& teamName) {
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
-      n_count++;
+
       // Prey Mode
       if(!my_obj_->isHunter()){
         Moveable::HuntPreyOutput output = my_obj_->tryMove();
@@ -78,7 +77,7 @@ int Evasion::startGame(string& teamName) {
         std::cout << "-- Player Prey: " << ss.str() << "\n" << std::endl;
       }
       // Hunter mode
-      else if(my_obj_->isHunter() && n_count >= N_){
+      else if(my_obj_->isHunter()){
         Moveable::HuntPreyOutput output = my_obj_->tryMove();
         if(output.x1 != -1 && output.y1 != -1 && output.x2 != -1 && output.y2 != -1){
           stringstream ss;

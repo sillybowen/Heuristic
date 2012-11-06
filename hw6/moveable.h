@@ -37,6 +37,10 @@ public:
 
   struct Pos{
     int x, y;
+    Pos(){
+      x = 0;
+      y = 0;
+    }
     void set(int x_, int y_){
       x = x_;
       y = y_;
@@ -54,7 +58,7 @@ public:
     void clear(){
       isWall = false;
       isAvail = false;
-      weight = 0;
+      weight = -1;
     }
   };
   

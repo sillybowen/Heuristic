@@ -29,6 +29,7 @@ public:
   void updateTempBitmap();
 
 private:
+  int n_count;
   Pos p_past, h_past;
   Pos h_past_past;
   Pos p_cur, h_cur;
