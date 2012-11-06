@@ -75,16 +75,16 @@ namespace {
     Moveable::hunterNStepPrediction(MaxNumOfSteps, hFutureSteps, hor_walls_,
         ver_walls_, hStartPos, hPosHis);
     EXPECT_EQ(99, hFutureSteps[1].x);
-    EXPECT_EQ(101, hFutureSteps[1].y);
+    EXPECT_EQ(100, hFutureSteps[1].y);
 
     hStartPos.set(99, 49);  // will bounce to left down direction
     hFutureSteps.clear();
     Moveable::hunterNStepPrediction(2, hFutureSteps, hor_walls_,
         ver_walls_, hStartPos, hPosHis);
     EXPECT_EQ(99, hFutureSteps[1].x);
-    EXPECT_EQ(51, hFutureSteps[1].y);
+    EXPECT_EQ(50, hFutureSteps[1].y);
     EXPECT_EQ(98, hFutureSteps[2].x);
-    EXPECT_EQ(52, hFutureSteps[2].y);
+    EXPECT_EQ(51, hFutureSteps[2].y);
 
     hStartPos.set(99, 150);
     hFutureSteps.clear();

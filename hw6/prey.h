@@ -5,7 +5,7 @@
 
 class Prey : public Moveable {
 public:
-  Prey(int px, int py, int nn, int mm) : Moveable(px, py, nn, mm) { }
+  Prey(int px, int py, int nn, int mm);
   ~Prey();
 
   void output() const;
@@ -13,6 +13,7 @@ public:
   HuntPreyOutput tryMove();
 
 private:
+  int dangerMap[501][501];  // high value means high chance to be captured
 };
 
 #endif  // PREY_HEADER_

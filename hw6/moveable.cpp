@@ -219,7 +219,6 @@ int Moveable::hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
       } else if (hor_walls[k]->y1 == h_next.y && h_next.x >= hor_walls[k]->x1 &&
           h_next.x <= hor_walls[k]->x2) {
         h_next.y = h_cur.y;
-        h_next.x += h_vector_x;
       }
     }
 
@@ -232,7 +231,6 @@ int Moveable::hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
       } else if (ver_walls[k]->x1 == h_next.x && h_next.y >= ver_walls[k]->y1 &&
           h_next.y <= ver_walls[k]->y2) {
         h_next.x = h_cur.x;
-        h_next.y += h_vector_y;
       }
     }
 
