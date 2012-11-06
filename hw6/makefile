@@ -5,7 +5,7 @@ CC = g++
 #CXXFLAGS = -O2 -std=c++0x
 CXXFLAGS = -g
 socklibs = -lnsl
-LIBS = ./jsoncpp-src-0.5.0/libs/linux-gcc-4.5.2/libjson_linux-gcc-4.5.2_libmt.so
+LIBS = 
 OBJS = ClientSocket.o Socket.o moveable.o evasion.o hunter.o prey.o bowen_hunter.o bowen_prey.o jinil_hunter.o jinil_prey.o random_prey.o main.o
 CCEXEC = evasion
 MOVEABLETESTFILE = adj_wall_test.cpp

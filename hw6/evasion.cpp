@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include "jsoncpp-src-0.5.0/include/json/json.h"  // For jsonCpp parser
+// #include "jsoncpp-src-0.5.0/include/json/json.h"  // For jsonCpp parser
 #include "evasion.h"
 
 using std::stringstream;
@@ -73,7 +73,7 @@ int Evasion::startGame(string& teamName) {
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
-      readJsonUpdateStates(jsonStr);
+      // readJsonUpdateStates(jsonStr);
       readSrvUpdateStates(srvGameStat);
       // Prey Mode
       if(!my_obj_->isHunter()){
@@ -111,6 +111,7 @@ int Evasion::startGame(string& teamName) {
   return gameResult;
 }
 
+/*
 void Evasion::readJsonUpdateStates(const string& jsonStr) {
   Json::Value root;   // will contains the root value after parsing.
   Json::Reader reader;
@@ -131,6 +132,7 @@ void Evasion::jsonCppTester() const {
   Json::Value s = root.get("wallCoolDown","default value");
   std::cout << "wallCoolDown(expect 3) = " << s.asInt() << std::endl;
 }
+*/
 
 void Evasion::readSrvUpdateStates(const string& fromSrv) {
   stringstream ss;
