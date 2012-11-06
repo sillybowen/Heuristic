@@ -44,19 +44,17 @@ public:
   };
 
   struct Bitmap{
-    int weight;       // How many step the hunter can come here.
     bool isWall;      // true : it is wall
     bool isAvail;     // true : the same area with prey & hunter
-    int avgWeight;    // the average of the weight in the mask.    
-  
+    int weight;
+
     Bitmap()
-    : weight(-1), isWall(false), isAvail(false), avgWeight(-1) { }
+    : isWall(false), isAvail(false), weight(0) { }
 
     void clear(){
-      weight = -1;
       isWall = false;
       isAvail = false;
-      avgWeight = -1;
+      weight = 0;
     }
   };
   

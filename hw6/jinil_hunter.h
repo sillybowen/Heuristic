@@ -27,6 +27,7 @@ public:
   bool checkCreateWallSafe(int x, int y);
   void updateTempBitmap(int x, int y);
   void getNextPosition();
+  void updateTempBitmap();
 
 private:
   Pos p_past, h_past;
@@ -37,6 +38,8 @@ private:
   int p_vector_x, p_vector_y;   // the vector of the p's movement
   int h_vector_x, h_vector_y;
   Bitmap temp_bitmap[500][500];
+  vector<Moveable::Wall*> hor_walls;
+  vector<Moveable::Wall*> ver_walls;
 };
 
 #endif  // HUNTER_HEADER_

@@ -8,6 +8,7 @@
 #include "bowen_prey.h"
 #include "jinil_hunter.h"
 #include "jinil_prey.h"
+#include "random_prey.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -63,6 +64,15 @@ int main(int argc, char* argv[]) {
 	   << " ;teamName= " << teamName << " ;srv_port= " << srv_port << endl;
     }
     break;
+
+  case 3:             // Random Prey version
+    if (isHunter) {
+      
+    } else {
+      pMyObj = new Random_Prey(330, 200, Ntimesteps, MmaxWalls);
+      cout << "Prey clt N= " << Ntimesteps << " ;M= " << MmaxWalls
+	   << " ;teamName= " << teamName << " ;srv_port= " << srv_port << endl;
+    }
   }
 
   Evasion* pEva = new Evasion(pMyObj, Ntimesteps, MmaxWalls, srv_port);
