@@ -56,11 +56,11 @@ testType[0:Tao, 1:Bowen-randPrey, 2:Jinil 3:randomPreyTest]"
   case 2:              // Jinil version
     if (isHunter) {
       pMyObj = new Jinil_Hunter(0, 0, Ntimesteps, MmaxWalls);
-      cout << "Hunter clt N= " << Ntimesteps << " ;M= " << MmaxWalls
+      cout << "Jinil Hunter clt N= " << Ntimesteps << " ;M= " << MmaxWalls
 	   << " ;teamName= " << teamName << " ;srv_port= " << srv_port << endl;
     } else {
       pMyObj = new Jinil_Prey(330, 200, Ntimesteps, MmaxWalls);
-      cout << "Prey clt N= " << Ntimesteps << " ;M= " << MmaxWalls
+      cout << "Jinil Prey clt N= " << Ntimesteps << " ;M= " << MmaxWalls
 	   << " ;teamName= " << teamName << " ;srv_port= " << srv_port << endl;
     }
     break;
