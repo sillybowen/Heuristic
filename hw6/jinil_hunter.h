@@ -26,11 +26,11 @@ public:
   int checkRemovableWall();
   bool checkCreateWallSafe(int x, int y);
   void updateTempBitmap(int x, int y);
-  void getNextPosition();
   void updateTempBitmap();
 
 private:
   Pos p_past, h_past;
+  Pos h_past_past;
   Pos p_cur, h_cur;
   Pos p_next, h_next;                
   int st_x, st_y, end_x, end_y;

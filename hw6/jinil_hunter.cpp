@@ -551,54 +551,54 @@ bool Jinil_Hunter::checkCreateWallSafe(int x, int y){
 }
 
 void Jinil_Hunter::updatePosition(){
-  // Past position
-  h_past = evade_game_->h_pos_history_[ evade_game_->h_pos_history_.size()-2];  
-  p_past = evade_game_->p_pos_history_[ evade_game_->p_pos_history_.size()-2];
-  
+  vector<Pos> h_pos_history = evade_game_->h_pos_history_;
+  vector<Pos> p_pos_history = evade_game_->p_pos_history_;
   // Current position
   h_cur = evade_game_->h_pos;
   p_cur = evade_game_->p_pos;
 
+  // Past position
+  if(h_pos_history.size()>=3){
+    h_past = h_pos_history[ h_pos_history.size()-2 ];
+    h_past_past = h_pos_history[ h_pos_history.size()-3 ];
+  }else{
+    h_past.x = h_cur.x-1;
+    h_past.y = h_cur.y-1;
+    h_past_past.x = h_cur.x-2;
+    h_past_past.y = h_cur.x-2;
+  }
+  if(p_pos_history.size()>=2)
+    p_past = p_pos_history[ p_pos_history.size()-2];
+  else
+    p_past = p_cur;
+  
   // Vector
-  h_vector_x = h_cur.x - h_past.x;
-  h_vector_y = h_cur.y - h_past.y;
+  if(h_cur.x == h_past.x || h_cur.y == h_past.y){ // Just previously bounced
+    if(h_cur.x == h_past.x){   // Just previously bounced on a vertical wall
+      if(h_past.x > h_past_past.x)
+	h_vector_x = -1;
+      else if(h_past.x < h_past_past.x)
+	h_vector_x = 1;
+    }
+    if(h_cur.y == h_past.y){    // Just previously bounced on a horizontal wall
+      if(h_past.y > h_past_past.y)
+	h_vector_y = -1;
+      else if(h_past.y < h_past_past.y)
+	h_vector_y = 1;
+    }
+  }else{ // not bounced on a wall
+    h_vector_x = h_cur.x - h_past.x;
+    h_vector_y = h_cur.y - h_past.y;
+  }
+
   p_vector_x = p_cur.x - p_past.x;
   p_vector_y = p_cur.y - p_past.y;
 
   // anticipated next prey's position
   // next = current + (current - past)       // Need more specific, especially reflex on the wall
-  getNextPosition();
-  
-}
-
-void Jinil_Hunter::getNextPosition(){
-  vector<Moveable::Wall*> hor_walls = evade_game_->hor_walls_;
-  vector<Moveable::Wall*> ver_walls = evade_game_->ver_walls_;
-
-  h_next.x = h_cur.x + h_vector_x;
-  h_next.y = h_cur.y + h_vector_y;
+  h_next = getNextHunterPosition(1);
   p_next.x = p_cur.x + p_vector_x;
   p_next.y = p_cur.y + p_vector_y;
-
-  // horizontal wall check
-  for(int k=0; k<hor_walls.size(); k++){
-    if(hor_walls[k]->y1 == h_next.y){
-      h_next.y = h_cur.y;
-    }
-    if(hor_walls[k]->y1 == p_next.y){
-      p_next.y = p_cur.y;
-    }
-  }
-
-  // vertical wall check
-  for(int k=0; k<ver_walls.size(); k++){
-    if(ver_walls[k]->x1 == h_next.x){
-      h_next.x = h_cur.x;
-    }
-    if(ver_walls[k]->x1 == p_next.x){
-      p_next.x = p_cur.x;
-    }
-  }
 }
 
 void Jinil_Hunter::getHunterDirection(){

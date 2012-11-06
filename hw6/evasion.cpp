@@ -63,7 +63,7 @@ int Evasion::startGame(string& teamName) {
         (*arch_clt_) >> tmpFromSrv;
         std::cout << "oneLine  ";
         fromSrv += tmpFromSrv;
-      } while (tmpFromSrv.size() > 1);
+      } while (tmpFromSrv.size() < 1);
       std::cout << "#Srv sent: \n" << fromSrv << std::endl;
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;

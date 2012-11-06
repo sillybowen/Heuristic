@@ -18,12 +18,12 @@ public:
 
   void algorithm1();
   void updatePosition();
-  void getNextPosition();
   void getHunterDirection();
   void updateTempBitmap();
 
 private:
   Pos p_past, h_past;
+  Pos h_past_past;
   Pos p_cur, h_cur;
   Pos p_next, h_next;                
   int hunterDirection[3];
