@@ -77,7 +77,7 @@ public:
   // if could capture prey (== nstep is could NOT capture)
   static int hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
     const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls, Pos h_cur,
-    const vector<Pos>& h_pos_history);
+    const vector<Pos>& h_pos_history, int& hldir_x, int& hldir_y);
   
 protected:
   int       x_;

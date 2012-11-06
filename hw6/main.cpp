@@ -78,7 +78,8 @@ testType[0:Tao, 1:Bowen-randPrey, 2:Jinil 3:randomPreyTest]"
   }
 
   Evasion* pEva = new Evasion(pMyObj, Ntimesteps, MmaxWalls, srv_port);
-  pEva->dumpAdjWallsMatrixGraph();
+  // pEva->dumpAdjWallsMatrixGraph();
+  pMyObj->tryMove();
   // pEva->jsonCppTester();
 
   // Start game

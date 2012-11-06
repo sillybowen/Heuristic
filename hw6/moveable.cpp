@@ -163,9 +163,11 @@ Moveable::Pos Moveable::getNextHunterPosition(int n){
 }
 
 // Changed api of jinil's getNextHunterPosition for prey.cpp
+// hdir_x/y returned is the last direction, for example, nstep = 2,
+// the direction is after one hunter move
 int Moveable::hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
     const vector<Wall*>& hor_walls, const vector<Wall*>& ver_walls, Pos h_cur, 
-    const vector<Pos>& h_pos_history) {
+    const vector<Pos>& h_pos_history, int& hldir_x, int& hldir_y) {
   int count = nstep;
   // vector<Wall*> hor_walls = evade_game_->hor_walls_;
   // vector<Wall*> ver_walls = evade_game_->ver_walls_;
@@ -242,6 +244,9 @@ int Moveable::hunterNStepPrediction(int nstep, vector<Pos>& hFutureRoute,
       count--;
     }else{
       hFutureRoute.push_back(h_next);  // Push_back next predicted route
+      // Return the last step direction
+      hldir_x = h_vector_x;
+      hldir_y = h_vector_y;
       break;
     }
   }
