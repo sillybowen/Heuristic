@@ -49,7 +49,7 @@ Evasion::~Evasion() {
 
 int Evasion::startGame(string& teamName) {
   int gameResult = playing;
-  string fromSrv, fromPly;
+  string fromSrv, fromPly, srvEndMark = string("}\nH ");
   teamName.push_back('\n');
   
 
@@ -57,14 +57,14 @@ int Evasion::startGame(string& teamName) {
     (*arch_clt_) << teamName;
 
     do {
-      std::cout << "----*----*----------\n";
+      // std::cout << "----*----*----------\n";
       string tmpFromSrv;
       do {
         (*arch_clt_) >> tmpFromSrv;
-        std::cout << "oneLine  ";
+        // std::cout << "oneLine, tmpFromSrv= " << tmpFromSrv << " | ";
         fromSrv += tmpFromSrv;
-      } while (tmpFromSrv.size() < 1);
-      std::cout << "#Srv sent: \n" << fromSrv << std::endl;
+      } while (fromSrv.find(srvEndMark) == string::npos);
+      std::cout << "#Srv sent: \n" << fromSrv;
       if (fromSrv.empty() || fromSrv.compare("Bye") == 0)
         break;
 
@@ -75,7 +75,7 @@ int Evasion::startGame(string& teamName) {
         stringstream ss;
         ss << output.dx << " " << output.dy;
         fromPly = ss.str();
-        std::cout << "Player Prey: " << ss.str() << std::endl;
+        std::cout << "-- Player Prey: " << ss.str() << "\n" << std::endl;
       }
       // Hunter mode
       else if(my_obj_->isHunter() && n_count >= N_){
@@ -88,10 +88,10 @@ int Evasion::startGame(string& teamName) {
         } else {
           fromPly = "0";
         }
-        std::cout << "Player Hunter: " << fromPly << std::endl;
+        std::cout << "-- Player Hunter: " << fromPly << "\n" << std::endl;
       } else {  // Hunter mode - no wall
         fromPly = "0";
-        std::cout << "Player Hunter: " << fromPly << std::endl;
+        std::cout << "-- Player Hunter: " << fromPly << "\n" << std::endl;
       }
 
       fromPly.push_back('\n');
