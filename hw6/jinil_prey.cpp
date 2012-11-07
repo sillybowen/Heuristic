@@ -51,9 +51,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : LRD direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
-      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=3) ||
-	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=3)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
+      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=5) ||
+	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=5)){
 	if(bitmap[p_cur.x-1][p_cur.y+1].weight > bitmap[p_cur.x+1][p_cur.y-1].weight){
 	  result_x = -1;
 	  result_y = 1;
@@ -61,8 +61,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = 1;
 	  result_y = -1;
 	}
-      }else if((p_cur.y+1 <=500 && bitmap[p_cur.x][p_cur.y+1].weight>=3) ||
-	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=3)){
+      }else if((p_cur.y+1 <=500 && bitmap[p_cur.x][p_cur.y+1].weight>=5) ||
+	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=5)){
 	if(bitmap[p_cur.x][p_cur.y+1].weight > bitmap[p_cur.x+1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = 1;
@@ -94,9 +94,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : RLU direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
-      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=3) ||
-	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=3)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
+      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=5) ||
+	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=5)){
 	if(bitmap[p_cur.x+1][p_cur.y-1].weight > bitmap[p_cur.x-1][p_cur.y+1].weight){
 	  result_x = 1;
 	  result_y = -1;
@@ -104,8 +104,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = -1;
 	  result_y = 1;
 	}
-      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=3) ||
-	       (p_cur.x-1 >=0 && bitmap[p_cur.x-1][p_cur.y].weight>=3)){
+      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=5) ||
+	       (p_cur.x-1 >=0 && bitmap[p_cur.x-1][p_cur.y].weight>=5)){
 	if(bitmap[p_cur.x][p_cur.y-1].weight > bitmap[p_cur.x-1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = -1;
@@ -137,9 +137,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : LRU direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
-      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=3) ||
-	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=3)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
+      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=5) ||
+	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=5)){
 	if(bitmap[p_cur.x-1][p_cur.y-1].weight > bitmap[p_cur.x+1][p_cur.y+1].weight){
 	  result_x = -1;
 	  result_y = -1;
@@ -147,8 +147,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = 1;
 	  result_y = 1;
 	}
-      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=3) ||
-	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=3)){
+      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=5) ||
+	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=5)){
 	if(bitmap[p_cur.x][p_cur.y-1].weight > bitmap[p_cur.x+1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = -1;
@@ -180,9 +180,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : RLD direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 3){
-      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=3) ||
-	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=3)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
+      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=5) ||
+	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=5)){
 	if(bitmap[p_cur.x+1][p_cur.y+1].weight > bitmap[p_cur.x-1][p_cur.y-1].weight){
 	  result_x = 1;
 	  result_y = 1;
@@ -190,8 +190,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = -1;
 	  result_y = -1;
 	}
-      }else if((p_cur.y+1 >=0 && bitmap[p_cur.x][p_cur.y+1].weight>=3) ||
-	       (p_cur.x-1 <=500 && bitmap[p_cur.x-1][p_cur.y].weight>=3)){
+      }else if((p_cur.y+1 >=0 && bitmap[p_cur.x][p_cur.y+1].weight>=5) ||
+	       (p_cur.x-1 <=500 && bitmap[p_cur.x-1][p_cur.y].weight>=5)){
 	if(bitmap[p_cur.x][p_cur.y+1].weight > bitmap[p_cur.x-1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = 1;
