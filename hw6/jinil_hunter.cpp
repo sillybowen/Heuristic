@@ -37,7 +37,7 @@ Moveable::HuntPreyOutput Jinil_Hunter::tryMove() {
 
 void Jinil_Hunter::algorithm1(){
   // You can create wall
-  if(m_count <= evade_game_->M_){ 
+  if(m_count < evade_game_->M_){ 
     switch(hunterDirection){
     case LRD_UP:
       if(h_cur.x == p_cur.x-2){
@@ -47,40 +47,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-	/*
-      if(h_cur.x == p_cur.x-2){
-	updateTempBitmap(h_cur.x, -1);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.y == p_anti.y-2){
-	    updateTempBitmap(-1, h_anti.y);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(h_cur.x, -1)){
-	    createWall(h_cur.x, -1);
-	    return;
-	  }
-	}
-      }else if(h_cur.y == p_cur.y-2){
-	if(checkCreateWallSafe(-1, h_cur.y)){
-	  createWall(-1, h_cur.y);
-	  return;
-	}
-      }
-	*/
       break;
     case LRD_DOWN:
       if(h_cur.x == p_cur.x-2){
@@ -90,38 +56,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-      /*
-      if(h_cur.y == p_cur.y-2){
-	updateTempBitmap(-1, h_cur.y);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.x >= p_anti.x-2){
-	    updateTempBitmap(h_anti.x, -1);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(-1, h_cur.y)){
-	    createWall(-1, h_cur.y);
-	    return;
-	  }
-	}
-      }else if(h_cur.x == p_cur.x-2){
-	if(checkCreateWallSafe(h_cur.x, -1)){
-	  createWall(h_cur.x, -1);
-	  return;
-	}
-      }
-      */
       break;
     case RLU_UP:
       if(h_cur.x == p_cur.x+2){
@@ -131,39 +65,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-      
-      /*
-      if(h_cur.y == p_cur.y+2){
-	updateTempBitmap(-1, h_cur.y);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.x == p_anti.x+2){
-	    updateTempBitmap(h_anti.x, -1);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(-1, h_cur.y)){
-	    createWall(-1, h_cur.y);
-	    return;
-	  }
-	}
-      }else if(h_cur.x == p_cur.x+2){
-	if(checkCreateWallSafe(h_cur.x, -1)){
-	  createWall(h_cur.x, -1);
-	  return;
-	}
-      }
-      */
       break;
     case RLU_DOWN:
       if(h_cur.x == p_cur.x+2){
@@ -173,38 +74,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-      /*
-      if(h_cur.x == p_cur.x+2){
-	updateTempBitmap(h_cur.x, -1);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.y == p_anti.y+2){
-	    updateTempBitmap(-1, h_anti.y);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(h_cur.x, -1)){
-	    createWall(h_cur.x, -1);
-	    return;
-	  }
-	}
-      }else if(h_cur.y == p_cur.y+2){
-	if(checkCreateWallSafe(-1, h_cur.y)){
-	  createWall(-1, h_cur.y);
-	  return;
-	}
-      }
-      */
       break;
     case LRU_UP:
       if(h_cur.x == p_cur.x-2){
@@ -214,38 +83,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-      /*
-      if(h_cur.y == p_cur.y+2){
-	updateTempBitmap(-1, h_cur.y);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.x == p_anti.x-2){
-	    updateTempBitmap(h_anti.x, -1);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(-1, h_cur.y)){
-	    createWall(-1, h_cur.y);
-	    return;
-	  }
-	}
-      }else if(h_cur.x == p_cur.x-2){
-	if(checkCreateWallSafe(h_cur.x, -1)){
-	  createWall(h_cur.x, -1);
-	  return;
-	}
-      }
-      */
       break;
     case LRU_DOWN:
       if(h_cur.x == p_cur.x-2){
@@ -255,38 +92,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-      /*
-      if(h_cur.x == p_cur.x-2){
-	updateTempBitmap(h_cur.x, -1);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.y == p_anti.y+2){
-	    updateTempBitmap(-1, h_anti.y);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(h_cur.x, -1)){
-	    createWall(h_cur.x, -1);
-	    return;
-	  }
-	}
-      }else if(h_cur.y == p_cur.y+2){
-	if(checkCreateWallSafe(-1, h_cur.y)){
-	  createWall(-1, h_cur.y);
-	  return;
-	}
-      }
-      */
       break;
     case RLD_UP:
       if(h_cur.x == p_cur.x+2){
@@ -296,38 +101,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-      /*
-      if(h_cur.x == p_cur.x+2){
-	updateTempBitmap(h_cur.x, -1);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.y == p_anti.y-2){
-	    updateTempBitmap(-1, h_anti.y);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(h_cur.x, -1)){
-	    createWall(h_cur.x, -1);
-	    return;
-	  }
-	}
-      }else if(h_cur.y == p_cur.y-2){
-	if(checkCreateWallSafe(-1, h_cur.y)){
-	  createWall(-1, h_cur.y);
-	  return;
-	}
-      }
-      */
       break;
     case RLD_DOWN:
       if(h_cur.x == p_cur.x+2){
@@ -337,38 +110,6 @@ void Jinil_Hunter::algorithm1(){
 	createWall(-1, h_cur.y);
 	return;
       }
-      /*
-      if(h_cur.y == p_cur.y-2){
-	updateTempBitmap(-1, h_cur.y);
-	int remainRange = calculateRemainRange();
-	int ano_opt_remainRange;  // anticipate another option.
-	Moveable::Pos h_anti, p_anti;
-	h_anti = h_cur;
-	p_anti = p_cur;
-	while(true){
-	  h_anti.x += h_vector_x;
-	  h_anti.y += h_vector_y;
-	  p_anti.x += p_vector_x;
-	  p_anti.y += p_vector_y;
-	  if(h_anti.x == p_anti.x+2){
-	    updateTempBitmap(h_anti.x, -1);
-	    ano_opt_remainRange = calculateRemainRange();
-	    break;
-	  }
-	}
-	if(remainRange < ano_opt_remainRange){
-	  if(checkCreateWallSafe(-1, h_cur.y)){
-	    createWall(-1, h_cur.y);
-	    return;
-	  }
-	}
-      }else if(h_cur.x == p_cur.x+2){
-	if(checkCreateWallSafe(h_cur.x, -1)){
-	  createWall(h_cur.x, -1);
-	  return;
-	}
-      }
-      */
       break;
     }
   }
