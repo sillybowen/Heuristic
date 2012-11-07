@@ -5,7 +5,10 @@
 
 class Jinil_Hunter : public Moveable {
 public:
-  Jinil_Hunter(int hx, int hy, int nn, int mm) : Moveable(hx, hy, nn, mm) { }
+  Jinil_Hunter(int hx, int hy, int nn, int mm) : Moveable(hx, hy, nn, mm) {
+    n_count = 0;
+    m_count = 0;
+ }
   ~Jinil_Hunter();
 
   enum hunter_direction { LRD_UP, LRD_DOWN, RLU_UP, RLU_DOWN, LRU_UP, LRU_DOWN, RLD_UP, RLD_DOWN };

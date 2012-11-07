@@ -16,7 +16,7 @@ Moveable::HuntPreyOutput Jinil_Prey::tryMove() {
   ver_walls = evade_game_->ver_walls_;
   result_x = result_y = 0;
 
-  int Max_future = 10;    // After some test, change the number 10.
+  int Max_future = 20;    // After some test, change the number 10.
   // Update
   updatePosition();
   getHunterDirection();
@@ -51,9 +51,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : LRD direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
-      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=5) ||
-	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=5)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= we){
+      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=we) ||
+	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=we)){
 	if(bitmap[p_cur.x-1][p_cur.y+1].weight > bitmap[p_cur.x+1][p_cur.y-1].weight){
 	  result_x = -1;
 	  result_y = 1;
@@ -61,8 +61,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = 1;
 	  result_y = -1;
 	}
-      }else if((p_cur.y+1 <=500 && bitmap[p_cur.x][p_cur.y+1].weight>=5) ||
-	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=5)){
+      }else if((p_cur.y+1 <=500 && bitmap[p_cur.x][p_cur.y+1].weight>=we) ||
+	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=we)){
 	if(bitmap[p_cur.x][p_cur.y+1].weight > bitmap[p_cur.x+1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = 1;
@@ -94,9 +94,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : RLU direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
-      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=5) ||
-	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=5)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= we){
+      if((p_cur.x+1 <=500 && p_cur.y-1 >=0 && bitmap[p_cur.x+1][p_cur.y-1].weight>=we) ||
+	 (p_cur.x-1 >=0 && p_cur.y+1 <=500 && bitmap[p_cur.x-1][p_cur.y+1].weight>=we)){
 	if(bitmap[p_cur.x+1][p_cur.y-1].weight > bitmap[p_cur.x-1][p_cur.y+1].weight){
 	  result_x = 1;
 	  result_y = -1;
@@ -104,8 +104,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = -1;
 	  result_y = 1;
 	}
-      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=5) ||
-	       (p_cur.x-1 >=0 && bitmap[p_cur.x-1][p_cur.y].weight>=5)){
+      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=we) ||
+	       (p_cur.x-1 >=0 && bitmap[p_cur.x-1][p_cur.y].weight>=we)){
 	if(bitmap[p_cur.x][p_cur.y-1].weight > bitmap[p_cur.x-1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = -1;
@@ -137,9 +137,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : LRU direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
-      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=5) ||
-	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=5)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= we){
+      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=we) ||
+	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=we)){
 	if(bitmap[p_cur.x-1][p_cur.y-1].weight > bitmap[p_cur.x+1][p_cur.y+1].weight){
 	  result_x = -1;
 	  result_y = -1;
@@ -147,8 +147,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = 1;
 	  result_y = 1;
 	}
-      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=5) ||
-	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=5)){
+      }else if((p_cur.y-1 >=0 && bitmap[p_cur.x][p_cur.y-1].weight>=we) ||
+	       (p_cur.x+1 <=500 && bitmap[p_cur.x+1][p_cur.y].weight>=we)){
 	if(bitmap[p_cur.x][p_cur.y-1].weight > bitmap[p_cur.x+1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = -1;
@@ -180,9 +180,9 @@ void Jinil_Prey::algorithm1(){
       result_y = 0;
     }
     // escape danger : RLD direction
-    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= 5){
-      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=5) ||
-	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=5)){
+    if(bitmap[p_cur.x + result_x][p_cur.y + result_y].weight <= we){
+      if((p_cur.x-1 >=0 && p_cur.y-1 >=0 && bitmap[p_cur.x-1][p_cur.y-1].weight>=we) ||
+	 (p_cur.x+1 <=500 && p_cur.y+1 <=500 && bitmap[p_cur.x+1][p_cur.y+1].weight>=we)){
 	if(bitmap[p_cur.x+1][p_cur.y+1].weight > bitmap[p_cur.x-1][p_cur.y-1].weight){
 	  result_x = 1;
 	  result_y = 1;
@@ -190,8 +190,8 @@ void Jinil_Prey::algorithm1(){
 	  result_x = -1;
 	  result_y = -1;
 	}
-      }else if((p_cur.y+1 >=0 && bitmap[p_cur.x][p_cur.y+1].weight>=5) ||
-	       (p_cur.x-1 <=500 && bitmap[p_cur.x-1][p_cur.y].weight>=5)){
+      }else if((p_cur.y+1 >=0 && bitmap[p_cur.x][p_cur.y+1].weight>=we) ||
+	       (p_cur.x-1 <=500 && bitmap[p_cur.x-1][p_cur.y].weight>=we)){
 	if(bitmap[p_cur.x][p_cur.y+1].weight > bitmap[p_cur.x-1][p_cur.y].weight){
 	  result_x = 0;
 	  result_y = 1;
@@ -329,8 +329,8 @@ void Jinil_Prey::getHunterDirection(){
   for(int i=0; i<3; i++)
     hunterDirection[i].direction = -1;
   int index = 0;
-  int Max_future = 10;    // After some test, change the number 10.
-
+  Max_future = 60;    // After some test, change the number 10.
+  we = Max_future / 2; 
   // Initialization
   h_cur = evade_game_->h_pos;
       
@@ -378,22 +378,22 @@ void Jinil_Prey::getHunterDirection(){
 
     // Set hunter direction
     if(h_vector_x>0 && h_vector_y>0){
-      if(hunterDirection[index-1].direction != LRD){
+      if(index==0 || hunterDirection[index-1].direction != LRD){
 	hunterDirection[index].direction = LRD;
 	hunterDirection[index++].start_pos = h_cur;
       }
     }else if(h_vector_x<0 && h_vector_y<0){
-      if(hunterDirection[index-1].direction != RLU){
+      if(index==0 || hunterDirection[index-1].direction != RLU){
 	hunterDirection[index].direction = RLU;
 	hunterDirection[index++].start_pos = h_cur;
       }
     }else if(h_vector_x>0 && h_vector_y<0){
-      if(hunterDirection[index-1].direction != LRU){
+      if(index==0 || hunterDirection[index-1].direction != LRU){
 	hunterDirection[index].direction = LRU;
 	hunterDirection[index++].start_pos = h_cur;
       }
     }else if(h_vector_x<0 && h_vector_y>0){
-      if(hunterDirection[index-1].direction != RLD){
+      if(index==0 || hunterDirection[index-1].direction != RLD){
 	hunterDirection[index].direction = RLD;
 	hunterDirection[index++].start_pos = h_cur;
       }

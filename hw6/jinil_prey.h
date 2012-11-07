@@ -42,6 +42,8 @@ private:
   vector<Moveable::Wall*> hor_walls;
   vector<Moveable::Wall*> ver_walls;
   vector<Moveable::Pos> h_future_pos;
+  int Max_future;
+  int we;
 };
 
 #endif  // PREY_HEADER_
