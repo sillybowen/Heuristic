@@ -376,10 +376,39 @@ void Jinil_Hunter::algorithm1(){
   // If you come here,
   // you can remove wall
   // Check removable wall
-  int index = checkRemovableWall();
-  if(index != -1)
-    removeWall(index);
-  
+  if(m_count >= evade_game_->M_ - 1){
+
+    int distance_x, distance_y;
+    switch(hunterDirection){
+    case RLU_UP:
+    case RLU_DOWN:
+      distance_x = h_cur.x - p_cur.x;
+      distance_y = h_cur.y - p_cur.y;
+      break;
+    case LRU_UP:
+    case LRU_DOWN:
+      distance_x = p_cur.x - h_cur.x;
+      distance_y = h_cur.y - p_cur.y;
+      break;
+    case RLD_UP:
+    case RLD_DOWN:
+      distance_x = h_cur.x - p_cur.x;
+      distance_y = p_cur.y - h_cur.y;
+      break;
+    case LRD_UP:
+    case LRD_DOWN:
+      distance_x = p_cur.x - h_cur.x;
+      distance_y = p_cur.y - h_cur.y;
+      break;
+    }
+    
+    int distance = (evade_game_->N_ * 3) + 2;
+    if(distance_x == distance || distance_y == distance){
+      int index = checkRemovableWall();
+      if(index != -1)
+	removeWall(index);
+    }
+  }
 }
 
 void Jinil_Hunter::createWall(int x, int y){
@@ -422,6 +451,7 @@ void Jinil_Hunter::createWall(int x, int y){
 void Jinil_Hunter::removeWall(int index){
   vector<Moveable::Wall*> hor_walls = evade_game_->hor_walls_;
   vector<Moveable::Wall*> ver_walls = evade_game_->ver_walls_;
+  
   bool find = false;
   for(int k=2; k<hor_walls.size(); k++){
     if(hor_walls[k]->wid_ == index){
@@ -454,6 +484,7 @@ void Jinil_Hunter::removeWall(int index){
 int Jinil_Hunter::checkRemovableWall(){
   vector<Moveable::Wall*> hor_walls = evade_game_->hor_walls_;
   vector<Moveable::Wall*> ver_walls = evade_game_->ver_walls_;
+
   int index = -1;
   for(int k=2; k<hor_walls.size(); k++){
     int x1, x2, y;
@@ -512,7 +543,63 @@ int Jinil_Hunter::checkRemovableWall(){
       break;
     }
   }
-  return index;
+  if(index != -1)
+    return index;
+
+  // algorithm 2
+  Moveable::Pos h_next = getNextHunterPosition(1);
+  int max_distance=0;
+  int best_wall=-1;
+
+  for(int k=2; k<hor_walls.size(); k++){
+    int cur_distance;
+    if(hor_walls[k]->y1 > h_cur.y)
+      cur_distance = hor_walls[k]->y1 - h_cur.y;
+    else
+      cur_distance = h_cur.y - hor_walls[k]->y1;
+    int next_distance;
+    if(hor_walls[k]->y1 > h_next.y)
+      next_distance = hor_walls[k]->y1 - h_next.y;
+    else
+      next_distance = h_next.y - hor_walls[k]->y1;
+
+    if(cur_distance <= next_distance){
+      int p_distance;
+      if(hor_walls[k]->y1 > p_cur.y)
+	p_distance = hor_walls[k]->y1 - p_cur.y;
+      else
+	p_distance = p_cur.y - hor_walls[k]->y1;
+
+      if(p_distance > max_distance)
+	best_wall = hor_walls[k]->wid_;
+    }
+  }
+  
+  for(int k=2; k<ver_walls.size(); k++){
+    int cur_distance;
+    if(ver_walls[k]->x1 > h_cur.x)
+      cur_distance = ver_walls[k]->x1 - h_cur.x;
+    else
+      cur_distance = h_cur.x - ver_walls[k]->x1;
+    int next_distance;
+    if(ver_walls[k]->x1 > h_next.x)
+      next_distance = ver_walls[k]->x1 - h_next.x;
+    else
+      next_distance = h_next.x - ver_walls[k]->x1;
+
+    if(cur_distance <= next_distance){
+      int p_distance;
+      if(ver_walls[k]->x1 > p_cur.x)
+	p_distance = ver_walls[k]->x1 - p_cur.x;
+      else
+	p_distance = p_cur.x - ver_walls[k]->x1;
+
+      if(p_distance > max_distance)
+	best_wall = ver_walls[k]->wid_;
+    }
+  }
+
+  return best_wall;
 }
 
 int Jinil_Hunter::calculateRemainRange(){
