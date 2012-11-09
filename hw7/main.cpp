@@ -22,12 +22,11 @@ bool readSrvOutput(const char* srvOutFileName) {
   if (!inF.good()) {
     return false;
   }
-  string srvOutStr((istreambuf_iterator<char>(inF)), istreambuf_iterator<char>());
+  vector<char> srvStrVect((istreambuf_iterator<char>(inF)),
+      istreambuf_iterator<char>());
+  vector<char>::const_iterator srvIter = srvStrVect.begin();
 
-  // cout << srvOutStr;
-  vector<char> srvStrVect(srvOutStr.begin(), srvOutStr.end());
-  vector<char>::const_iterator srvStrVectIter = srvStrVect.begin();
-  tree srvTr(srvStrVectIter);
+  tree srvTr(srvIter);
   cout << "Expect(graph): " << srvTr[0][0] << endl;  // "graph"
   cout << "Expect(nodes): " << srvTr[0][1][0][0] << endl;  // "nodes"
   cout << "Expect(whole id0 ..): " << srvTr[0][1][0][1][0] << endl;  // "whole id0"
