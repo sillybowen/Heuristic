@@ -115,7 +115,6 @@ Moveable::HuntPreyOutput Bowen_Hunter::tryMove() {
 			 boarder[0],
 			 hx+1,
 			 boarder[1]);
-
     Wall * w = new Wall(hx+1,
 			boarder[0],
 			hx+1,
@@ -130,5 +129,4 @@ Moveable::HuntPreyOutput Bowen_Hunter::tryMove() {
     nextWallAction = N_;
     return ret;    
   }
-
 }
