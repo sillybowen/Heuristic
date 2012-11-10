@@ -24,11 +24,58 @@ void Parser::GetEdges(tree * srvTr) {
     cout<<(*srvTr)[0][1][1][1][i]<<endl;
     istringstream((*srvTr)[0][1][1][1][i][0][1].data)>>n1;
     istringstream((*srvTr)[0][1][1][1][i][1][1].data)>>n2;
-    cout<<n1<<' '<<n2<<endl;
     locs[n1]->AddChildren(locs[n2]);
     locs[n2]->AddChildren(locs[n1]);
   }
 }
+
+void Parser::GetEaten(tree *srvTr) {
+  int id,team;
+  for (int i = 0; i<(*srvTr)[3][1].children.size();i++) {
+    cout<<(*srvTr)[3][1][i]<<endl;
+    istringstream((*srvTr)[3][1][i][0][0][1].data)>>id;
+    team = (*srvTr)[3][1][i][1].data[4] -'0';
+    locs[id]->setEaten(team);
+  }
+}
+
+void Parser::GetNanos( tree *srvTr) {
+    cout<<(*srvTr)[2][1]<<endl;
+    vector<string> dir;
+    string lastDir;
+    int id;
+    int team;
+    Nano * nn;
+    nanos.clear();
+    dir.resize(4);
+    for (int i = 0; i< (*srvTr)[2][1].children.size();i++) {
+      cout<<(*srvTr)[2][1][i]<<endl;
+      istringstream((*srvTr)[2][1][i][0][1][0][1].data)>>id;
+      lastDir = (*srvTr)[2][1][i][1][1].data;
+      for (int j = 0; j<4; j++) {
+	dir[j] = (*srvTr)[2][1][i][2][1][j].data;
+      }
+      team = (*srvTr)[2][1][i][3][1].data[4]-'0';
+      nn = new Nano (id,lastDir,dir,false,team);
+      nanos.push_back(nn);
+    }
+
+    for (int i = 0; i< (*srvTr)[1][1].children.size();i++) {
+      cout<<(*srvTr)[1][1][i]<<endl;
+      istringstream((*srvTr)[1][1][i][0][1][0][1].data)>>id;
+      lastDir = (*srvTr)[1][1][i][1][1].data;
+      for (int j = 0; j<4; j++) {
+	dir[j] = (*srvTr)[1][1][i][2][1][j].data;
+      }
+      team = (*srvTr)[1][1][i][3][1].data[4]-'0';
+      nn = new Nano (id,lastDir,dir,true,team);
+      nanos.push_back(nn);
+    }
+
+    for (int i = 0; i<nanos.size();i++)
+      nanos[i]->output();
+}
+
 void Parser::output() {
   for (int i = 0; i<locs.size(); i++)
     locs[i]->output();

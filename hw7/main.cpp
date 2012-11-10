@@ -5,7 +5,7 @@
 #include "tree.h"
 #include "loc.h"
 #include "parser.h"
-
+#include "nano.h"
 using namespace std;
 
 bool readSrvOutput(const char* srvOutFileName);
@@ -32,11 +32,14 @@ bool readSrvOutput(const char* srvOutFileName) {
       istreambuf_iterator<char>());
   vector<char>::const_iterator srvIter = srvStrVect.begin();
 
+  Nano::initializeMap();
   tree srvTr(srvIter);
   inF.close();
   Parser p;
   p.GetNodes(&srvTr);
   p.GetEdges(&srvTr);
-  p.output();
+  p.GetEaten(&srvTr);
+  p.GetNanos(&srvTr);
+  //  p.output();
   return true;
 }

@@ -8,11 +8,13 @@ class Location {
   int id_;
   bool occupied_;
   int x_,y_;
+  int eatenBy_;
  public:
   int getX() {return x_;}
   int getY() {return y_;}
   Location(int id,int x,int y);
   void AddChildren(Location* newChild);
+  void setEaten(int x) {eatenBy_=x;}
   void output();
 };
 #endif
