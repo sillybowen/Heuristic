@@ -1,3 +1,5 @@
+#ifndef tree_
+#define tree_
 #include <vector>
 #include <string>
 #include <sstream>
@@ -72,3 +74,4 @@ template<typename T> inline int to_int(T const& t) {
   ss >> x;
   return x;
 }
+#endif

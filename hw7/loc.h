@@ -9,6 +9,8 @@ class Location {
   bool occupied_;
   int x_,y_;
  public:
+  int getX() {return x_;}
+  int getY() {return y_;}
   Location(int id,int x,int y);
   void AddChildren(Location* newChild);
   void output();
