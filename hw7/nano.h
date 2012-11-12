@@ -1,8 +1,9 @@
 #ifndef nano_
 #define nano_
-#include<vector>
+#include <vector>
 #include <string>
 #include <map>
+#include "loc.h"
 using namespace std;
 class Nano {
  private:
@@ -17,6 +18,14 @@ class Nano {
   static void initializeMap () ;
   static int lookFor(string);
   void output();
+  static void printDirPath(const vector<int>& dirPath);
 
+  // Search for a best orientation strategy for puting a NEW Nano at given location
+  // Initially, @tryingSeq should be EMPTY, and best orient will be returned from
+  // @tryingSeq after call, also the largest Location Nano can eat(NO consideration
+  // of Adversaries)
+  static int recNanoGoWithOrient(Location* startLoc, const vector<int>& orient,
+      vector<int>& nanoDirPath);
+  static int searchOrientAtALoc(Location* startLoc, vector<int>& tryingSeq);
 };
-#endif
+#endif  // nano_

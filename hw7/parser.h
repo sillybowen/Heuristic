@@ -13,5 +13,7 @@ class Parser {
   void  GetEaten(tree *srvTr);
   void  GetNanos(tree *srvTr);
   void  output();
+
+  const vector<Location*>& getLocations() const { return locs; }
 };
 #endif

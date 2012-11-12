@@ -1,0 +1,16 @@
+((graph
+  ((nodes
+    (((id 0) (loc ((x 1) (y 0)))) ((id 1) (loc ((x 0) (y 1))))
+     ((id 2) (loc ((x 1) (y 1)))) ((id 3) (loc ((x 2) (y 1))))
+     ((id 4) (loc ((x 0) (y 2)))) ((id 5) (loc ((x 1) (y 2))))))
+   (edges
+    (((node_id1 0) (node_id2 2)) ((node_id1 1) (node_id2 2))
+    (((node_id1 2) (node_id2 3)) ((node_id1 2) (node_id2 5))
+     ((node_id1 4) (node_id2 5)))))))
+ (living_nanomunchers
+  ())
+ (dead_nanomunchers
+  ())
+ (eaten_nodes
+  ())
+ (time 6))

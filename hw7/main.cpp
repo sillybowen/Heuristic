@@ -41,5 +41,7 @@ bool readSrvOutput(const char* srvOutFileName) {
   p.GetEaten(&srvTr);
   p.GetNanos(&srvTr);
   //  p.output();
+  vector<int> tryseq;
+  Nano::searchOrientAtALoc(p.getLocations().at(0), tryseq);
   return true;
 }

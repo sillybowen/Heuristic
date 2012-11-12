@@ -3,7 +3,7 @@
 using namespace std;
 
 Location::Location(int id, int x,int y) :
-  id_(id),x_(x),y_(y),occupied_(false),eatenBy_(0) {
+  id_(id),x_(x),y_(y),occupied_(false),tried_(false), eatenBy_(0) {
   children_.resize(4,NULL);
 }
 

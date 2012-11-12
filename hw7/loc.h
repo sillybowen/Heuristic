@@ -10,8 +10,12 @@ class Location {
   int x_,y_;
   int eatenBy_;
  public:
+  bool tried_;  // for best orientation attempts
+
   int getX() {return x_;}
   int getY() {return y_;}
+  bool isOccupied() const { return occupied_; }
+  std::vector<Location*>& getChildren() { return children_; }
   Location(int id,int x,int y);
   void AddChildren(Location* newChild);
   void setEaten(int x) {eatenBy_=x;}
