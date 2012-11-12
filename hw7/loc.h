@@ -5,13 +5,14 @@
 class Location {
  private:
   std::vector<Location *> children_;// 0 up 1 down 2 left 3 right
-  int id_;
   bool occupied_;
+  int id_;
   int x_,y_;
   int eatenBy_;
  public:
   bool tried_;  // for best orientation attempts
 
+  int getID() const { return id_; }
   int getX() {return x_;}
   int getY() {return y_;}
   bool isOccupied() const { return occupied_; }
