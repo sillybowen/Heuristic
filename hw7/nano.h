@@ -18,14 +18,6 @@ class Nano {
   static void initializeMap () ;
   static int lookFor(string);
   void output();
-  static void printDirPath(const vector<int>& dirPath, const vector<int>& locIDPath);
 
-  // Search for a best orientation strategy for puting a NEW Nano at given location
-  // Initially, @tryingSeq should be EMPTY, and best orient will be returned from
-  // @tryingSeq after call, also the largest Location Nano can eat(NO consideration
-  // of Adversaries)
-  static int recNanoGoWithOrient(Location* startLoc, const vector<int>& orient,
-      vector<int>& nanoDirPath, vector<int>& nanoLocIDPath);
-  static int searchOrientAtALoc(Location* startLoc, vector<int>& tryingSeq);
 };
 #endif  // nano_

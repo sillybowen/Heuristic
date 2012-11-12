@@ -6,6 +6,7 @@
 #include "loc.h"
 #include "parser.h"
 #include "nano.h"
+#include "nano_guess.h"
 using namespace std;
 
 bool readSrvOutput(const char* srvOutFileName);
@@ -42,6 +43,6 @@ bool readSrvOutput(const char* srvOutFileName) {
   p.GetNanos(&srvTr);
   //  p.output();
   vector<int> tryseq;
-  Nano::searchOrientAtALoc(p.getLocations().at(0), tryseq);
+  NanoGuess::searchOrientAtALoc(p.getLocations().at(0), tryseq);
   return true;
 }
