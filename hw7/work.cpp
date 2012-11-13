@@ -1,5 +1,5 @@
 #include "work.h"
-
+#include <set>
 using namespace std;
 
 void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
@@ -20,6 +20,11 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
   AllTakeAction();
   FirstRoundKill();
   outputKillers();
+
+  Location* loc;
+  Nano* nano;
+  findOneToPlace(loc,nano);
+
   //cerr<<"first round finished!"<<endl;
   AllTakeAction();
   //cerr<<"second action finished!"<<endl;
@@ -30,7 +35,7 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
   cerr<<"inworker"<<opLivedNano<<' '<<opFreeNano<<endl;
   outputKillers();
 
-  //EvaluateKillers();
+  EvaluateKillers();
   retlocs.clear();
   retnanos.clear();
   for (int i = 0; i<killers.size(); i++) 
@@ -44,6 +49,10 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
       retlocs.push_back(loc);
       retnanos.push_back(nano);
     }
+  if (myLivedNano == 0 && retlocs.size()==0) {
+    retlocs.push_back(*loc);
+    retnanos.push_back(*nano);
+  }
   //return ret;
 }
 void Worker::SecondRoundKill() {
@@ -63,12 +72,12 @@ void Worker::SecondRoundKill() {
 	if (tmp!=NULL && tmp->isOccupied())
 	  tmp = NULL;
 	j++;
-      }
-      if (tmp!=NULL) {
-	k.toKill = i;
-	k.id = tmp->getID();
-	k.startDir = j-1;
-	killers.push_back(k);
+	if (tmp!=NULL) {
+	  k.toKill = i;
+	  k.id = tmp->getID();
+	  k.startDir = j-1;
+	  killers.push_back(k);
+	}
       }
     }
 }
@@ -148,4 +157,97 @@ void Worker::AllTakeAction() {
 	  }
 	}
 }
-//Location* Worker::findNextPosition
+int Worker::evaluate(int id, vector<int> tmpseq_){
+  /*  cerr<<"generatedseq:";
+  for (int i = 0; i<4; i++)
+    cerr<<tmpseq_[i]<<' ';
+    cerr<<endl;*/
+  vector<Location*> modified_locs;
+  set<Location*> used_locs;
+  int ret = 0;
+  Nano nano (id,tmpseq_[3],tmpseq_,myTeam_);
+  while (nano.live()) {
+    used_locs.insert(locs_->at(nano.getId()));
+    modified_locs.push_back(locs_->at(nano.getId()));
+    locs_->at(nano.getId())->setOccupied();
+    nano.move(locs_);
+    ret++;
+  }
+  for (int i = 0;i<modified_locs.size();i++)
+    modified_locs[i]->setUnoccupied();
+  cerr<<"Score:"<<ret<<endl;
+  return ret;
+}
+void Worker::generateSeq(int id, vector<int>& tmpseq_,vector<int>& retseq,int& score,int depth) {
+  if (depth == 4) {
+    int s = evaluate(id,tmpseq_);
+    if (s>score) {
+      score = s;
+      retseq=tmpseq_;
+    }      
+    return;
+  }
+  bool r;
+  for (int i = 0; i<4;i++) {
+    r = true;
+    for (int j = 0; j<depth;j++)
+      if (i == tmpseq_[j])
+	r = false;
+    if (r) {
+      //      cerr<<"depth:"<<depth<<endl;
+      tmpseq_[depth] = i;
+      generateSeq(id,tmpseq_,retseq,score,depth+1);
+    }
+  }
+}
+int Worker::Score(int id, vector<int>& seq_, int start) {
+  seq_.clear();
+  seq_.resize(4);
+  vector<int> tmpseq;
+  tmpseq.resize(4);
+  int score = 0;
+  if (start!=-1) {
+    seq_[0]=start;
+    generateSeq(id,tmpseq,seq_,score,1);
+  }
+  else generateSeq(id,tmpseq,seq_,score,0);
+  return score;
+}
+void Worker::EvaluateKillers() {
+  Location *loc;
+  Nano* nano;
+  for (int i = 0; i<killers.size();i++) {
+    killers[i].score=Score(killers[i].id,killers[i].seq,killers[i].startDir);
+    if (killers[i].score<3) killers[i].keep = false;
+    else killers[i].keep = true;
+  }
+
+  for (int i = 0; i<killers.size();i++) 
+    for (int j = i+1;j<killers.size();j++)
+      if (killers[i].toKill == killers[j].toKill)
+	if (killers[i].score<killers[j].score)
+	  killers[i].keep = false;
+	else
+	  killers[j].keep = false;
+}
+
+int Worker::findOneToPlace(Location *loc, Nano* nano) {
+  int longest=0;
+  int id = -1;
+  vector<int>  seq;
+  vector<int> ansSeq;
+  int tmps;
+  int ansLast;
+  for (int i = 0; i<locs_->size(); i++) 
+    if (!locs_->at(i)->isOccupied()) {
+      tmps =Score(locs_->at(i)->getID(),seq,-1);
+      if (tmps>longest){
+	longest = tmps;
+	ansSeq=seq;
+	id = i;
+      }
+  }
+  loc = new Location(id,locs_->at(id)->getX(),locs_->at(id)->getY());
+  nano = new Nano(id,ansSeq[3],ansSeq,myTeam_);
+  return longest;
+}

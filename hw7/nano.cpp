@@ -29,7 +29,9 @@ Nano::Nano (int id,
 	    int lastDir,
 	    vector<int> seq, 
 	    int team): 
-  seq_(seq),id_(id),team_(team),lastDir_(lastDir) {}
+  seq_(seq),id_(id),team_(team),lastDir_(lastDir) {
+  live_=true;
+}
 
 
 void Nano::output() {
@@ -43,7 +45,7 @@ void Nano::output() {
 }
 void Nano::move(vector<Location*> *locs) {
   int startDir;
-  locs->at(id_)->output();
+  //  locs->at(id_)->output();
   for (int i = 0; i<4; i++)
     if (lastDir_ == seq_[i]) 
       startDir = i+1;
@@ -58,7 +60,7 @@ void Nano::move(vector<Location*> *locs) {
       if (nextLoc!=NULL && !nextLoc->isOccupied()) {
 	id_ = nextLoc->getID();
 	lastDir_ = seq_[lastdir];
-	locs->at(id_)->output();
+	//	locs->at(id_)->output();
       }
       else nextLoc = NULL;
     }
@@ -66,3 +68,4 @@ void Nano::move(vector<Location*> *locs) {
     live_ = false;
   }
 }
+
