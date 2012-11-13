@@ -3,14 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <map>
-#include "tree.h"
-#include "loc.h"
-#include "parser.h"
-#include "nano.h"
-#include "nano_guess.h"
+#include "game.h"
 using namespace std;
-
-bool readSrvOutput(const char* srvOutFileName,int k);
 
 //vector<Location*> locs;
 int main(int argc, char* argv[]) {
@@ -22,33 +16,9 @@ int main(int argc, char* argv[]) {
   int k;
   istringstream(argv[2])>>k;
   fprintf(stderr, "Global MAX numOfNanomunchers= %d\n", k);
-  readSrvOutput(argv[3], k);
+
+  Game nanomuncherGame(argv[1], argv[3], k);
+  nanomuncherGame.startGame();
+
   return 0;
-}
-
-bool readSrvOutput(const char* srvOutFileName,int k) {
-  ifstream inF;
-
-  inF.open(srvOutFileName, ifstream::in);
-  if (!inF.good()) {
-    return false;
-  }
-  vector<char> srvStrVect((istreambuf_iterator<char>(inF)),
-      istreambuf_iterator<char>());
-  vector<char>::const_iterator srvIter = srvStrVect.begin();
-
-  Nano::initializeMap();
-  tree srvTr(srvIter);
-  inF.close();
-  // interface to work
-  int myteam = 1;
-  Parser p(1,k);
-  vector<Location> ret;
-  ret = p.work(&srvTr);
-  //ret are the location to deploy new nanomuncher
-
-  // vector<int> tryseq;
-  // NanoGuess::searchOrientAtALoc(p.getLocations().at(0), tryseq);
-
-  return true;
 }
