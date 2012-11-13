@@ -23,6 +23,7 @@ class Location {
   void AddChildren(Location* newChild);
   void setEaten(int x) {eatenBy_=x;}
   void setOccupied() {occupied_=true;}
+  void setUnoccupied() {occupied_=false;}
   void output();
   Location* getUniqueChild();
   Location* getChild(int i) {return children_[i];}

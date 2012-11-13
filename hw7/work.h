@@ -10,6 +10,7 @@ struct KillerNano {
   int startDir;
   int lastDir;
   bool keep;
+  int score;
   vector<int>seq;
 };
 class Worker {
@@ -24,11 +25,15 @@ class Worker {
   void FirstRoundKill();
   void SecondRoundKill();
   void outputKillers();
+  void EvaluateKillers();
+  int findOneToPlace(Location *loc, Nano * nano);
+  void generateSeq(int id, vector<int>& temseq,vector<int>& retseq,int& score,int depth);
+  int Score(int id, vector<int>& seq_, int start);
+  int evaluate(int id, vector<int> tmpseq_);
  public:
  Worker(int myTeam,int k) :k_(k),myTeam_(myTeam){
     std::cerr<<"Work get K:"<<k_<<" team:"<<myTeam_<<endl;
   };
-  void makeDecision(vector<Location*>*locs,vector<Nano*>*nanos,
-		    vector<Location> &retloc,vector<Nano>&retnanos);
+  void makeDecision(vector<Location*>*locs,vector<Nano*>*nanos,vector<Location> &retloc,vector<Nano>&retnanos);
 };
 #endif

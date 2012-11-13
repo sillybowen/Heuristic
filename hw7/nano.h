@@ -26,6 +26,7 @@ class Nano {
   void output();
   void die() {live_=false;}
   void move(vector<Location*> *locs);
+  //  Location * clearMove(vector<Location*> *locs);
 };
 
 #endif  // nano_
