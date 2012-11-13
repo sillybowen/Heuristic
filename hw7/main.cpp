@@ -19,8 +19,9 @@ int main(int argc, char* argv[]) {
   srv_port = atoi(argv[4]);
   fprintf(stderr, "Global MAX numOfNanomunchers= %d  SrvPort: %d\n", k, srv_port);
 
+
   Game nanomuncherGame(argv[1], argv[3], k, srv_port);
   nanomuncherGame.startGame();
-
+  
   return 0;
 }

@@ -17,7 +17,6 @@ public:
   void startGame();
   void printLocsToSrv(const vector<Location>& newPlacements) const;
   bool readSrvOutput();
-
 private:
   ClientSocket* registerSrv(int srv_port);
 

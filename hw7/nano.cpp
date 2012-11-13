@@ -18,7 +18,7 @@ Nano::Nano (int id,
 	    string lastDir,
 	    vector<string> dir, 
 	    bool live, int team): 
-  live_(live),id_(id),belong_(team) {
+  live_(live),id_(id),team_(team) {
   lastDir_ = lookFor(lastDir);
   seq_.resize(4);
   for (int i = 0; i<4;i++)
@@ -26,7 +26,7 @@ Nano::Nano (int id,
 }
 
 void Nano::output() {
-  cerr<<id_<<' '<<belong_<<' ';
+  cerr<<id_<<' '<<team_<<' ';
   if (live_) cerr<<"live ";
   else cerr<<"dead ";
   cerr<<"last dir"<<lastDir_<<' ';

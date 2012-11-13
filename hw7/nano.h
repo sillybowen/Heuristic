@@ -11,12 +11,14 @@ class Nano {
   std::vector<int> seq_;
   bool live_;
   int id_;
-  int belong_;
+  int team_;
   int lastDir_;
  public:
   Nano (int id,string lastDir_,vector<string> seq, bool live, int team);
   static void initializeMap () ;
   static int lookFor(string);
+  const int getTeam() const {return team_;}
+  const bool live() const {return live_;}
   void output();
 
 };

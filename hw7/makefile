@@ -8,8 +8,9 @@ socklibs = -lnsl
 LIBS = 
 OBJS = ClientSocket.o Socket.o main.o loc.o parser.o nano.o nano_guess.o work.o game.o
 CCEXEC = nano
-
-all:	$(CCEXEC) $(MOVEABLETEST) $(HUNTERBOUNCETEST)
+WORKTESTFILE = work_test.cpp
+WORKTEST = work_test
+all:	$(CCEXEC) $(WORKTEST)
 
 $(CCEXEC):	$(OBJS) makefile
 	@echo Linking $@ . . .
@@ -19,11 +20,13 @@ $(CCEXEC):	$(OBJS) makefile
 	@echo Compiling $< . . .
 	$(CC) $(CXXFLAGS) $<
 
+$(WORKTEST): $(WORKTESTFILE) parser.o nano.o work.o loc.o
+	$(CC) $(WORKTESTFILE) parser.o nano.o work.o loc.o -o $(WORKTEST)
 
 run:	all
 	./$(CCEXEC)
 
 clean:
 	rm -f $(OBJS)
-	rm -f $(CCEXEC) $(MOVEABLETEST) $(HUNTERBOUNCETEST)
+	rm -f $(CCEXEC) $(WORKTEST) 
 	rm -f core

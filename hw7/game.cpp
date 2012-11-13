@@ -67,7 +67,6 @@ bool Game::readSrvOutput() {
 
   return true;
 }
-
 ClientSocket* Game::registerSrv(int srv_port) {
   ClientSocket* pClt_socket = NULL;
 
