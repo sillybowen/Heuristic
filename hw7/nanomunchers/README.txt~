@@ -1,0 +1,10 @@
+Warning: on a mac, running the server using the default "term" application made the gui appear a bit strange.
+I downloaded the free "iterm" and it worked much better.
+
+Sample commands to run server and opposing clients:
+
+./nanomunchers.exe server -data-file ./data/data1.txt -num-nanomunchers 5 -port 8000 -time-delay 1 -protocol-log-file-team-1 team1_messages.txt -protocol-log-file-team-2 team2_messages.txt
+./nanomunchers.exe client -num-nanomunchers 5 -port 8000 -team-name Team1
+./nanomunchers.exe client -num-nanomunchers 5 -port 8000 -team-name Team2
+
+There are other optional flags, such as time-delays for each client in case you want to see a player disqualify due to time constraints.  
