@@ -38,7 +38,7 @@ private:
   }
   static string read_word(vector<char>::const_iterator& iter) {
     vector<char>::const_iterator begin = iter;
-    while (*iter != ')' && *iter > ' ') ++iter;
+    while (*iter != ')' && *iter != '(' && *iter > ' ') ++iter;
     return string(begin, iter);
   }
 
