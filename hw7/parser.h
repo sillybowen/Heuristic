@@ -13,7 +13,7 @@ class Parser {
   Worker worker;          // Bowen's worker
   RandWorker rand_worker; // Random worker
   NanoGuess tao_worker_;  // Tao's worker
-  std::string ourName_;
+  const std::string ourName_;
  public:
  Parser(int myteam, int k, std::string name)
    : worker(myteam,k), tao_worker_(myteam, k), rand_worker(myteam, k),

@@ -75,7 +75,8 @@ void Parser::GetNanos( tree *srvTr) {
       for (int j = 0; j<4; j++) {
 	dir[j] = (*srvTr)[2][1][i][2][1][j].data;
       }
-      team = (*srvTr)[2][1][i][3][1].data[4]-'0';
+      team = ((strcmp((*srvTr)[2][1][i][3][1].data.c_str(), ourName_.c_str()))?
+          2 : 1);
       nn = new Nano (id,lastDir,dir,false,team);
       nanos.push_back(nn);
     }
@@ -87,7 +88,8 @@ void Parser::GetNanos( tree *srvTr) {
       for (int j = 0; j<4; j++) {
 	dir[j] = (*srvTr)[1][1][i][2][1][j].data;
       }
-      team = (*srvTr)[1][1][i][3][1].data[4]-'0';
+      team = ((strcmp((*srvTr)[1][1][i][3][1].data.c_str(), ourName_.c_str()))?
+          2 : 1);
       nn = new Nano (id,lastDir,dir,true,team);
       nanos.push_back(nn);
     }
