@@ -9,7 +9,6 @@ void Parser::work(tree*srvTr,vector<Location>&retloc,vector<Nano>&retnano) {
   cerr<<"get nano"<<endl;
   GetNanos(srvTr);
   output();
-    
   worker.makeDecision(&locs,&nanos,retloc,retnano);
 }
 void Parser::GetNodes(tree * srvTr) {
@@ -57,7 +56,6 @@ void Parser::GetNanos( tree *srvTr) {
     Nano * nn;
     nanos.clear();
     dir.resize(4);
-
     for (int i = 0; i< (*srvTr)[2][1].children.size();i++) {
       cerr<<(*srvTr)[2][1][i]<<endl;
       istringstream((*srvTr)[2][1][i][0][1][0][1].data)>>id;
@@ -69,8 +67,6 @@ void Parser::GetNanos( tree *srvTr) {
       nn = new Nano (id,lastDir,dir,false,team);
       nanos.push_back(nn);
     }
-
-cerr << "\n!!!\n size : " << (*srvTr)[1][1].children.size() << "\n\n";
 
     for (int i = 0; i< (*srvTr)[1][1].children.size();i++) {
       cerr<<(*srvTr)[1][1][i]<<endl;
@@ -91,4 +87,15 @@ cerr << "\n!!!\n size : " << (*srvTr)[1][1].children.size() << "\n\n";
 void Parser::output() {
   for (int i = 0; i<locs.size(); i++)
     locs[i]->output();
+}
+
+void Parser::taoGreedy(tree* pSrvTr, vector<Location>& retloc,
+    vector<Nano>& retnano) {
+  GetNodes(pSrvTr);
+  GetEdges(pSrvTr);
+  GetEaten(pSrvTr);
+  cerr<<"get nano"<<endl;
+  GetNanos(pSrvTr);
+  output();
+  tao_worker_.makeDecision(&locs,&nanos,retloc,retnano);
 }

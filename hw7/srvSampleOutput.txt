@@ -66,7 +66,7 @@
      ((id 126) (loc ((x 16) (y 6))))
      ((id 127) (loc ((x 0) (y 0)))) ((id 128) (loc ((x 0) (y 1))))
      ((id 129) (loc ((x 1) (y 1)))) ((id 130) (loc ((x 1) (y 0))))
-     ((id 131) (loc ((x 1) (y 2)))) 
+     ((id 131) (loc ((x 1) (y 2)))) ((id 132) (loc ((x -1) (y 1))))		
      ))
    (edges
     (((node_id1 0) (node_id2 21)) ((node_id1 0) (node_id2 68))

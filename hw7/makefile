@@ -21,7 +21,7 @@ $(CCEXEC):	$(OBJS) makefile
 	$(CC) $(CXXFLAGS) $<
 
 $(WORKTEST): $(WORKTESTFILE) parser.o nano.o work.o loc.o randwork.o
-	$(CC) $(WORKTESTFILE) parser.o nano.o work.o loc.o randwork.o -o $(WORKTEST)
+	$(CC) $(WORKTESTFILE) nano_guess.o parser.o nano.o work.o loc.o randwork.o -o $(WORKTEST)
 
 run:	all
 	./$(CCEXEC)

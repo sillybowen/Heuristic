@@ -26,10 +26,10 @@ class Worker {
   void SecondRoundKill();
   void outputKillers();
   void EvaluateKillers();
-  int findOneToPlace(Location *loc, Nano * nano);
-  void generateSeq(int id, vector<int>& temseq,vector<int>& retseq,int& score,int depth);
-  int Score(int id, vector<int>& seq_, int start);
-  int evaluate(int id, vector<int> tmpseq_);
+  int findOneToPlace(Location *&loc, Nano *&nano);
+  void generateSeq(int id, vector<int>& temseq,vector<int>& retseq,int& score,int depth,int isKiller);
+  int Score(int id, vector<int>& seq_, int start,int isKiller);
+  int evaluate(int id, vector<int> tmpseq_,int isKiller);
  public:
  Worker(int myTeam,int k) :k_(k),myTeam_(myTeam){
     std::cerr<<"Work get K:"<<k_<<" team:"<<myTeam_<<endl;
