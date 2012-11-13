@@ -11,27 +11,33 @@ void Location::AddChildren(Location* newChild) {
   if (newChild->getX()>x_)
     children_[3] = newChild;
   if (newChild->getX()<x_)
-    children_[2] = newChild;
+    children_[1] = newChild;
   if (newChild->getY()>y_)
     children_[0] = newChild;
   if (newChild->getY()<y_)
-    children_[1] = newChild;
+    children_[2] = newChild;
 }
 
 void Location::output() {
+  Location* test = getUniqueChild();
+  if (test!=NULL) {
+    cerr<<"has unique child"<<test->getID()<<endl;
+  }
   cerr<<"Node"<<id_<<' '<<x_<<' '<<y_<<endl;
+  if (occupied_) cerr<<"occ"<<endl;
+  else cerr<<"not occ"<<endl;
   if (children_[0]!=NULL) {
     cerr<<"Up children:"<<
       children_[0]->getX()<<' '<<
       children_[0]->getY()<<endl;
   }
   if (children_[1]!=NULL) {
-    cerr<<"down children:"<<
+    cerr<<"left children:"<<
       children_[1]->getX()<<' '<<
       children_[1]->getY()<<endl;
   }
   if (children_[2]!=NULL) {
-    cerr<<"left children:"<<
+    cerr<<"down children:"<<
       children_[2]->getX()<<' '<<
       children_[2]->getY()<<endl;
   }
@@ -40,4 +46,16 @@ void Location::output() {
       children_[3]->getX()<<' '<<
       children_[3]->getY()<<endl;
   }
+}
+Location* Location::getUniqueChild() {
+  int count = 0;
+  Location * ret=NULL;
+  for (int i = 0; i<4; i++) 
+    if (children_[i]!=NULL && !children_[i]->isOccupied()){
+      count++;
+      ret = children_[i];
+    }
+  if (count == 1)
+    return ret;
+  return NULL;
 }

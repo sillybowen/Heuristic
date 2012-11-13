@@ -19,7 +19,11 @@ class Nano {
   static int lookFor(string);
   const int getTeam() const {return team_;}
   const bool live() const {return live_;}
+  const int getId() const {return id_;}
+  const int getLastDir_() const {return lastDir_;}
   void output();
-
+  void die() {live_=false;}
+  void move(vector<Location*> *locs);
 };
+
 #endif  // nano_

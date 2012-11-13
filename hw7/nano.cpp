@@ -7,8 +7,8 @@ map<string,int> Nano::dirMap_;
 
 void Nano::initializeMap() {
   Nano::dirMap_.insert(pair<string,int>("Up",0));
-  Nano::dirMap_.insert(pair<string,int>("Down",1));
-  Nano::dirMap_.insert(pair<string,int>("Left",2));
+  Nano::dirMap_.insert(pair<string,int>("Down",2));
+  Nano::dirMap_.insert(pair<string,int>("Left",1));
   Nano::dirMap_.insert(pair<string,int>("Right",3));
 }
 int Nano::lookFor(string s) {
@@ -33,4 +33,29 @@ void Nano::output() {
   for (int i = 0; i<4; i++)
     cerr<<seq_[i];
   cerr<<endl;
+}
+void Nano::move(vector<Location*> *locs) {
+  int startDir;
+  locs->at(id_)->output();
+  for (int i = 0; i<4; i++)
+    if (lastDir_ == seq_[i]) 
+      startDir = i+1;
+  startDir%=4;
+  Location* nextLoc = NULL;
+  Location* now = locs->at(id_);
+  int lastdir;
+  for (int i = 0; i<4; i++) 
+    if (nextLoc ==NULL){
+      lastdir = (startDir+i)%4;
+      nextLoc = now->getChild(seq_[lastdir]);
+      if (nextLoc!=NULL && !nextLoc->isOccupied()) {
+	id_ = nextLoc->getID();
+	lastDir_ = seq_[lastdir];
+	locs->at(id_)->output();
+      }
+      else nextLoc = NULL;
+    }
+  if (nextLoc == NULL) {
+    live_ = false;
+  }
 }

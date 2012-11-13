@@ -143,7 +143,9 @@
    ((current_node ((id 34) (loc ((x 6) (y 7))))) (last_direction Down)
     (precedence (Up Left Right Down)) (player Team1))
    ((current_node ((id 49) (loc ((x 0) (y 3))))) (last_direction Down)
-    (precedence (Left Right Down Up)) (player Team2))))
+    (precedence (Left Right Down Up)) (player Team2))
+   ((current_node ((id 103) (loc ((x 1) (y 4))))) (last_direction Down)
+    (precedence (Down Left Right Up)) (player Team2))))
  (dead_nanomunchers
   (((current_node ((id 21) (loc ((x 11) (y 5))))) (last_direction Left)
     (precedence (Down Left Up Right)) (player Team1))
@@ -171,7 +173,6 @@
    (((id 105) (loc ((x 3) (y 8)))) Team2)
    (((id 115) (loc ((x 16) (y 2)))) Team1)
    (((id 0) (loc ((x 12) (y 5)))) Team1)
-   (((id 103) (loc ((x 1) (y 4)))) Team2)
    (((id 88) (loc ((x 7) (y 8)))) Team1)
    (((id 80) (loc ((x 4) (y 1)))) Team2)
    (((id 107) (loc ((x 4) (y 0)))) Team2)

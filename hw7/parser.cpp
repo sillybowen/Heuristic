@@ -6,9 +6,14 @@ vector<Location> Parser::work(tree*srvTr) {
   GetNodes(srvTr);
   GetEdges(srvTr);
   GetEaten(srvTr);
+  cerr<<"get nano"<<endl;
   GetNanos(srvTr);
   output();
-  return worker.makeDecision(&locs,&nanos);
+  vector<Nano> retnanos;
+  vector<Location> retlocs;
+  worker.makeDecision(&locs,&nanos,retlocs,retnanos);
+  vector<Location> ret;
+  return ret;
 }
 void Parser::GetNodes(tree * srvTr) {
   locs.resize((*srvTr)[0][1][0][1].children.size());  
