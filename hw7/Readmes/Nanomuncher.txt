@@ -1,0 +1,209 @@
+*** Dear Nanomunchists,
+
+Hi Professor Shasha,
+
+Thank you for your reply. I need further clarification of the nanomuncher
+game. Below are some conclusions drawn from the rules and the 2008
+architecture. Could you please have a look at them and tell me if some of
+them are incorrect?
+
+*Game Loop*
+The game loop looks like this:
+
+
+> 1. do
+> 2.   server sends both players current grid information
+*** the topology is sent before the first move. So I don't know
+what you mean by current grid information, but maybe you just
+mean which nodes have already been eaten and where each existing
+nanonmuncher is.
+
+> 3.   both players send a list of nanomuncher descriptions to server
+
+*** Along with their starting positions.
+
+> 4.   server simulates nanomunchers according to the rules for a time step
+
+*** Server just places them. They get simulated moves in the next time step.
+
+> 5. until no eating happened during the time step
+
+*** If an active nanomuncher (i.e. one already placed) cannot eat
+in a time step, it dies.
+
+
+*Line 2*
+The grid information should contain (or infer) the state of all nodes in
+the grid. A state of a node should be one of the followings:
+
+a) The node is not eaten.
+b) The node is eaten by blue, and no nanomuncher stands on it now.
+c) The node is eaten by blue, and a blue nanomuncher stands on it now.
+d) The node is eaten by red, and no nanomuncher stands on it now.
+e) The node is eaten by red, and a red nanomuncher stands on it now.
+
+The grid information should *not* expose nanomunchers=E2=80=99 programs (so=
+ this is
+not a perfect information game).
+
+*** All the above (line 2) is correct.
+
+*Line 3*
+Both players can deploy new nanomunchers after receiving the grid
+information in each time step. A later deployed nanomuncher can affect, or
+even kill, an earlier deployed one if it will eat a node which the earlier
+nanomuncher would eat in the future (avoid =E2=80=9Crookies always lose=E2=
+=80=9D).
+
+*Line 5*
+The game stops if no eating happened during a time step, even if one of the
+players has more nanomunchers to deploy.
+
+*** A nanomuncer dies if it doesn't eat during a time step. The game
+stops only when both sides have used all their nanomunchers.
+
+*** Also note that if a nanomuncher has some program, e.g. left, right, down, up
+and eats in time step i by going right, then it will try steps in the
+order down, up, left, right in step i+1.
+
+*** Best, Dennis
+
+Best regards,
+--------------------------------------------------------------------------------------------------------
+Matt Daniel Russell
+Nov 1 (11 days ago),
+
+I just placed the nanomuncher server (and sample client) with a README.txt in /scratch/heuristics/nanomunchers.
+
+The readme has sample command-lines to run a server as well as two opposing random-players.  Everything the
+clients write to the server should be written to stdout, and everything the server writes to the clients is
+optionally written to specified files at the command line (which I included in readme).  Hopefully that will
+be enough to discover the protocol, but let me know if I should provide further clarification.
+
+Let me know if you have trouble working with the architecture.
+
+Thanks,
+Matt
+--------------------------------------------------------------------------------------------------------
+Matt Daniel Russell
+Nov 1 (11 days ago),
+
+I have just created /scratch/heuristics/nanomunchers/readme_server_protocol.txt which provides a sample message from the server to the client.  
+
+I formatted the message so that it should be human readable, but there will not be newlines in the messages the server sends to the clients,
+except one at the end to signal end-of-message.  Also, except for messages that mean the game has ended, all messages the server sends to
+clients are of the same format.
+
+Lastly, I wrote a simple example of two C-structs along with how they would be represented in the parenthesis notation that my server uses for
+its protocol.
+
+Hope this helps!
+
+Thanks,
+Matt
+-----------------------------------------------------------------------------------------------------------
+Zhuoheng Yang,
+
+Hi Professor Shasha,
+Thank you for your detailed clarification.
+You mentioned that:
+
+*** A nanomuncer dies if it doesn't eat during a time step. The game
+stops only when both sides have used all their nanomunchers.
+However, it might lead to an endless game if both of the players decide to wait until the other side places a nanomuncher first.
+ 
+For example, each player has only one nanomuncher left and the only nodes that left on the grid are on a straight line.
+ooooooooooooooo  (15 nodes)
+
+In timestep 1:
+Suppose a player deploys a nanomuncher A on a node (e.g. the 5th one).
+ooooAoooooooooo
+
+In timestep 2:
+The nanomuncher A moves to a neighboring node. Assuming it moves to the right.
+ooooaAooooooooo
+
+In timestep 3:
+Nanomuncher A moves to the 7th node.
+The opponent now can kill nanomuncher A by deploying nanomuncher B to the 8th node.
+ooooaaABooooooo
+
+In timestep 10:
+At the end, nanomuncher B eats more nodes than nanomuncher A does.
+ooooaaabbbbbbbB
+
+Therefore, who deploys nanomuncher first is more likely to lose the game in this case. As a result, nobody will deploy the last
+nanomuncher. If this happened, the game cannot be proceeded. But according to your rules, it's not over. So what are we going to do?
+
+Best regards,
+-------------------------------------------------------------------------------------------------------------
+Dennis Shasha,
+
+Remember about the 2 minute limit.
+Someone always wins:)
+Best,
+Dennis
+-------------------------------------------------------------------------------------------------------------
+Zhuoheng Yang
+Nov 2 (10 days ago)
+
+Hi Professor Shasha,
+
+Does that mean all players should deploy all their nanomunchers within the 2 minute limit? If not, is it possible that a player
+just tells the server "I am not going to deploy anything" in minimal time, while the other player is doomed to lose the game for
+going through an ordinary process of decision making due to the 2 minute limit? 
+
+Best,
+Zhuoheng
+--------------------------------------------------------------------------------------------------------------
+Matt Daniel Russell
+Nov 2 (10 days ago)
+
+Your player is required to respond between each time-step of the nanomuncher game.  That said, if you have deployed all your
+nanomunchers, you can just reply with an empty nanomucher list ("()" I believe) very quickly and you will almost surely not
+time out before the game is over (i.e. no more living nanomunchers on the board).
+---------------------------------------------------------------------------------------------------------------
+Dennis Shasha
+Nov 2 (10 days ago)
+
+Good point. I hadn't thought of that deviously clever strategy.
+Ok, then. After one minute of total play (from both sides),
+the architects should send a message to each size saying
+"deploy all remaining nanomunchers in the next cycle or lose the game."
+The architect should enforce this.
+
+Best,
+Dennis
+-----------------------------------------------------------------------------------------------------------------
+Matt Daniel Russell
+Nov 2 (10 days ago)
+
+I followed the example of the 2008 architecture in that when all nanomunchers on the board have died, the game is over - even
+if there are remaining nanomunchers to be placed by a given team.  I think that invalidates this strategy?
+------------------------------------------------------------------------------------------------------------------
+Dennis Shasha
+Nov 2 (10 days ago)
+
+Hmm. Ok, that's fine too then. Let's go with that rule.
+Best,
+Dennis
+---------------------------------------------------------------------------------------------------------------------
+Zhuoheng Yang
+Nov 3 (9 days ago)
+
+Hi,
+Each side gets to use k (> 1) nanomunchers which may enter at any moment.
+It seems that the server doesn't provide k in runtime. Should we hard code it? If k is given in runtime, what is the reasonable
+range of it?
+
+Best regards,
+Zhuoheng
+----------------------------------------------------------------------------------------------------------------------
+Dennis Shasha
+Nov 4 (8 days ago)
+
+I will give you k at game time. Something from 2 to 15.
+Best,
+Dennis
+------------------------------------------------------------------------------------------------------------------------
+
