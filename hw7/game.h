@@ -20,6 +20,11 @@ public:
       const vector<Nano>& newNanos) const;
   bool readSrvOutput(const string& fromSrv);
   string nanoSeqsToStr(const Nano& aNano) const;
+
+  // For testing
+  string readSrvOutFileToStr() const;
+  void testFromSrvOutputFile();
+
 private:
   ClientSocket* registerSrv(int srv_port);
 

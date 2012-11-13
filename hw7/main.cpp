@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
 
   Game nanomuncherGame(argv[1], argv[3], k, srv_port);
   nanomuncherGame.startGame();
+  // nanomuncherGame.testFromSrvOutputFile();
   
   return 0;
 }

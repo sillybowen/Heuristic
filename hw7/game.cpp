@@ -42,6 +42,8 @@ void Game::startGame() {
 
 void Game::printLocsToSrv(const vector<Location>& newPlacements,
     const vector<Nano>& newNanos) const {
+  cout << "#ToSrv, sizeof newPlacements= " << newPlacements.size()
+    << "  sizeof newNanos= " << newNanos.size() << endl;
   int numOfNewLocs = newPlacements.size();
   ostringstream ost;
   ost << '(';
@@ -57,6 +59,7 @@ void Game::printLocsToSrv(const vector<Location>& newPlacements,
   cout << "#ToSrv: " << ost.str() << endl;
   (*arch_clt_) << ost.str();  // Add newline and flush
 }
+
 
 bool Game::readSrvOutput(const string& fromSrv) {
   /*ifstream inF;
@@ -122,4 +125,17 @@ string Game::nanoSeqsToStr(const Nano& aNano) const {
       ost << " ";
   }
   return ost.str();
+}
+
+string Game::readSrvOutFileToStr() const {  // Default file is @inFile_srv_
+  ifstream inF;
+  inF.open(inFile_srv_.c_str(), ifstream::in);
+  if (!inF.good()) {
+    return string();
+  }
+  return string((istreambuf_iterator<char>(inF)), istreambuf_iterator<char>());
+}
+
+void Game::testFromSrvOutputFile() {
+  readSrvOutput(readSrvOutFileToStr());
 }
