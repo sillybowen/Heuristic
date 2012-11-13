@@ -22,6 +22,7 @@ class Nano {
   const bool live() const {return live_;}
   const int getId() const {return id_;}
   const int getLastDir_() const {return lastDir_;}
+  const vector<int>& getNanoSeqs() const { return seq_; }
   void output();
   void die() {live_=false;}
   void move(vector<Location*> *locs);

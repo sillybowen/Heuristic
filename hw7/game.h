@@ -5,6 +5,7 @@
 #include "ClientSocket.h"
 #include "SocketException.h"
 #include "loc.h"
+#include "nano.h"
 
 using std::string;
 using std::vector;
@@ -15,8 +16,10 @@ public:
   ~Game() { }
 
   void startGame();
-  void printLocsToSrv(const vector<Location>& newPlacements) const;
-  bool readSrvOutput();
+  void printLocsToSrv(const vector<Location>& newPlacements,
+      const vector<Nano>& newNanos) const;
+  bool readSrvOutput(const string& fromSrv);
+  string nanoSeqsToStr(const Nano& aNano) const;
 private:
   ClientSocket* registerSrv(int srv_port);
 
