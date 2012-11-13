@@ -2,6 +2,8 @@
 #include <set>
 #include <algorithm>
 using namespace std;
+#define KILLERSCORE 3
+
 bool compare(KillerNano k1, KillerNano k2) {
   if (k1.score<k2.score)
     return true;
@@ -255,7 +257,7 @@ void Worker::EvaluateKillers() {
       killers[i].score=Score(killers[i].id,killers[i].seq,killers[i].startDir,i);
     else
       killers[i].score=Score(killers[i].id,killers[i].seq,killers[i].startDir,-1);
-    if (killers[i].score<3) killers[i].keep = false;
+    if (killers[i].score< KILLERSCORE) killers[i].keep = false;
     else killers[i].keep = true;
   }
 
