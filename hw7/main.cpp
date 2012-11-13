@@ -36,12 +36,12 @@ bool readSrvOutput(const char* srvOutFileName) {
   Nano::initializeMap();
   tree srvTr(srvIter);
   inF.close();
+  // interface to work
   Parser p;
-  p.GetNodes(&srvTr);
-  p.GetEdges(&srvTr);
-  p.GetEaten(&srvTr);
-  p.GetNanos(&srvTr);
-  //  p.output();
+  vector<Location> ret;
+  ret = p.work(&srvTr);
+  //ret are the location to deploy new nanomuncher
+
   vector<int> tryseq;
   NanoGuess::searchOrientAtALoc(p.getLocations().at(0), tryseq);
   return true;
