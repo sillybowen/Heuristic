@@ -74,7 +74,6 @@
      ((node_id1 127) (node_id2 128)) ((node_id1 128) (node_id2 129))
      ((node_id1 129) (node_id2 130)) 
      ((node_id1 129) (node_id2 131)) 
-     ((node_id1 128) (node_id2 132)) 
      ((node_id1 1) (node_id2 116)) ((node_id1 2) (node_id2 24))
      ((node_id1 2) (node_id2 74)) ((node_id1 3) (node_id2 42))
      ((node_id1 3) (node_id2 98)) ((node_id1 4) (node_id2 20))

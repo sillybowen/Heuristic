@@ -21,9 +21,6 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
   FirstRoundKill();
   outputKillers();
 
-  Location* loc;
-  Nano* nano;
-  findOneToPlace(loc,nano);
 
   //cerr<<"first round finished!"<<endl;
   AllTakeAction();
@@ -43,15 +40,24 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
       Location* l = locs_->at(killers[i].id);
       Location loc(l->getID(),l->getX(),l->getY());
       Nano nano (killers[i].id,
-		 killers[i].lastDir,
+		 killers[i].seq[3],
 		 killers[i].seq,
 		 myTeam_);
       retlocs.push_back(loc);
       retnanos.push_back(nano);
     }
-  if (myLivedNano == 0 && retlocs.size()==0) {
+  cout<<"retlocs size"<<retlocs.size()<<endl;
+  //  if (retlocs.size()==0){
+  if ((myLivedNano == 0 && retlocs.size()==0 )||(opFreeNano==0)) {
+    Location* loc;
+    Nano* nano;
+    findOneToPlace(loc,nano);
     retlocs.push_back(*loc);
     retnanos.push_back(*nano);
+  }
+  for (int i = 0; i<retlocs.size();i++) {
+    retlocs[i].output();
+    retnanos[i].output();
   }
   //return ret;
 }
@@ -244,7 +250,7 @@ void Worker::EvaluateKillers() {
 	  killers[j].keep = false;
 }
 
-int Worker::findOneToPlace(Location *loc, Nano* nano) {
+int Worker::findOneToPlace(Location *&loc, Nano*&nano) {
   int longest=0;
   int id = -1;
   vector<int>  seq;
