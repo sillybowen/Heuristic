@@ -9,7 +9,7 @@
 #include "nano_guess.h"
 using namespace std;
 
-bool readSrvOutput(const char* srvOutFileName);
+bool readSrvOutput(const char* srvOutFileName,int k);
 
 //vector<Location*> locs;
 int main(int argc, char* argv[]) {
@@ -17,12 +17,15 @@ int main(int argc, char* argv[]) {
     puts("Format: ./main  teamName  numOfNanomunchers  srvOutputFile");
     return 1;
   }
-
-  readSrvOutput(argv[3]);
+  string s(argv[2]);
+  int k;
+  istringstream(argv[2])>>k;
+  cout<<k<<endl;
+  readSrvOutput(argv[3], k);
   return 0;
 }
 
-bool readSrvOutput(const char* srvOutFileName) {
+bool readSrvOutput(const char* srvOutFileName,int k) {
   ifstream inF;
 
   inF.open(srvOutFileName, ifstream::in);
@@ -37,7 +40,8 @@ bool readSrvOutput(const char* srvOutFileName) {
   tree srvTr(srvIter);
   inF.close();
   // interface to work
-  Parser p;
+  int myteam = 1;
+  Parser p(1,k);
   vector<Location> ret;
   ret = p.work(&srvTr);
   //ret are the location to deploy new nanomuncher

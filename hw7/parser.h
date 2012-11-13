@@ -10,6 +10,7 @@ class Parser {
   vector<Nano*> nanos;
   Worker worker;
  public:
+ Parser(int myteam, int k):worker(myteam,k){};
   void  GetNodes(tree * srvTr);
   void  GetEdges(tree * srvTr);
   void  GetEaten(tree *srvTr);
