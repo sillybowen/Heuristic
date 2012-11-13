@@ -2,18 +2,14 @@
 #include <vector>
 #include <sstream>
 using namespace std;
-vector<Location> Parser::work(tree*srvTr) {
+void Parser::work(tree*srvTr,vector<Location>&retloc,vector<Nano>&retnano) {
   GetNodes(srvTr);
   GetEdges(srvTr);
   GetEaten(srvTr);
   cerr<<"get nano"<<endl;
   GetNanos(srvTr);
   output();
-  vector<Nano> retnanos;
-  vector<Location> retlocs;
-  worker.makeDecision(&locs,&nanos,retlocs,retnanos);
-  vector<Location> ret;
-  return ret;
+  worker.makeDecision(&locs,&nanos,retloc,retnano);
 }
 void Parser::GetNodes(tree * srvTr) {
   locs.resize((*srvTr)[0][1][0][1].children.size());  

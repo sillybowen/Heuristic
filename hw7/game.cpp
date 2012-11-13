@@ -56,11 +56,12 @@ bool Game::readSrvOutput() {
   // interface to work
   int myteam = 1;
   Parser p(1, max_k_);
-  vector<Location> ret;
-  ret = p.work(&srvTr);
+  vector<Location> retloc;
+  vector<Nano> retNano;
+  p.work(&srvTr,retloc,retNano);
   //ret are the location to deploy new nanomuncher
-  ret.push_back(Location(0, 12, 5));
-  printLocsToSrv(ret);
+  //  ret.push_back(Location(0, 12, 5));
+  //  printLocsToSrv(ret);
 
   // vector<int> tryseq;
   // NanoGuess::searchOrientAtALoc(p.getLocations().at(0), tryseq);

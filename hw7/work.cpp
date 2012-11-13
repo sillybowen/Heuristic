@@ -30,10 +30,20 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
   cerr<<"inworker"<<opLivedNano<<' '<<opFreeNano<<endl;
   outputKillers();
 
-  
-  if (myLivedNano>0){}
-    //checkOndirectionBlock();
-
+  //EvaluateKillers();
+  retlocs.clear();
+  retnanos.clear();
+  for (int i = 0; i<killers.size(); i++) 
+    if (killers[i].keep){
+      Location* l = locs_->at(killers[i].id);
+      Location loc(l->getID(),l->getX(),l->getY());
+      Nano nano (killers[i].id,
+		 killers[i].lastDir,
+		 killers[i].seq,
+		 myTeam_);
+      retlocs.push_back(loc);
+      retnanos.push_back(nano);
+    }
   //return ret;
 }
 void Worker::SecondRoundKill() {

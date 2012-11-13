@@ -25,6 +25,13 @@ Nano::Nano (int id,
     seq_[i] = lookFor(dir[i]);
 }
 
+Nano::Nano (int id, 
+	    int lastDir,
+	    vector<int> seq, 
+	    int team): 
+  seq_(seq),id_(id),team_(team),lastDir_(lastDir) {}
+
+
 void Nano::output() {
   cerr<<id_<<' '<<team_<<' ';
   if (live_) cerr<<"live ";

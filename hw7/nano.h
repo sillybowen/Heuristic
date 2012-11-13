@@ -14,7 +14,8 @@ class Nano {
   int team_;
   int lastDir_;
  public:
-  Nano (int id,string lastDir_,vector<string> seq, bool live, int team);
+  Nano (int id,string lastDir,vector<string> seq, bool live, int team);
+  Nano (int id,int lastDir,vector<int> seq, int team);
   static void initializeMap () ;
   static int lookFor(string);
   const int getTeam() const {return team_;}

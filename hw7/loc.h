@@ -10,6 +10,9 @@ class Location {
   int x_,y_;
   int eatenBy_;
  public:
+  Location(int id,int x,int y);
+
+
   bool tried_;  // for best orientation attempts
   
   int getID() const { return id_; }
@@ -17,7 +20,6 @@ class Location {
   int getY() const {return y_;}
   bool isOccupied() const { return occupied_; }
   std::vector<Location*>& getChildren() { return children_; }
-  Location(int id,int x,int y);
   void AddChildren(Location* newChild);
   void setEaten(int x) {eatenBy_=x;}
   void setOccupied() {occupied_=true;}

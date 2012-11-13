@@ -23,8 +23,9 @@ int main () {
   int myteam = 1;
   int max_k_ = 10;
   Parser p(myteam, max_k_);
-  vector<Location> ret;
-  ret = p.work(&srvTr);
+  vector<Location> retloc;
+  vector<Nano> retnano;
+  p.work(&srvTr,retloc,retnano);
   //ret are the location to deploy new nanomuncher
   //  ret.push_back(Location(0, 12, 5));
   //  printLocsToSrv(ret);

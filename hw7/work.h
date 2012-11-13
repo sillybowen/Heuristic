@@ -8,6 +8,9 @@ struct KillerNano {
   int toKill;
   int id;
   int startDir;
+  int lastDir;
+  bool keep;
+  vector<int>seq;
 };
 class Worker {
  private:
