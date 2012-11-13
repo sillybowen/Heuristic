@@ -81,7 +81,7 @@ bool Game::readSrvOutput(const string& fromSrv, int worker_sel) {
 
   // interface to work
   int myteam = 1;
-  Parser p(1, max_k_);
+  Parser p(1, max_k_, ply_name_);
   vector<Location> retloc;
   vector<Nano> retNano;
   p.work(&srvTr,retloc,retNano, worker_sel);

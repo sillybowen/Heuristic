@@ -1,3 +1,4 @@
+#include <cstring>
 #include "parser.h"
 #include <vector>
 #include <sstream>
@@ -53,7 +54,7 @@ void Parser::GetEaten(tree *srvTr) {
   for (int i = 0; i<(*srvTr)[3][1].children.size();i++) {
     cerr<<(*srvTr)[3][1][i]<<endl;
     istringstream((*srvTr)[3][1][i][0][0][1].data)>>id;
-    team = (*srvTr)[3][1][i][1].data[4] -'0';
+    team = (strcmp((*srvTr)[3][1][i][1].data.c_str(), ourName_.c_str()))? 2: 1;
     locs[id]->setEaten(team);
   }
 }

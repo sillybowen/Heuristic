@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "parser.h"
 #include "nano.h"
 using namespace std;
@@ -22,7 +23,7 @@ int main () {
   // interface to work
   int myteam = 1;
   int max_k_ = 10;
-  Parser p(myteam, max_k_);
+  Parser p(myteam, max_k_, string("Team1"));
   vector<Location> retloc;
   vector<Nano> retnano;
   p.work(&srvTr,retloc,retnano, 0);
