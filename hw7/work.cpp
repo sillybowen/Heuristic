@@ -24,8 +24,6 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
   AllTakeAction();
   FirstRoundKill();
   outputKillers();
-
-
   //cerr<<"first round finished!"<<endl;
   AllTakeAction();
   //cerr<<"second action finished!"<<endl;
@@ -39,10 +37,22 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
   EvaluateKillers();
   retlocs.clear();
   retnanos.clear();
+
+  if (myFreeNano == 1) {
+    Location* loc;
+    Nano* nano;
+    findOneToPlace(loc,nano);
+    retlocs.push_back(*loc);
+    retnanos.push_back(*nano);
+    return ;
+  }
+
   sort(killers.begin(),killers.end(),compare);
   int c = 0;
   for (int i = 0; i<killers.size(); i++) 
     if (killers[i].keep){
+      if (c == myFreeNano-1)
+	break;
       Location* l = locs_->at(killers[i].id);
       Location loc(l->getID(),l->getX(),l->getY());
       Nano nano (killers[i].id,
@@ -52,8 +62,6 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
       retlocs.push_back(loc);
       retnanos.push_back(nano);
       c++;
-      if (c == myFreeNano-1)
-	break;
     }
 
   cout<<"retlocs size"<<retlocs.size()<<endl;
