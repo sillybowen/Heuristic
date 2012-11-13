@@ -1,12 +1,12 @@
 .SUFFIXES: .h .o .cpp
 
-CC = main.cpp loc.cpp parser.cpp nano.cpp nano_guess.cpp work.cpp game.cpp
+CC = ClientSocket.cpp Socket.cpp main.cpp loc.cpp parser.cpp nano.cpp nano_guess.cpp work.cpp game.cpp
 CC = g++
 #CXXFLAGS = -O2 -std=c++0x
 CXXFLAGS = -g
 socklibs = -lnsl
 LIBS = 
-OBJS = main.o loc.o parser.o nano.o nano_guess.o work.o game.o
+OBJS = ClientSocket.o Socket.o main.o loc.o parser.o nano.o nano_guess.o work.o game.o
 CCEXEC = nano
 
 all:	$(CCEXEC) $(MOVEABLETEST) $(HUNTERBOUNCETEST)

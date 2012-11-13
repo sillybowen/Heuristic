@@ -13,8 +13,8 @@ class Location {
   bool tried_;  // for best orientation attempts
 
   int getID() const { return id_; }
-  int getX() {return x_;}
-  int getY() {return y_;}
+  int getX() const {return x_;}
+  int getY() const {return y_;}
   bool isOccupied() const { return occupied_; }
   std::vector<Location*>& getChildren() { return children_; }
   Location(int id,int x,int y);
