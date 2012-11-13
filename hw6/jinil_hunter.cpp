@@ -37,7 +37,7 @@ Moveable::HuntPreyOutput Jinil_Hunter::tryMove() {
 
 void Jinil_Hunter::algorithm1(){
   // You can create wall
-  if(m_count < evade_game_->M_){ 
+  if(m_count != evade_game_->M_){ 
     switch(hunterDirection){
     case LRD_UP:
       if(h_cur.x == p_cur.x-2){
@@ -117,7 +117,7 @@ void Jinil_Hunter::algorithm1(){
   // If you come here,
   // you can remove wall
   // Check removable wall
-  if(m_count >= evade_game_->M_ - 1){
+  else if(m_count >= evade_game_->M_-1){
 
     int distance_x, distance_y;
     switch(hunterDirection){

@@ -4,11 +4,15 @@
 #include"loc.h"
 #include "nano.h"
 #include "work.h"
+#include "randwork.h"
 class Parser {
  private:
   vector<Location*> locs;
   vector<Nano*> nanos;
-  Worker worker;
+
+  //Worker worker;
+  RandWorker worker;
+
  public:
  Parser(int myteam, int k):worker(myteam,k){};
   void  GetNodes(tree * srvTr);

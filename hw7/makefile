@@ -1,12 +1,12 @@
 .SUFFIXES: .h .o .cpp
 
-CC = ClientSocket.cpp Socket.cpp main.cpp loc.cpp parser.cpp nano.cpp nano_guess.cpp work.cpp game.cpp
+CC = ClientSocket.cpp Socket.cpp main.cpp loc.cpp parser.cpp nano.cpp nano_guess.cpp work.cpp game.cpp randwork.cpp
 CC = g++
 #CXXFLAGS = -O2 -std=c++0x
 CXXFLAGS = -g
 socklibs = -lnsl
 LIBS = 
-OBJS = ClientSocket.o Socket.o main.o loc.o parser.o nano.o nano_guess.o work.o game.o
+OBJS = ClientSocket.o Socket.o main.o loc.o parser.o nano.o nano_guess.o work.o game.o randwork.o
 CCEXEC = nano
 WORKTESTFILE = work_test.cpp
 WORKTEST = work_test
@@ -20,8 +20,8 @@ $(CCEXEC):	$(OBJS) makefile
 	@echo Compiling $< . . .
 	$(CC) $(CXXFLAGS) $<
 
-$(WORKTEST): $(WORKTESTFILE) parser.o nano.o work.o loc.o
-	$(CC) $(WORKTESTFILE) parser.o nano.o work.o loc.o -o $(WORKTEST)
+$(WORKTEST): $(WORKTESTFILE) parser.o nano.o work.o loc.o randwork.o
+	$(CC) $(WORKTESTFILE) parser.o nano.o work.o loc.o randwork.o -o $(WORKTEST)
 
 run:	all
 	./$(CCEXEC)
