@@ -88,3 +88,14 @@ void Parser::output() {
   for (int i = 0; i<locs.size(); i++)
     locs[i]->output();
 }
+
+void Parser::taoGreedy(tree* pSrvTr, vector<Location>& retloc,
+    vector<Nano>& retnano) {
+  GetNodes(pSrvTr);
+  GetEdges(pSrvTr);
+  GetEaten(pSrvTr);
+  cerr<<"get nano"<<endl;
+  GetNanos(pSrvTr);
+  output();
+  tao_worker_.makeDecision(&locs,&nanos,retloc,retnano);
+}
