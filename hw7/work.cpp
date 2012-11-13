@@ -157,7 +157,7 @@ void Worker::AllTakeAction() {
 	  }
 	}
 }
-int Worker::evaluate(int id, vector<int> tmpseq_){
+int Worker::evaluate(int id, vector<int> tmpseq_,int isKiller){
   /*  cerr<<"generatedseq:";
   for (int i = 0; i<4; i++)
     cerr<<tmpseq_[i]<<' ';
@@ -166,6 +166,11 @@ int Worker::evaluate(int id, vector<int> tmpseq_){
   set<Location*> used_locs;
   int ret = 0;
   Nano nano (id,tmpseq_[3],tmpseq_,myTeam_);
+  if (isKiller>=0) {    
+    int nanoid = killers[isKiller].toKill;
+    int locid = nanos_->at(nanoid)->getId();
+    locs_->at(locid)->setUnoccupied();
+  }
   while (nano.live()) {
     used_locs.insert(locs_->at(nano.getId()));
     modified_locs.push_back(locs_->at(nano.getId()));
@@ -176,11 +181,16 @@ int Worker::evaluate(int id, vector<int> tmpseq_){
   for (int i = 0;i<modified_locs.size();i++)
     modified_locs[i]->setUnoccupied();
   cerr<<"Score:"<<ret<<endl;
+  if (isKiller>=0) {
+    int nanoid = killers[isKiller].toKill;
+    int locid = nanos_->at(nanoid)->getId();
+    locs_->at(locid)->setOccupied();
+  }
   return ret;
 }
-void Worker::generateSeq(int id, vector<int>& tmpseq_,vector<int>& retseq,int& score,int depth) {
+void Worker::generateSeq(int id, vector<int>& tmpseq_,vector<int>& retseq,int& score,int depth,int isKiller) {
   if (depth == 4) {
-    int s = evaluate(id,tmpseq_);
+    int s = evaluate(id,tmpseq_,isKiller);
     if (s>score) {
       score = s;
       retseq=tmpseq_;
@@ -196,11 +206,11 @@ void Worker::generateSeq(int id, vector<int>& tmpseq_,vector<int>& retseq,int& s
     if (r) {
       //      cerr<<"depth:"<<depth<<endl;
       tmpseq_[depth] = i;
-      generateSeq(id,tmpseq_,retseq,score,depth+1);
+      generateSeq(id,tmpseq_,retseq,score,depth+1,isKiller);
     }
   }
 }
-int Worker::Score(int id, vector<int>& seq_, int start) {
+int Worker::Score(int id, vector<int>& seq_, int start,int isKiller) {
   seq_.clear();
   seq_.resize(4);
   vector<int> tmpseq;
@@ -208,16 +218,19 @@ int Worker::Score(int id, vector<int>& seq_, int start) {
   int score = 0;
   if (start!=-1) {
     seq_[0]=start;
-    generateSeq(id,tmpseq,seq_,score,1);
+    generateSeq(id,tmpseq,seq_,score,1,isKiller);
   }
-  else generateSeq(id,tmpseq,seq_,score,0);
+  else generateSeq(id,tmpseq,seq_,score,0,isKiller);
   return score;
 }
 void Worker::EvaluateKillers() {
   Location *loc;
   Nano* nano;
   for (int i = 0; i<killers.size();i++) {
-    killers[i].score=Score(killers[i].id,killers[i].seq,killers[i].startDir);
+    if (killers[i].startDir != -1)
+      killers[i].score=Score(killers[i].id,killers[i].seq,killers[i].startDir,i);
+    else
+      killers[i].score=Score(killers[i].id,killers[i].seq,killers[i].startDir,-1);
     if (killers[i].score<3) killers[i].keep = false;
     else killers[i].keep = true;
   }
@@ -240,7 +253,7 @@ int Worker::findOneToPlace(Location *loc, Nano* nano) {
   int ansLast;
   for (int i = 0; i<locs_->size(); i++) 
     if (!locs_->at(i)->isOccupied()) {
-      tmps =Score(locs_->at(i)->getID(),seq,-1);
+      tmps =Score(locs_->at(i)->getID(),seq,-1,false);
       if (tmps>longest){
 	longest = tmps;
 	ansSeq=seq;
