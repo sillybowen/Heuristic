@@ -1,7 +1,11 @@
 #include "work.h"
 #include <set>
+#include <algorithm>
 using namespace std;
-
+bool compare(KillerNano k1, KillerNano k2) {
+  if (k1.score<k2.score)
+    return true;
+}
 void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
 				       vector<Location>& retlocs,vector<Nano>&retnanos) {
   vector<Location> ret;
@@ -35,6 +39,8 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
   EvaluateKillers();
   retlocs.clear();
   retnanos.clear();
+  sort(killers.begin(),killers.end(),compare);
+  int c = 0;
   for (int i = 0; i<killers.size(); i++) 
     if (killers[i].keep){
       Location* l = locs_->at(killers[i].id);
@@ -45,7 +51,11 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
 		 myTeam_);
       retlocs.push_back(loc);
       retnanos.push_back(nano);
+      c++;
+      if (c == myFreeNano-1)
+	break;
     }
+
   cout<<"retlocs size"<<retlocs.size()<<endl;
   //    if (retlocs.size()==0){
   if ((myLivedNano == 0 && retlocs.size()==0 )||(opFreeNano==0)) {
