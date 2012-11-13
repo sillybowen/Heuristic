@@ -29,22 +29,22 @@ void Location::output() {
   if (children_[0]!=NULL) {
     cerr<<"Up children:"<<
       children_[0]->getX()<<' '<<
-      children_[0]->getY()<<endl;
+      children_[0]->getY()<<children_[0]->isOccupied()<<endl;
   }
   if (children_[1]!=NULL) {
     cerr<<"left children:"<<
       children_[1]->getX()<<' '<<
-      children_[1]->getY()<<endl;
+      children_[1]->getY()<<children_[1]->isOccupied()<<endl;
   }
   if (children_[2]!=NULL) {
     cerr<<"down children:"<<
       children_[2]->getX()<<' '<<
-      children_[2]->getY()<<endl;
+      children_[2]->getY()<<children_[2]->isOccupied()<<endl;
   }
   if (children_[3]!=NULL) {
     cerr<<"right children:"<<
       children_[3]->getX()<<' '<<
-      children_[3]->getY()<<endl;
+      children_[3]->getY()<<children_[3]->isOccupied()<<endl;
   }
 }
 Location* Location::getUniqueChild() {

@@ -20,7 +20,7 @@ int main () {
   tree srvTr(srvIter);
   inF.close();
   // interface to work
-  int myteam = 2;
+  int myteam = 1;
   int max_k_ = 10;
   Parser p(myteam, max_k_);
   vector<Location> ret;

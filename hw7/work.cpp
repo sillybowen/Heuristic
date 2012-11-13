@@ -19,6 +19,7 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
 
   AllTakeAction();
   FirstRoundKill();
+  outputKillers();
   //cerr<<"first round finished!"<<endl;
   AllTakeAction();
   //cerr<<"second action finished!"<<endl;
@@ -48,7 +49,7 @@ void Worker::SecondRoundKill() {
       j = 0;
       tmp = NULL;
       while (j<dir && tmp == NULL) {
-	tmp = locs_->at(id)->getChild(j);
+	tmp = locs_->at(id)->getChild(2-j);
 	if (tmp!=NULL && tmp->isOccupied())
 	  tmp = NULL;
 	j++;
@@ -71,6 +72,8 @@ void Worker::outputKillers() {
     cerr<<"Killer"<<i<<endl;
     cerr<<"To KIllL:";
     nanos_->at(k.toKill)->output();
+    cerr<<"loc:";
+    locs_->at(nanos_->at(k.toKill)->getId())->output();
     cerr<<"At location:";
     locs_->at(k.id)->output();
     cerr<<"start at direction"<<k.startDir<<endl;
