@@ -31,8 +31,9 @@ void Game::startGame() {
       cout << "#FromSrv: " << fromSrv << endl;
 
       readSrvOutput(fromSrv);
+      fromSrv.clear();
 
-      sleep(10);
+      sleep(1);
     } while (1);
   } catch (SocketException& se) {
     assert(false);
