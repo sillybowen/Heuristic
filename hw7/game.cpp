@@ -13,11 +13,12 @@ const string dirArr[4] = { "Up", "Left", "Down", "Right" };
 
 Game::Game(const char* plyName, const char* srvOutFile, int globalMaxK, int srv_port)
   : max_k_(globalMaxK), ply_name_(string(plyName)), inFile_srv_(srvOutFile),
-  arch_clt_(registerSrv(srv_port)) { }
+    arch_clt_(registerSrv(srv_port)) { }
 
-void Game::startGame() {
+void Game::startGame(int worker_sel_) {
   string fromPly = ply_name_, fromSrv, srvEndMark("))\n");
   fromPly.push_back('\n');
+  worker_sel = worker_sel_;
 
   try {
     (*arch_clt_) << fromPly;  // Send server our player's name
@@ -30,7 +31,7 @@ void Game::startGame() {
       } while (fromSrv.find(srvEndMark) == string::npos);
       cout << "#FromSrv: " << fromSrv << endl;
 
-      readSrvOutput(fromSrv);
+      readSrvOutput(fromSrv, worker_sel);
       fromSrv.clear();
 
       sleep(1);
@@ -62,7 +63,7 @@ void Game::printLocsToSrv(const vector<Location>& newPlacements,
 }
 
 
-bool Game::readSrvOutput(const string& fromSrv) {
+bool Game::readSrvOutput(const string& fromSrv, int worker_sel) {
   /*ifstream inF;
 
   inF.open(inFile_srv_.c_str(), ifstream::in);
@@ -83,7 +84,7 @@ bool Game::readSrvOutput(const string& fromSrv) {
   Parser p(1, max_k_);
   vector<Location> retloc;
   vector<Nano> retNano;
-  p.work(&srvTr,retloc,retNano);
+  p.work(&srvTr,retloc,retNano, worker_sel);
   //ret are the location to deploy new nanomuncher
   /* Tests
   retloc.push_back(Location(0, 12, 5));
@@ -138,5 +139,5 @@ string Game::readSrvOutFileToStr() const {  // Default file is @inFile_srv_
 }
 
 void Game::testFromSrvOutputFile() {
-  readSrvOutput(readSrvOutFileToStr());
+  readSrvOutput(readSrvOutFileToStr(), worker_sel);
 }
