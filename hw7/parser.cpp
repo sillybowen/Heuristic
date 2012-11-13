@@ -16,7 +16,7 @@ void Parser::GetNodes(tree * srvTr) {
   stringstream ss;
   int id,x,y;
   for (int i = 0; i<(*srvTr)[0][1][0][1].children.size();i++) {
-    cout<<(*srvTr)[0][1][0][1][i]<<endl;
+    cerr<<(*srvTr)[0][1][0][1][i]<<endl;
     istringstream((*srvTr)[0][1][0][1][i][0][1].data)>>id;
     istringstream((*srvTr)[0][1][0][1][i][1][1][0][1].data)>>x;
     istringstream((*srvTr)[0][1][0][1][i][1][1][1][1].data)>>y;
@@ -28,7 +28,7 @@ void Parser::GetEdges(tree * srvTr) {
 
   int n1,n2;
   for (int i = 0; i<(*srvTr)[0][1][1][1].children.size();i++) {
-    cout<<(*srvTr)[0][1][1][1][i]<<endl;
+    cerr<<(*srvTr)[0][1][1][1][i]<<endl;
     istringstream((*srvTr)[0][1][1][1][i][0][1].data)>>n1;
     istringstream((*srvTr)[0][1][1][1][i][1][1].data)>>n2;
     locs[n1]->AddChildren(locs[n2]);
@@ -39,7 +39,7 @@ void Parser::GetEdges(tree * srvTr) {
 void Parser::GetEaten(tree *srvTr) {
   int id,team;
   for (int i = 0; i<(*srvTr)[3][1].children.size();i++) {
-    cout<<(*srvTr)[3][1][i]<<endl;
+    cerr<<(*srvTr)[3][1][i]<<endl;
     istringstream((*srvTr)[3][1][i][0][0][1].data)>>id;
     team = (*srvTr)[3][1][i][1].data[4] -'0';
     locs[id]->setEaten(team);
@@ -47,7 +47,7 @@ void Parser::GetEaten(tree *srvTr) {
 }
 
 void Parser::GetNanos( tree *srvTr) {
-    cout<<(*srvTr)[2][1]<<endl;
+    cerr<<(*srvTr)[2][1]<<endl;
     vector<string> dir;
     string lastDir;
     int id;
@@ -56,7 +56,7 @@ void Parser::GetNanos( tree *srvTr) {
     nanos.clear();
     dir.resize(4);
     for (int i = 0; i< (*srvTr)[2][1].children.size();i++) {
-      cout<<(*srvTr)[2][1][i]<<endl;
+      cerr<<(*srvTr)[2][1][i]<<endl;
       istringstream((*srvTr)[2][1][i][0][1][0][1].data)>>id;
       lastDir = (*srvTr)[2][1][i][1][1].data;
       for (int j = 0; j<4; j++) {
@@ -68,7 +68,7 @@ void Parser::GetNanos( tree *srvTr) {
     }
 
     for (int i = 0; i< (*srvTr)[1][1].children.size();i++) {
-      cout<<(*srvTr)[1][1][i]<<endl;
+      cerr<<(*srvTr)[1][1][i]<<endl;
       istringstream((*srvTr)[1][1][i][0][1][0][1].data)>>id;
       lastDir = (*srvTr)[1][1][i][1][1].data;
       for (int j = 0; j<4; j++) {

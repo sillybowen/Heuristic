@@ -19,24 +19,24 @@ void Location::AddChildren(Location* newChild) {
 }
 
 void Location::output() {
-  cout<<"Node"<<id_<<' '<<x_<<' '<<y_<<endl;
+  cerr<<"Node"<<id_<<' '<<x_<<' '<<y_<<endl;
   if (children_[0]!=NULL) {
-    cout<<"Up children:"<<
+    cerr<<"Up children:"<<
       children_[0]->getX()<<' '<<
       children_[0]->getY()<<endl;
   }
   if (children_[1]!=NULL) {
-    cout<<"down children:"<<
+    cerr<<"down children:"<<
       children_[1]->getX()<<' '<<
       children_[1]->getY()<<endl;
   }
   if (children_[2]!=NULL) {
-    cout<<"left children:"<<
+    cerr<<"left children:"<<
       children_[2]->getX()<<' '<<
       children_[2]->getY()<<endl;
   }
   if (children_[3]!=NULL) {
-    cout<<"right children:"<<
+    cerr<<"right children:"<<
       children_[3]->getX()<<' '<<
       children_[3]->getY()<<endl;
   }

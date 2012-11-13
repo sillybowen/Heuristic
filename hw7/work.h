@@ -12,7 +12,7 @@ class Worker {
   int myTeam_;
  public:
  Worker(int myTeam,int k) :k_(k),myTeam_(myTeam){
-    std::cout<<"Work get K:"<<k_<<" team:"<<myTeam_<<endl;
+    std::cerr<<"Work get K:"<<k_<<" team:"<<myTeam_<<endl;
   };
   vector<Location> makeDecision(vector<Location*>*locs,vector<Nano*>*nanos);
 };

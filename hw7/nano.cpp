@@ -26,11 +26,11 @@ Nano::Nano (int id,
 }
 
 void Nano::output() {
-  cout<<id_<<' '<<belong_<<' ';
-  if (live_) cout<<"live ";
-  else cout<<"dead ";
-  cout<<"last dir"<<lastDir_<<' ';
+  cerr<<id_<<' '<<belong_<<' ';
+  if (live_) cerr<<"live ";
+  else cerr<<"dead ";
+  cerr<<"last dir"<<lastDir_<<' ';
   for (int i = 0; i<4; i++)
-    cout<<seq_[i];
-  cout<<endl;
+    cerr<<seq_[i];
+  cerr<<endl;
 }

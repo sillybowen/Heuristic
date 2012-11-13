@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -20,7 +21,7 @@ int main(int argc, char* argv[]) {
   string s(argv[2]);
   int k;
   istringstream(argv[2])>>k;
-  cout<<k<<endl;
+  fprintf(stderr, "Global MAX numOfNanomunchers= %d\n", k);
   readSrvOutput(argv[3], k);
   return 0;
 }
@@ -46,7 +47,8 @@ bool readSrvOutput(const char* srvOutFileName,int k) {
   ret = p.work(&srvTr);
   //ret are the location to deploy new nanomuncher
 
-  vector<int> tryseq;
-  NanoGuess::searchOrientAtALoc(p.getLocations().at(0), tryseq);
+  // vector<int> tryseq;
+  // NanoGuess::searchOrientAtALoc(p.getLocations().at(0), tryseq);
+
   return true;
 }
