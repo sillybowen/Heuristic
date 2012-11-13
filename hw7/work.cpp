@@ -47,7 +47,7 @@ void Worker::makeDecision (vector<Location*> *locs,vector<Nano*> *nanos,
       retnanos.push_back(nano);
     }
   cout<<"retlocs size"<<retlocs.size()<<endl;
-  //  if (retlocs.size()==0){
+  //    if (retlocs.size()==0){
   if ((myLivedNano == 0 && retlocs.size()==0 )||(opFreeNano==0)) {
     Location* loc;
     Nano* nano;
@@ -259,7 +259,7 @@ int Worker::findOneToPlace(Location *&loc, Nano*&nano) {
   int ansLast;
   for (int i = 0; i<locs_->size(); i++) 
     if (!locs_->at(i)->isOccupied()) {
-      tmps =Score(locs_->at(i)->getID(),seq,-1,false);
+      tmps =Score(locs_->at(i)->getID(),seq,-1,-1);
       if (tmps>longest){
 	longest = tmps;
 	ansSeq=seq;
