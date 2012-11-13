@@ -60,8 +60,8 @@ bool Game::readSrvOutput() {
   vector<Nano> retNano;
   p.work(&srvTr,retloc,retNano);
   //ret are the location to deploy new nanomuncher
-  //  ret.push_back(Location(0, 12, 5));
-  //  printLocsToSrv(ret);
+  retloc.push_back(Location(0, 12, 5));
+  printLocsToSrv(retloc);
 
   // vector<int> tryseq;
   // NanoGuess::searchOrientAtALoc(p.getLocations().at(0), tryseq);
