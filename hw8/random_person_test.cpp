@@ -1,5 +1,5 @@
+#include <cmath>
 #include <iostream>
-#include <vector>
 #include <string>
 #include "person.h"
 #include "gtest/gtest.h"
@@ -9,7 +9,6 @@ namespace {
   using std::cout;
   using std::endl;
   using std::string;
-  using std::vector;
   class RandomPersonTest : public ::testing::Test {
     protected:
       // You can do set-up work for each test here.
@@ -49,8 +48,35 @@ namespace {
         else negSum += w[i];
       }
 
-      ASSERT_FLOAT_EQ(posSum, 1.0);
-      ASSERT_FLOAT_EQ(negSum, -1.0);
+      ASSERT_DOUBLE_EQ(posSum, 1.0);
+      ASSERT_DOUBLE_EQ(negSum, -1.0);
+    }
+  }
+
+  TEST_F(RandomPersonTest, ValidNoises) {
+    int numOfTries = 200;
+    const int nFeatures = 73;
+    double noise[nFeatures];
+    Person p("testPlyer", nFeatures);
+    const double* exactW = p.getExactW_();
+    // First sendOutVector should equal to exactW
+    p.sendOutVector(noise);
+    for (int i = 0; i < nFeatures; ++i)
+      ASSERT_DOUBLE_EQ(noise[i], exactW[i]);
+
+    while (numOfTries-- > 0) {
+      int modifiedCount = 0;
+      p.sendOutVector(noise);
+      for (int i = 0; i < nFeatures; ++i) {
+        if (fabs(noise[i]) < 0.01)
+          ASSERT_NEAR(0.0, noise[i], 0.01);
+        else {
+          EXPECT_NEAR(0.0, noise[i], fabs(exactW[i] * 0.2));
+          ++modifiedCount;
+        }
+      }
+      EXPECT_LE(modifiedCount, int(nFeatures * 0.05)) << " modifiedCount= "
+        << modifiedCount << endl;
     }
   }
 

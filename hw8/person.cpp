@@ -95,6 +95,9 @@ bool Person::addNewVectHistory(const double* aVector) {
 
 bool Person::addNewVectHistory() {  // Generating "noise" array
   double* tmpArr = new double[n_features_];
+  for (int i = 0; i < n_features_; ++i)
+    tmpArr[i] = 0.0;
+
   int isModifyArr[n_features_];
   memset(isModifyArr, 0, sizeof(isModifyArr));
   if (!tmpArr) return false;
