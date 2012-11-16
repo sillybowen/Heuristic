@@ -1,24 +1,26 @@
 #ifndef person_h
 #define person_h
-#include <vector>
-using std::vector;
+#include "someone.h"
 
-class Person {
+class Person : public Someone {
 public:
-  Person(int nFeatures);
+  Person(const string& plyName, int nFeatures);
   virtual ~Person();
 
-  virtual void getExactW(double* wVector);
-  virtual void getWChgVector(double* wChgVector, int index);
+  bool isMatchmaker() const;
+  void sendOutVector(double* aVector);
 
   // For testing
   void printExactW() const;
+  const double* getExactW_() const { return exact_w_; }
 
-protected:
-  const int       n_features_;
-  int             cur_his_ind_;  // The index to insert NEW history into @wChg_his_
+private:
+  void getExactW(double* wVector);
+  void getWChgVector(double* wChgVector, int index);
+  bool addNewVectHistory(const double* aVector);  // New memory allocated
+  bool addNewVectHistory();  // Add new Noise array
+
   double*         exact_w_;   // Secret original W vector
-  vector<double*> wChg_his_;  // Record every changed W vector sent
 };
 
 #endif  // person_h
