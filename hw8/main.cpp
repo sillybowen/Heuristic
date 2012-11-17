@@ -30,8 +30,8 @@ port(only for srv mode)" << endl;
   }
 
   datingGame->startGame();
-  Person p("Person", N);
-  p.printExactW();
+  // Person p("Person", N);
+  // p.printExactW();
 
   delete datingGame;
 

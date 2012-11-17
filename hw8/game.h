@@ -18,6 +18,7 @@ public:
   virtual void startGame();
 
   // For testing
+  const double* getExactWArr_() const { return w_arr_; }
   void printLenNArr(const double* lenNArr) const;
   void printXXMatrWithScore() const;
 
