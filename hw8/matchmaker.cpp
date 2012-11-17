@@ -5,14 +5,14 @@
 #define PRECISIONPRIMENUMBER 1046527
 
 Matchmaker::Matchmaker(const string& plyName, int nFeatures)
-                      : Someone(plyName, nFeatures) { }
+                      : Someone(plyName, nFeatures), seed_(0) { }
 
 Matchmaker::~Matchmaker() { }
 
 bool Matchmaker::isMatchmaker() const { return true; }
 
 void Matchmaker::sendOutVector(double* aVector) {
-  srand(time(NULL));
+  srand(time(NULL) + seed_++);
   for (int i = 0; i < n_features_; ++i)
     aVector[i] = double(rand() % PRECISIONPRIMENUMBER)
       / double(PRECISIONPRIMENUMBER - 1);

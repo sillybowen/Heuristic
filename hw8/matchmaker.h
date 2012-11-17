@@ -11,5 +11,6 @@ public:
   void sendOutVector(double* aVector);
 
 private:
+  int seed_;
 };
 #endif  // matchmaker_h
