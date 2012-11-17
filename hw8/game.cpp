@@ -6,19 +6,20 @@
 #include "game.h"
 #include "person.h"
 #include "matchmaker.h"
+#include "gradient_matcher.h"
 using namespace std;
 
 #define MVALUE 20
 #define CANDIDATEPRECISION 100
 
 Game::Game(const char* plyName, int nFeatures)
-                    : n_features_(nFeatures),
-                      m_srv_cand_(MVALUE),
-                      ply_name_(string(plyName)),
-                      w_arr_(new double[nFeatures]),
-                      xx_matr_(new double*[MVALUE]),
-                      person_(new Person("Person", nFeatures)),
-                      matcher_(new Matchmaker("Matchmaker", nFeatures)) {
+          : n_features_(nFeatures),
+            m_srv_cand_(MVALUE),
+            ply_name_(string(plyName)),
+            w_arr_(new double[nFeatures]),
+            xx_matr_(new double*[MVALUE]),
+            person_(new Person("Person", nFeatures)),
+            matcher_(new GradientMatcher("GradientMatcher", nFeatures, this)) {
   memset(w_arr_, 0, sizeof(double) * nFeatures);
   for (int i = 0; i < MVALUE; ++i) {
     xx_matr_[i] = new double[nFeatures];
@@ -64,8 +65,11 @@ double Game::calNoiseMatchScore(const double* candVect, const double* noiseArr) 
 void Game::startGame() {
   // Get w vector from @person_
   person_->sendOutVector(w_arr_);
+  cout << "Secret: Exact Weight: ";
   printLenNArr(w_arr_);
   getMRandomCands();
+  matcher_->feedRandCandsResults(xx_matr_, match_score_, m_srv_cand_);
+  /*
   printXXMatrWithScore();
 
   int gameRounds = 20;
@@ -84,6 +88,7 @@ void Game::startGame() {
     if (fabs(score - 1.0) < 0.01)
       break;
   }
+  */
 }
 
 void Game::printLenNArr(const double* lenNArr) const {

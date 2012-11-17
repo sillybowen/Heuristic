@@ -1,5 +1,6 @@
 #ifndef someone_h
 #define someone_h
+#include <cassert>
 #include <string>
 #include <vector>
 using std::string;
@@ -18,6 +19,10 @@ public:
     vect_his_.clear();
   }
 
+  virtual void feedRandCandsResults(const double* const* xxMatr,
+      const vector<double>& scores, int numOfCands) {
+    assert(this->isMatchmaker());  // Do NOT allow Person objects to call this method
+  }
   virtual bool isMatchmaker() const = 0;
   // This is the exact W / noise vector if Someone is a @Person
   // or candidate x vector if Someone is a @Matchmaker

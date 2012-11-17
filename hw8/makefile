@@ -1,12 +1,14 @@
 .SUFFIXES: .h .o .cpp
 
-CC = ClientSocket.cpp Socket.cpp game.cpp server_game.cpp person.cpp matchmaker.cpp main.cpp
+CC = ClientSocket.cpp Socket.cpp game.cpp server_game.cpp person.cpp \
+	 matchmaker.cpp gradient_matcher.cpp main.cpp
 CC = g++
 #CXXFLAGS = -O2 -std=c++0x
 CXXFLAGS = -g
 socklibs = -lnsl
 LIBS = 
-OBJS = ClientSocket.o Socket.o game.o server_game.o person.o matchmaker.o main.o
+OBJS = ClientSocket.o Socket.o game.o server_game.o person.o matchmaker.o\
+	   gradient_matcher.o main.o
 CCEXEC = dating
 RANDOMPERSONTEST = random_person_test
 RANDOMPERSONTESTFILE = random_person_test.cpp

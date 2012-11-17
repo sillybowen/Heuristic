@@ -13,7 +13,12 @@ bool Matchmaker::isMatchmaker() const { return true; }
 
 void Matchmaker::sendOutVector(double* aVector) {
   srand(time(NULL) + seed_++);
-  for (int i = 0; i < n_features_; ++i)
+  double* tmpArr = new double[n_features_];
+  for (int i = 0; i < n_features_; ++i) {
     aVector[i] = double(rand() % PRECISIONPRIMENUMBER)
       / double(PRECISIONPRIMENUMBER - 1);
+    tmpArr[i] = aVector[i];
+  }
+  vect_his_.push_back(tmpArr);
+  ++cur_his_ind_;
 }
