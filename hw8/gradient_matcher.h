@@ -13,7 +13,7 @@ public:
   // @leaveInd is for "Leave one out cross validation"
   // @retGuessW should be an array of length nFeatures, if NOT NULL
   void feedRandCandsResults(const double* const* xxMatr,
-      const vector<double>& scores, int numOfCands, double eta = 0.0001,
+      const vector<double>& scores, int numOfCands, double eta = 0.001,
       int leaveInd = -1, double* retGuessW = NULL) const;
   // Override base class method
   void sendOutVector(double* aVector);
