@@ -1,0 +1,5 @@
+All Game::printLenNArr(const double* guessW); are in stderr
+use 2> to seperate it from other
+
+$ run:
+./dating aaa 17 0 1>tmp 2> imp

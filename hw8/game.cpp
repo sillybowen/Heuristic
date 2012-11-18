@@ -65,7 +65,7 @@ double Game::calNoiseMatchScore(const double* candVect, const double* noiseArr) 
 void Game::startGame() {
   // Get w vector from @person_
   person_->sendOutVector(w_arr_);
-  cout << "Secret: Exact Weight: ";
+  cerr << "Secret: Exact Weight: ";
   printLenNArr(w_arr_);
   getMRandomCands();
   dynamic_cast<GradientMatcher*>(matcher_)->importRandCandsAndScores(xx_matr_,
@@ -98,8 +98,8 @@ void Game::startGame() {
 
 void Game::printLenNArr(const double* lenNArr) const {
   for (int i = 0; i < n_features_; ++i)
-    cout << lenNArr[i] << " ";
-  cout << endl;
+    cerr << lenNArr[i] << " ";
+  cerr << endl;
 }
 
 void Game::printXXMatrWithScore() const {

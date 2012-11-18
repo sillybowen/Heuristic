@@ -42,6 +42,14 @@ void GradientMatcher::descendFromMultiSPs() {
   for (int i = 0; i < n_features_; ++i) guessW[i] = 0.0; 
 
   feedRandCandsResults(guessW);
+  std::cerr << "**************************" << std::endl;
+  local_game_->printLenNArr(guessW);
+
+  for (int i = 0; i < n_features_; ++i) guessW[i] = 0.0; 
+  guessW[0] = 0.5;
+  feedRandCandsResults(guessW);
+  std::cerr << "**************************" << std::endl;
+  local_game_->printLenNArr(guessW);
 
   delete [] guessW;
 }
@@ -75,7 +83,7 @@ void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leave
       guessW[k] -= eta * gtArr[k];
 
     // Print guessed W:
-    local_game_->printLenNArr(guessW);
+    // local_game_->printLenNArr(guessW);
     // Investigate cost change magnitude and sign count
     if (isSignCount) {
       signCountDowork(guessW, signCounter);
