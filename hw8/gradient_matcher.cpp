@@ -1,5 +1,6 @@
 #include <cfloat>
 #include <cstring>
+#include <cmath>
 #include <iostream>
 #include <iomanip>
 #include "gradient_matcher.h"
@@ -20,6 +21,9 @@ GradientMatcher::~GradientMatcher() {
   for (int i = 0; i < xx_len_; ++i)
     delete [] xx_matr_[i];
   delete xx_matr_;
+
+  for (int i = 0; i < mul_desc_.size(); ++i)
+    delete mul_desc_[i];
 }
 
 void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
@@ -37,28 +41,39 @@ void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
 
 // Do gradient descend from multiple starting points
 void GradientMatcher::descendFromMultiSPs() {
-  // printXXMatrWithScore(xx_len_);
+  printXXMatrWithScore(xx_len_);
+  vector<SignCounter> signCounter(n_features_);
+
   double* guessW = new double[n_features_];
   for (int i = 0; i < n_features_; ++i) guessW[i] = 0.0; 
 
   feedRandCandsResults(guessW);
   std::cerr << "**************************" << std::endl;
   local_game_->printLenNArr(guessW);
-
-  for (int i = 0; i < n_features_; ++i) guessW[i] = 0.0; 
-  guessW[0] = 0.5;
-  feedRandCandsResults(guessW);
-  std::cerr << "**************************" << std::endl;
-  local_game_->printLenNArr(guessW);
+  signCountDowork(guessW, signCounter);
 
   delete [] guessW;
+
+  for (int ind = 0; ind < n_features_; ++ind) {
+    MulDesc* newstruct = new MulDesc(n_features_);
+    mul_desc_.push_back(newstruct);
+    mul_desc_.back()->guessWArr[ind] = 0.5;
+    feedRandCandsResults(mul_desc_.back()->guessWArr);
+    std::cerr << "**************************" << std::endl;
+    local_game_->printLenNArr(mul_desc_.back()->guessWArr);
+
+    signCountDowork(mul_desc_.back()->guessWArr, signCounter);
+  }
+
+  std::cerr << "-----------------------------" << std::endl;
+  printSignCounter(signCounter);
 }
 
 void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leaveInd,
     double* retGuessW) const {
   double* gtArr = new double[n_features_];  // Gradient array
-  vector<SignCounter> signCounter(n_features_);
-  int iterations = 100000;
+  // vector<SignCounter> signCounter(n_features_);
+  int iterations = 10000;
 
   double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
   bool isSignCount = false;
@@ -86,7 +101,7 @@ void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leave
     // local_game_->printLenNArr(guessW);
     // Investigate cost change magnitude and sign count
     if (isSignCount) {
-      signCountDowork(guessW, signCounter);
+      // signCountDowork(guessW, signCounter);
     }
     lastCost = curCost;
     curCost = costGivenGuessW(xx_len_, guessW);
@@ -97,11 +112,11 @@ void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leave
     // Start sign counting from next loop
     if (isSignCount == false && (iterations < 40000)) {  // Only count last 10% loops
       isSignCount = true;
-      signCountInit(guessW, signCounter);
+      // signCountInit(guessW, signCounter);
     }
   }
 
-  printSignCounter(signCounter);
+  // printSignCounter(signCounter);
   // Output final guessW to caller
   if (retGuessW) {
     for (int i = 0; i < n_features_; ++i)
@@ -204,15 +219,16 @@ void GradientMatcher::signCountDowork(const double* guessW,
 }
 
 void GradientMatcher::printSignCounter(const vector<SignCounter>& signCounter) const {
-  std::cout << "     ";
+  // std::cout << "     ";
+  // for (int i = 0; i < signCounter.size(); ++i)
+  //   std::cout << std::setw(5) << signCounter[i].signFliped_ << " ";
+  // std::cout << "\nPos: ";
+  // for (int i = 0; i < signCounter.size(); ++i)
+  //   std::cout << std::setw(5) << signCounter[i].posCount_ << " ";
+  std::cout << "\nP-N: ";
   for (int i = 0; i < signCounter.size(); ++i)
-    std::cout << std::setw(5) << signCounter[i].signFliped_ << " ";
-  std::cout << "\nPos: ";
-  for (int i = 0; i < signCounter.size(); ++i)
-    std::cout << std::setw(5) << signCounter[i].posCount_ << " ";
-  std::cout << "\nNeg: ";
-  for (int i = 0; i < signCounter.size(); ++i)
-    std::cout << std::setw(5) << signCounter[i].negCount_ << " ";
+    std::cout << std::setw(5) << signCounter[i].posCount_ - signCounter[i].negCount_
+      << " ";
   std::cout << std::endl;
 }
 

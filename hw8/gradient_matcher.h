@@ -17,6 +17,13 @@ public:
     bool lastSign_;  // if >= 0.0, true; else false
     SignCounter() : signFliped_(0), posCount_(0), negCount_(0) { }
   };
+  struct MulDesc {
+    double* guessWArr;
+    MulDesc(int nFeatures) : guessWArr(new double[nFeatures]) {
+      for (int i = 0; i < nFeatures; ++i) guessWArr[i] = 0.0;
+    }
+    ~MulDesc() { delete [] guessWArr; }
+  };
 
   void importRandCandsAndScores(const double* const* xxMatr,
       const vector<double>& scores, int numOfCands);
@@ -46,8 +53,9 @@ private:
 
   int            xx_len_;  // Number of row currently in @xx_matr_
   double**       xx_matr_;
-  vector<double> xx_scores_;
   Game*  local_game_;  // Cheating, test gradient descent results
+  vector<double> xx_scores_;
+  vector<MulDesc*> mul_desc_;
 };
 
 #endif
