@@ -40,6 +40,7 @@ public:
   int LOOCrossValid(const double* const* xxMatr, const vector<double>& scores,
       int numOfCands) const;
   double costGivenGuessW(int numOfCands, const double* guessW) const;
+  void outputConstraintInfo(const double* guessW) const;
   // Cheating, can NOT be used in contest
   int signDiffToExactW(const double* guessW) const;
 

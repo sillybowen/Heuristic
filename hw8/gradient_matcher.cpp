@@ -50,19 +50,26 @@ void GradientMatcher::descendFromMultiSPs() {
   feedRandCandsResults(guessW);
   std::cerr << "**************************" << std::endl;
   local_game_->printLenNArr(guessW);
-  signCountDowork(guessW, signCounter);
+  // signCountDowork(guessW, signCounter);
 
   delete [] guessW;
 
-  for (int ind = 0; ind < n_features_; ++ind) {
+  for (int ind = (1 - n_features_); ind < n_features_; ++ind) {
     MulDesc* newstruct = new MulDesc(n_features_);
     mul_desc_.push_back(newstruct);
-    mul_desc_.back()->guessWArr[ind] = 0.5;
+    if (ind < 0) {
+      mul_desc_.back()->guessWArr[-ind] = -0.2;
+    } else if (ind > 0) {
+      mul_desc_.back()->guessWArr[ind] = 0.2;
+    }
     feedRandCandsResults(mul_desc_.back()->guessWArr);
-    std::cerr << "**************************" << std::endl;
+    std::cerr << "**************************ind= " << ind << std::endl;
     local_game_->printLenNArr(mul_desc_.back()->guessWArr);
+    std::cerr << "signDiffToExactW: " << signDiffToExactW(mul_desc_.back()->
+        guessWArr) << "  ";
+    outputConstraintInfo(mul_desc_.back()->guessWArr);
 
-    signCountDowork(mul_desc_.back()->guessWArr, signCounter);
+    // signCountDowork(mul_desc_.back()->guessWArr, signCounter);
   }
 
   std::cerr << "-----------------------------" << std::endl;
@@ -175,6 +182,18 @@ double GradientMatcher::costGivenGuessW(int numOfCands, const double* guessW) co
   }
 
   return totalCost;
+}
+
+// Output constraint info to stderr
+void GradientMatcher::outputConstraintInfo(const double* guessW) const {
+  double posSum = 0.0, negSum = 0.0, variance = 0.0;
+
+  for (int i = 0; i < n_features_; ++i) {
+    (guessW[i] >= 0.0)? (posSum += guessW[i]) : (negSum += guessW[i]);
+  }
+  variance = (posSum - 1.0) * (posSum - 1.0) + (negSum + 1.0) * (negSum + 1.0);
+  std::cerr << "posSum= " << posSum << " negSum= " << negSum << " var= "
+    << variance << std::endl;
 }
 
 // Cheating, compare Exact W with guessW, return total number of sign differences

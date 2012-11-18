@@ -3,8 +3,8 @@
 CC = ClientSocket.cpp Socket.cpp game.cpp server_game.cpp person.cpp \
 	 matchmaker.cpp gradient_matcher.cpp main.cpp
 CC = g++
-CXXFLAGS = -O2
-#CXXFLAGS = -g
+#CXXFLAGS = -O2
+CXXFLAGS = -g
 socklibs = -lnsl
 LIBS = 
 OBJS = ClientSocket.o Socket.o game.o server_game.o person.o matchmaker.o\
