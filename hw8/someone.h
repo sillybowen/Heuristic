@@ -20,8 +20,8 @@ public:
   }
 
   virtual void feedRandCandsResults(const double* const* xxMatr,
-      const vector<double>& scores, int numOfCands, double eta = 0.0001,
-      int leaveInd = -1, double* retGuessW = NULL) {
+      const vector<double>& scores, int numOfCands, double eta = 0.001,
+      int leaveInd = -1, double* retGuessW = NULL) const {
     assert(this->isMatchmaker());  // Do NOT allow Person objects to call this method
   }
   virtual bool isMatchmaker() const = 0;

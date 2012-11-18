@@ -1,5 +1,6 @@
 #include <cfloat>
 #include <iostream>
+#include <iomanip>
 #include "gradient_matcher.h"
 #include "game.h"
 
@@ -16,8 +17,11 @@ void GradientMatcher::feedRandCandsResults(const double* const* xxMatr,
   double* gtArr = new double[n_features_];  // Gradient array
   double* guessW = new double[n_features_];
   for (int i = 0; i < n_features_; ++i) guessW[i] = 0.0; 
-  int iterations = 10000;
+  vector<SignCounter> signCounter(n_features_);
+  int iterations = 100000;
 
+  double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
+  bool isSignCount = false;
   while (iterations-- > 0) {
     for (int i = 0; i < n_features_; ++i) gtArr[i] = 0.0;
     // Foreach candidate c, calculate gradient
@@ -40,10 +44,24 @@ void GradientMatcher::feedRandCandsResults(const double* const* xxMatr,
 
     // Print guessed W:
     local_game_->printLenNArr(guessW);
-    // double curCost = costGivenGuessW(xxMatr, scores, numOfCands, guessW);
-    // std::cout << "curCost= " << curCost << std::endl;
+    // Investigate cost change magnitude and sign count
+    if (isSignCount) {
+      signCountDowork(guessW, signCounter);
+    }
+    lastCost = curCost;
+    curCost = costGivenGuessW(xxMatr, scores, numOfCands, guessW);
+    costChg = curCost - lastCost;  // Should always be negative
+    std::cout << "curCost= " << curCost << "  costChg= " << costChg
+      << "  signDiffCount= " << signDiffToExactW(guessW) << std::endl;
+
+    // Start sign counting from next loop
+    if (isSignCount == false && (iterations < 40000)) {  // Only count last 10% loops
+      isSignCount = true;
+      signCountInit(guessW, signCounter);
+    }
   }
 
+  printSignCounter(signCounter);
   // Output final guessW to caller
   if (retGuessW) {
     for (int i = 0; i < n_features_; ++i)
@@ -104,3 +122,58 @@ double GradientMatcher::costGivenGuessW(const double* const* xxMatr,
 
   return totalCost;
 }
+
+// Cheating, compare Exact W with guessW, return total number of sign differences
+int GradientMatcher::signDiffToExactW(const double* guessW) const {
+  int diffCount = 0;
+  const double* exactW = local_game_->getExactWArr_();
+
+  for (int i = 0; i < n_features_; ++i) {
+    if ((guessW[i] >= 0.0) ^ (exactW[i] >= 0.0))
+      ++diffCount;
+  }
+
+  return diffCount;
+}
+
+void GradientMatcher::signCountInit(const double* guessW,
+    vector<SignCounter>& signCounter) const {
+  assert(signCounter.size() == n_features_);
+
+  for (int i = 0; i < n_features_; ++i) {
+    signCounter[i].lastSign_ = ((guessW[i] >= 0.0)? true : false);
+  }
+}
+
+void GradientMatcher::signCountDowork(const double* guessW,
+    vector<SignCounter>& signCounter) const {
+  assert(signCounter.size() == n_features_);
+
+  for (int i = 0; i < n_features_; ++i) {
+    if (guessW[i] >= 0.0) {
+      ++(signCounter[i].posCount_);
+    } else {
+      ++(signCounter[i].negCount_);
+    }
+
+    if ((guessW[i] >= 0.0) ^ signCounter[i].lastSign_) {  // sign changed
+      ++(signCounter[i].signFliped_);
+    }
+
+    signCounter[i].lastSign_ = ((guessW[i] >= 0.0)? true : false);
+  }
+}
+
+void GradientMatcher::printSignCounter(const vector<SignCounter>& signCounter) const {
+  std::cout << "     ";
+  for (int i = 0; i < signCounter.size(); ++i)
+    std::cout << std::setw(5) << signCounter[i].signFliped_ << " ";
+  std::cout << "\nPos: ";
+  for (int i = 0; i < signCounter.size(); ++i)
+    std::cout << std::setw(5) << signCounter[i].posCount_ << " ";
+  std::cout << "\nNeg: ";
+  for (int i = 0; i < signCounter.size(); ++i)
+    std::cout << std::setw(5) << signCounter[i].negCount_ << " ";
+  std::cout << std::endl;
+}
+
