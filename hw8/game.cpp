@@ -68,7 +68,10 @@ void Game::startGame() {
   cout << "Secret: Exact Weight: ";
   printLenNArr(w_arr_);
   getMRandomCands();
-  matcher_->feedRandCandsResults(xx_matr_, match_score_, m_srv_cand_);
+  dynamic_cast<GradientMatcher*>(matcher_)->importRandCandsAndScores(xx_matr_,
+      match_score_, m_srv_cand_);
+  matcher_->descendFromMultiSPs();
+  // matcher_->feedRandCandsResults(xx_matr_, match_score_, m_srv_cand_);
   // dynamic_cast<GradientMatcher*>(matcher_)->LOOCrossValid(xx_matr_,
   //     match_score_, m_srv_cand_);
   /*

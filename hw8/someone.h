@@ -19,9 +19,7 @@ public:
     vect_his_.clear();
   }
 
-  virtual void feedRandCandsResults(const double* const* xxMatr,
-      const vector<double>& scores, int numOfCands, double eta = 0.001,
-      int leaveInd = -1, double* retGuessW = NULL) const {
+  virtual void descendFromMultiSPs() {
     assert(this->isMatchmaker());  // Do NOT allow Person objects to call this method
   }
   virtual bool isMatchmaker() const = 0;
