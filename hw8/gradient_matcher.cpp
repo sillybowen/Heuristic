@@ -22,7 +22,7 @@ const static double etaArr[] = { 0.01, 0.005, 0.001, 0.0005, 0.0001 };
 
 GradientMatcher::GradientMatcher(const string& plyName, int nFeatures, int numThrs,
     Game* pgame) : Someone(plyName, nFeatures),
-                   xx_len_(0),
+                   xx_len_(20),
                    matcher_step_(0),
                    num_thrs_(numThrs),
                    xx_matr_(new double*[MAXCANDIDATESNUMBER]),

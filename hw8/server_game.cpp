@@ -5,6 +5,7 @@
 #include <sstream>
 #include "server_game.h"
 #include "btrim.hpp"
+#include "gradient_matcher.h"
 
 using std::cout;
 using std::endl;
@@ -96,6 +97,8 @@ bool ServerGame::readSrvOutput(string& fromSrv) {
           "Matcher":"Person") << " Receiving 20 srv random candidates." << endl;
       // Receiving 20 random candidates from server, update xx_matr_ and match_score_
       parserFromSrv(fromSrv);  // parse and update @xx_matr_ and @match_score_
+      dynamic_cast<GradientMatcher*>(my_ply_)->importRandCandsAndScores(xx_matr_,
+          match_score_, 20);
       cout << "#fromSrv: " << fromSrv << endl;
       fromSrv = fromSrv.substr(fromSrv.find("\n"));
       ltrim(fromSrv);
