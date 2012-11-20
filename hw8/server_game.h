@@ -15,6 +15,8 @@ public:
 
   string printNVectorToSrv(const double* nVect) const;
   // For testing
+  
+  void parserFromSrv(string fromSrv);
 
 private:
   ClientSocket* registerSrv(int srv_port);

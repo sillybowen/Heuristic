@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include "server_game.h"
+using namespace std;
 
 using std::cout;
 using std::endl;
@@ -36,6 +37,10 @@ void ServerGame::startGame() {
       */
       (*arch_clt_) >> fromSrv;
       cout << "#FromSrv: " << fromSrv << "-----End of #FromSrv" << endl;
+
+      // Save information into 'xx_matr', 'match_score_'
+      parserFromSrv(fromSrv);
+      
 
       if (!readSrvOutput(fromSrv)) {
         break;
@@ -134,4 +139,53 @@ ClientSocket* ServerGame::registerSrv(int srv_port) {
   }
 
   return pClt_socket;
+}
+
+void ServerGame::parserFromSrv(string fromSrv){
+  string str = fromSrv;
+
+  const char* c_it = str.c_str();
+  int candidate_count = 0;
+  int attr_index = 0;
+
+  // check
+  size_t found;
+  found = str.find("S->M:");
+  if(found == string::npos)
+    return;
+  
+  bool inner_set = false;
+  stringstream ss;
+  for(int i=found+5; i<str.size(); i++){
+    if(c_it[i] == '['){
+      inner_set = true;
+    }else if(c_it[i] == ']'){
+      xx_matr_[ candidate_count ][ attr_index ] = atof( ss.str().c_str() );
+      inner_set = false;
+      candidate_count++;
+      attr_index = 0;
+      ss.str("");
+    }else if(c_it[i] == ' ')
+      continue;
+    else{
+      if(inner_set){
+	if(c_it[i] == ','){
+	  xx_matr_[ candidate_count ][ attr_index ] = atof( ss.str().c_str() );
+	  attr_index++;
+	  ss.str("");
+	}else{
+	  ss << c_it[i];
+	}
+      }else{
+	if(c_it[i] == ','){
+	  match_score_.push_back( atof(ss.str().c_str()) );
+	  ss.str("");
+	}else{
+	  ss << c_it[i];
+	}
+      }
+    }
+    if(i==str.size()-1)
+      match_score_.push_back( atof(ss.str().c_str()) );
+  }
 }
