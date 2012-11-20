@@ -5,6 +5,7 @@
 #include <ctime>
 #include <iostream>
 #include "person.h"
+#include <stdio.h>
 #define WEIGHTGRANULARITY 200
 
 Person::Person(const string& plyName, int nFeatures)
@@ -109,7 +110,17 @@ bool Person::addNewVectHistory() {  // Generating "noise" array
   else {
     const int numOfNoises = n_features_ * 0.05;
     for (int i = 0; i < numOfNoises; ) {
-      int pos = rand() % n_features_;
+
+      int n;
+      FILE * f = fopen("/dev/urandom", "rb");
+      if(f != NULL){
+	fread(&n, sizeof(int), 1, f);
+	fclose(f);
+      }
+
+      int pos = n % n_features_;
+
+      //int pos = rand() % n_features_;
       if (isModifyArr[pos] != 0 || fabs(exact_w_[pos]) < 0.05)
         continue;
       else {
@@ -117,7 +128,15 @@ bool Person::addNewVectHistory() {  // Generating "noise" array
         ++i;
       }
       int trunckW = exact_w_[pos] * 100;
-      int noiseW = trunckW * double((rand() % 41) - 20) / 100.0;
+
+      f = fopen("/dev/urandom", "rb");
+      if(f != NULL){
+	fread(&n, sizeof(int), 1, f);
+	fclose(f);
+      }
+      int noiseW = trunckW * double((n % 41) - 20) / 100.0;
+
+      //int noiseW = trunckW * double((rand() % 41) - 20) / 100.0;
       tmpArr[pos] = double(noiseW) / 100.0;
     }
     vect_his_.push_back(tmpArr);
