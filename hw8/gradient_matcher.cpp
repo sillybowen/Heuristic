@@ -8,6 +8,7 @@
 #include "gradient_matcher.h"
 #include "game.h"
 #define MAXCANDIDATESNUMBER 50
+#define FINALCOSTTHRESHOLD 0.001
 using base::Callback;
 using base::makeCallableOnce;
 using base::ThreadPool;
@@ -48,6 +49,8 @@ void GradientMatcher::descendFromMultiSPs() {
   printXXMatrWithScore(xx_len_);
   mul_desc_.clear();
   mul_desc_.resize(n_features_, new MulDesc(n_features_));
+  sign_count_.clear();
+  sign_count_.resize(n_features_);
 
   ThreadPool* thrPool = new ThreadPoolNormal(num_thrs_);
   /*
@@ -74,18 +77,13 @@ void GradientMatcher::descendFromMultiSPs() {
     thrPool->addTask(task);
     // feedRandCandsResults(mul_desc_.back()->guessWArr);
     std::cerr << "**************************ind= " << ind << std::endl;
-    local_game_->printLenNArr(mul_desc_[ind]->guessWArr);
-    std::cerr << "signDiffToExactW: " << signDiffToExactW(mul_desc_[ind]->
-        guessWArr) << "  ";
-    outputConstraintInfo(mul_desc_[ind]->guessWArr);
 
   }
   thrPool->stop();
 
   std::cerr << "-----------------------------" << std::endl;
-  vector<SignCounter> signCounter(n_features_);
   // signCountDowork(mul_desc_.back()->guessWArr, signCounter);
-  printSignCounter(signCounter);
+  printSignCounter(sign_count_);
 }
 
 void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
@@ -93,7 +91,7 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
   double* guessW = mulDesc->guessWArr;
   double* gtArr = new double[n_features_];  // Gradient array
   // vector<SignCounter> signCounter(n_features_);
-  int iterations = 100000;
+  int iterations = 20000;
 
   double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
   bool isSignCount = false;
@@ -119,10 +117,6 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
 
     // Print guessed W:
     // local_game_->printLenNArr(guessW);
-    // Investigate cost change magnitude and sign count
-    if (isSignCount) {
-      // signCountDowork(guessW, signCounter);
-    }
     lastCost = curCost;
     curCost = costGivenGuessW(xx_len_, guessW);
     costChg = curCost - lastCost;  // Should always be negative
@@ -136,6 +130,14 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
     }
   }
 
+  mulDesc->finalCost = curCost;
+  if (curCost <= FINALCOSTTHRESHOLD) {  // If it can converge from this start point
+    // Do Concensus(sign count) on this gradient descend and merge to priority queue
+    signCountDowork(mulDesc->guessWArr, sign_count_);
+  }
+  local_game_->printLenNArr(guessW);
+  std::cerr << "signDiffToExactW: " << signDiffToExactW(guessW) << " ConstrainInfo:";
+  outputConstraintInfo(mulDesc);
   // printSignCounter(signCounter);
   // Output final guessW to caller
   if (retGuessW) {
@@ -144,12 +146,6 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
   }
   delete [] gtArr;
 
-  // Only for costGivenGuessW testing
-  /*
-  double noCost =
-    costGivenGuessW(xx_matr_, xx_scores_, xx_len_, local_game_->getExactWArr_());
-  std::cout << "noCost(expect 0.0) = " << noCost << std::endl;
-  */
 }
 
 /*
@@ -200,15 +196,18 @@ double GradientMatcher::costGivenGuessW(int numOfCands, const double* guessW) co
 }
 
 // Output constraint info to stderr
-void GradientMatcher::outputConstraintInfo(const double* guessW) const {
+void GradientMatcher::outputConstraintInfo(MulDesc* mulDesc) {
+  double* guessW = mulDesc->guessWArr;
   double posSum = 0.0, negSum = 0.0, variance = 0.0;
 
   for (int i = 0; i < n_features_; ++i) {
     (guessW[i] >= 0.0)? (posSum += guessW[i]) : (negSum += guessW[i]);
   }
   variance = (posSum - 1.0) * (posSum - 1.0) + (negSum + 1.0) * (negSum + 1.0);
+  mulDesc->variance = variance;
+
   std::cerr << "posSum= " << posSum << " negSum= " << negSum << " var= "
-    << variance << std::endl;
+    << mulDesc->variance << "  finalCost= " << mulDesc->finalCost << std::endl;
 }
 
 // Cheating, compare Exact W with guessW, return total number of sign differences
@@ -259,11 +258,11 @@ void GradientMatcher::printSignCounter(const vector<SignCounter>& signCounter) c
   // std::cout << "\nPos: ";
   // for (int i = 0; i < signCounter.size(); ++i)
   //   std::cout << std::setw(5) << signCounter[i].posCount_ << " ";
-  std::cout << "\nP-N: ";
+  std::cerr << "\nP-N: ";
   for (int i = 0; i < signCounter.size(); ++i)
-    std::cout << std::setw(5) << signCounter[i].posCount_ - signCounter[i].negCount_
+    std::cerr << std::setw(5) << signCounter[i].posCount_ - signCounter[i].negCount_
       << " ";
-  std::cout << std::endl;
+  std::cerr << std::endl;
 }
 
 

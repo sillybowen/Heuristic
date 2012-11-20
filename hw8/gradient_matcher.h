@@ -20,8 +20,11 @@ public:
   };
   struct MulDesc {
     double* guessWArr;
-    int     padding[14];
-    MulDesc(int nFeatures) : guessWArr(new double[nFeatures]) {
+    double  finalCost;
+    double  variance;
+    int     padding[10];
+    MulDesc(int nFeatures)
+        : guessWArr(new double[nFeatures]), finalCost(0.0), variance(0.0) {
       for (int i = 0; i < nFeatures; ++i) guessWArr[i] = 0.0;
     }
     ~MulDesc() { delete [] guessWArr; }
@@ -44,7 +47,7 @@ public:
   int LOOCrossValid(const double* const* xxMatr, const vector<double>& scores,
       int numOfCands);
   double costGivenGuessW(int numOfCands, const double* guessW) const;
-  void outputConstraintInfo(const double* guessW) const;
+  void outputConstraintInfo(MulDesc* mulDesc);
   // Cheating, can NOT be used in contest
   int signDiffToExactW(const double* guessW) const;
 
@@ -56,12 +59,13 @@ private:
   void signCountDowork(const double* guessW, vector<SignCounter>& signCounter) const;
   void printSignCounter(const vector<SignCounter>& signCounter) const;
 
-  int              xx_len_;  // Number of row currently in @xx_matr_
-  const int        num_thrs_;
-  double**         xx_matr_;
-  Game*  local_game_;  // Cheating, test gradient descent results
-  vector<double>   xx_scores_;
-  vector<MulDesc*> mul_desc_;  // Clear and resize every turn
+  int                 xx_len_;  // Number of row currently in @xx_matr_
+  const int           num_thrs_;
+  double**            xx_matr_;
+  Game*               local_game_;  // Cheating, test gradient descent results
+  vector<double>      xx_scores_;
+  vector<MulDesc*>    mul_desc_;  // Clear and resize every turn
+  vector<SignCounter> sign_count_;  // Clear and resize every turn
 };
 
 #endif
