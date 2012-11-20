@@ -1,13 +1,15 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include "server_game.h"
 #include "btrim.hpp"
-using namespace std;
 
 using std::cout;
 using std::endl;
+using std::setprecision;
+using std::stringstream;
 using std::ostringstream;
 using std::istringstream;
 
@@ -34,7 +36,6 @@ void ServerGame::startGame() {
         (*arch_clt_) >> tmpFromSrv;
         fromSrv += tmpFromSrv;
       } while (fromSrv.find(srvEndMark) == string::npos);
-      (*arch_clt_) >> fromSrv;
       // cout << "#FromSrv: " << fromSrv << "-----End of #FromSrv" << endl;
 
       // Save information into 'xx_matr', 'match_score_'
@@ -91,8 +92,9 @@ bool ServerGame::readSrvOutput(string& fromSrv) {
           "Matcher":"Person") << " Receiving 20 srv random candidates." << endl;
       // Receiving 20 random candidates from server, update xx_matr_ and match_score_
       cout << "#fromSrv: " << fromSrv << endl;
+      fromSrv = fromSrv.substr(fromSrv.find("\n"));
+      ltrim(fromSrv);
       ++matcher_step_;
-      break;
     } else if (!fromSrv.compare(0, 9, "CANDIDATE")) {
       cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
           "Matcher":"Person") << " Sending Candidate." << endl;
@@ -129,11 +131,12 @@ bool ServerGame::readSrvOutput(string& fromSrv) {
 string ServerGame::printNVectorToSrv(const double* nVect) const {
   ostringstream ost;
   ost << "[";
+  ost.setf(std::ios::fixed);
   for (int i = 0; i < n_features_; ++i) {
     if (i != (n_features_ - 1)) {
-      ost << nVect[i] << ", ";
+      ost << setprecision(2) << nVect[i] << ", ";
     } else {
-      ost << nVect[i] << "]" << endl;  // Terminate string by '\n'
+      ost << setprecision(2) << nVect[i] << "]" << endl;  // Terminate string by '\n'
     }
   }
 

@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstring>
+#include <cmath>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -109,13 +110,15 @@ bool Person::addNewVectHistory() {  // Generating "noise" array
     const int numOfNoises = n_features_ * 0.05;
     for (int i = 0; i < numOfNoises; ) {
       int pos = rand() % n_features_;
-      if (isModifyArr[pos] != 0)
+      if (isModifyArr[pos] != 0 || fabs(exact_w_[pos]) < 0.05)
         continue;
       else {
         isModifyArr[pos] += 1;
         ++i;
       }
-      tmpArr[pos] = exact_w_[pos] * double((rand() % 41) - 20) / 100.0;
+      int trunckW = exact_w_[pos] * 100;
+      int noiseW = trunckW * double((rand() % 41) - 20) / 100.0;
+      tmpArr[pos] = double(noiseW) / 100.0;
     }
     vect_his_.push_back(tmpArr);
     ++cur_his_ind_;
