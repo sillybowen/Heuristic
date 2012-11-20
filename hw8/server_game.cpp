@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include "server_game.h"
+#include "btrim.hpp"
 using namespace std;
 
 using std::cout;
@@ -29,18 +30,15 @@ void ServerGame::startGame() {
 
     do {
       string tmpFromSrv;
-      /*
       do {
         (*arch_clt_) >> tmpFromSrv;
         fromSrv += tmpFromSrv;
       } while (fromSrv.find(srvEndMark) == string::npos);
-      */
       (*arch_clt_) >> fromSrv;
-      cout << "#FromSrv: " << fromSrv << "-----End of #FromSrv" << endl;
+      // cout << "#FromSrv: " << fromSrv << "-----End of #FromSrv" << endl;
 
       // Save information into 'xx_matr', 'match_score_'
-      parserFromSrv(fromSrv);
-      
+      // parserFromSrv(fromSrv);
 
       if (!readSrvOutput(fromSrv)) {
         break;
@@ -55,58 +53,73 @@ void ServerGame::startGame() {
 
 }
 
-bool ServerGame::readSrvOutput(const string& fromSrv) {
+bool ServerGame::readSrvOutput(string& fromSrv) {
   int nn;
   string toSrv;
 
-  if (!fromSrv.compare(0, 2, "M ")) {
-    nn = atoi(fromSrv.substr(2).c_str());
-    cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
-      "Matcher":"Person") << " N(expect: " << n_features_ << "): " << nn << endl;
-  } else if (!fromSrv.compare(0, 2, "P ")) {
-    nn = atoi(fromSrv.substr(2).c_str());
-    cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
-      "Matcher":"Person") << " N(expect: " << n_features_ << "): " << nn << endl;
-  } else if (!fromSrv.compare(0, 7, "WEIGHTS")) {
-    cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
-      "Matcher":"Person") << " Sending Exact Weights." << endl;
-    my_ply_->sendOutVector(w_arr_);
-    toSrv = printNVectorToSrv(w_arr_);
-    cout << "#Person sent to Srv: " << toSrv << endl;
-    ++person_step_;
-    (*arch_clt_) << toSrv;
-  } else if (!fromSrv.compare(0, 5, "NOISE")) {
-    cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
-      "Matcher":"Person") << " Sending Noises." << endl;
-    my_ply_->sendOutVector(noises_);
-    toSrv = printNVectorToSrv(noises_);
-    cout << "#Person sent to Srv: " << toSrv << endl;
-    ++person_step_;
-    (*arch_clt_) << toSrv;
-  } else if (!fromSrv.compare(0, 1, "[")) {
-    cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
-      "Matcher":"Person") << " Receiving 20 srv random candidates." << endl;
-    // Receiving 20 random candidates from server, update xx_matr_ and match_score_
-    ++matcher_step_;
-  } else if (!fromSrv.compare(0, 9, "CANDIDATE")) {
-    cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
-      "Matcher":"Person") << " Sending Candidate." << endl;
-    double tmpArr[n_features_];
-    my_ply_->sendOutVector(tmpArr);
-    toSrv = printNVectorToSrv(tmpArr);
-    cout << "#Matcher sent to Srv: " << toSrv << endl;
-    (*arch_clt_) << toSrv;
-    ++matcher_step_;
-  } else if (!fromSrv.compare(0, 2, "OK") || !fromSrv.compare(0, 5, "ERROR")) {
-    cout << "Got msg from Srv: " << fromSrv << endl;
-  } else if (!fromSrv.compare(0, 8, "GAMEOVER")) {
-    cout << "Got msg from Srv: " << fromSrv << endl;
-    return false;
-  } else {
-    double value;
-    istringstream ist(fromSrv);
-    ist >> value;
-    cout << "Got value from srv: " << value << endl;
+  while (1) {
+    if (!fromSrv.compare(0, 2, "M ")) {
+      nn = atoi(fromSrv.substr(2).c_str());
+      cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
+          "Matcher":"Person") << " N(expect: " << n_features_ << "): " << nn << endl;
+      break;
+    } else if (!fromSrv.compare(0, 2, "P ")) {
+      nn = atoi(fromSrv.substr(2).c_str());
+      cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
+          "Matcher":"Person") << " N(expect: " << n_features_ << "): " << nn << endl;
+      break;
+    } else if (!fromSrv.compare(0, 7, "WEIGHTS")) {
+      cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
+          "Matcher":"Person") << " Sending Exact Weights." << endl;
+      my_ply_->sendOutVector(w_arr_);
+      toSrv = printNVectorToSrv(w_arr_);
+      cout << "#Person sent to Srv: " << toSrv << endl;
+      ++person_step_;
+      (*arch_clt_) << toSrv;
+      break;
+    } else if (!fromSrv.compare(0, 5, "NOISE")) {
+      cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
+          "Matcher":"Person") << " Sending Noises." << endl;
+      my_ply_->sendOutVector(noises_);
+      toSrv = printNVectorToSrv(noises_);
+      cout << "#Person sent to Srv: " << toSrv << endl;
+      ++person_step_;
+      (*arch_clt_) << toSrv;
+      break;
+    } else if (!fromSrv.compare(0, 1, "[")) {
+      cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
+          "Matcher":"Person") << " Receiving 20 srv random candidates." << endl;
+      // Receiving 20 random candidates from server, update xx_matr_ and match_score_
+      cout << "#fromSrv: " << fromSrv << endl;
+      ++matcher_step_;
+      break;
+    } else if (!fromSrv.compare(0, 9, "CANDIDATE")) {
+      cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
+          "Matcher":"Person") << " Sending Candidate." << endl;
+      double tmpArr[n_features_];
+      my_ply_->sendOutVector(tmpArr);
+      toSrv = printNVectorToSrv(tmpArr);
+      cout << "#Matcher sent to Srv: " << toSrv << endl;
+      (*arch_clt_) << toSrv;
+      ++matcher_step_;
+      break;
+    } else if (!fromSrv.compare(0, 2, "OK")) {
+      cout << "Got msg from Srv: " << fromSrv << endl;
+      fromSrv = fromSrv.substr(3);
+      ltrim(fromSrv);
+    } else if (!fromSrv.compare(0, 8, "GAMEOVER") ||
+        !fromSrv.compare(0, 5, "ERROR")) {
+      cout << "Got msg from Srv: " << fromSrv << endl;
+      return false;
+    } else if (fromSrv.empty()) {
+      return true;
+    } else {
+      double value;
+      istringstream ist(fromSrv);
+      ist >> value >> fromSrv;
+      cout << "Got value from srv: " << value << endl;
+      ltrim(fromSrv);
+    }
   }
 
   return true;

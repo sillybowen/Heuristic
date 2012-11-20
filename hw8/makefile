@@ -2,7 +2,7 @@
 
 CC = ClientSocket.cpp Socket.cpp game.cpp server_game.cpp person.cpp \
 	 matchmaker.cpp gradient_matcher.cpp thread_pool_normal.cpp thread.cpp \
-	 thread_registry.cpp log_message.cpp log_writer.cpp main.cpp
+	 thread_registry.cpp log_message.cpp log_writer.cpp btrim.cpp main.cpp
 CC = g++
 #CXXFLAGS = -O2
 CXXFLAGS = -g
@@ -11,7 +11,7 @@ LIBPTHREAD = -lpthread
 LIBS = 
 OBJS = ClientSocket.o Socket.o game.o server_game.o person.o matchmaker.o\
 	   gradient_matcher.o thread_pool_normal.o thread.o thread_registry.o \
-	   log_message.o log_writer.o main.o
+	   log_message.o log_writer.o btrim.o main.o
 CCEXEC = dating
 RANDOMPERSONTEST = random_person_test
 RANDOMPERSONTESTFILE = random_person_test.cpp

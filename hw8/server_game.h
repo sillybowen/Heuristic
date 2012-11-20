@@ -11,7 +11,7 @@ public:
   ~ServerGame();
 
   void startGame();
-  bool readSrvOutput(const string& fromSrv);
+  bool readSrvOutput(string& fromSrv);
 
   string printNVectorToSrv(const double* nVect) const;
   // For testing

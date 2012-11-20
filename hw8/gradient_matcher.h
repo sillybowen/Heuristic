@@ -1,8 +1,10 @@
 #ifndef gradient_matcher_h
 #define gradient_matcher_h
 #include <vector>
+#include <map>
 #include "someone.h"
 using std::vector;
+using std::map;
 
 class Game;
 class GradientMatcher : public Someone {
@@ -29,7 +31,8 @@ public:
     }
     ~MulDesc() { delete [] guessWArr; }
   };
-  map<int, bool> ConfirmedMap;  // Store all weigths' index which has confirmed sign
+  // Store all weigths' index which has confirmed sign
+  typedef map<int, bool> ConfirmedMap;
 
   void importRandCandsAndScores(const double* const* xxMatr,
       const vector<double>& scores, int numOfCands);
