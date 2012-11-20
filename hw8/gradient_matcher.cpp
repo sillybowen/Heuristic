@@ -28,9 +28,6 @@ GradientMatcher::~GradientMatcher() {
   for (int i = 0; i < xx_len_; ++i)
     delete [] xx_matr_[i];
   delete xx_matr_;
-
-  for (int i = 0; i < mul_desc_.size(); ++i)
-    delete mul_desc_[i];
 }
 
 void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
@@ -49,6 +46,8 @@ void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
 // Do gradient descend from multiple starting points
 void GradientMatcher::descendFromMultiSPs() {
   printXXMatrWithScore(xx_len_);
+  mul_desc_.clear();
+  mul_desc_.resize(n_features_, new MulDesc(n_features_));
 
   ThreadPool* thrPool = new ThreadPoolNormal(num_thrs_);
   /*
@@ -60,27 +59,25 @@ void GradientMatcher::descendFromMultiSPs() {
   delete [] guessW;
   */
 
-  // for (int ind = (1 - n_features_); ind < n_features_; ++ind) {
+  // for (int ind = 0; ind < n_features_; ++ind) {
   {
     int ind = 0;
-    MulDesc* newstruct = new MulDesc(n_features_);
-    mul_desc_.push_back(newstruct);
-    mul_desc_.back()->guessWArr[0] = 1.0;
-    mul_desc_.back()->guessWArr[1] = -1.0;
+    mul_desc_[ind]->guessWArr[0] = 1.0;
+    mul_desc_[ind]->guessWArr[1] = -1.0;
     if (ind < 0) {
-      mul_desc_.back()->guessWArr[-ind] = -0.2;
+      mul_desc_[ind]->guessWArr[-ind] = -0.2;
     } else if (ind > 0) {
-      mul_desc_.back()->guessWArr[ind] = 0.2;
+      mul_desc_[ind]->guessWArr[ind] = 0.2;
     }
     Callback<void>* task = makeCallableOnce(&GradientMatcher::feedRandCandsResults,
-        this, mul_desc_.back()->guessWArr, 0.001, -1, (double*)NULL);
+        this, mul_desc_[ind], 0.001, -1, (double*)NULL);
     thrPool->addTask(task);
     // feedRandCandsResults(mul_desc_.back()->guessWArr);
     std::cerr << "**************************ind= " << ind << std::endl;
-    local_game_->printLenNArr(mul_desc_.back()->guessWArr);
-    std::cerr << "signDiffToExactW: " << signDiffToExactW(mul_desc_.back()->
+    local_game_->printLenNArr(mul_desc_[ind]->guessWArr);
+    std::cerr << "signDiffToExactW: " << signDiffToExactW(mul_desc_[ind]->
         guessWArr) << "  ";
-    outputConstraintInfo(mul_desc_.back()->guessWArr);
+    outputConstraintInfo(mul_desc_[ind]->guessWArr);
 
   }
   thrPool->stop();
@@ -91,8 +88,9 @@ void GradientMatcher::descendFromMultiSPs() {
   printSignCounter(signCounter);
 }
 
-void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leaveInd,
-    double* retGuessW) {
+void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
+    int leaveInd, double* retGuessW) {
+  double* guessW = mulDesc->guessWArr;
   double* gtArr = new double[n_features_];  // Gradient array
   // vector<SignCounter> signCounter(n_features_);
   int iterations = 100000;
@@ -154,6 +152,7 @@ void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leave
   */
 }
 
+/*
 // Leave-One-Out cross validation, return the best deta rate index
 int GradientMatcher::LOOCrossValid(const double* const* xxMatr,
     const vector<double>& scores, int numOfCands) {
@@ -178,6 +177,7 @@ int GradientMatcher::LOOCrossValid(const double* const* xxMatr,
 
   return bestEtaInd;
 }
+*/
 
 void GradientMatcher::sendOutVector(double* aVector) {
 }

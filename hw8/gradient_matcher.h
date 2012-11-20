@@ -36,7 +36,7 @@ public:
   bool isMatchmaker() const { return true; }
   // @leaveInd is for "Leave one out cross validation"
   // @retGuessW should be an array of length nFeatures, if NOT NULL
-  void feedRandCandsResults(double* guessW, double eta = 0.001, int leaveInd = -1,
+  void feedRandCandsResults(MulDesc* mulDesc, double eta = 0.001, int leaveInd = -1,
       double* retGuessW = NULL);
   // Override base class method
   void sendOutVector(double* aVector);
@@ -61,7 +61,7 @@ private:
   double**         xx_matr_;
   Game*  local_game_;  // Cheating, test gradient descent results
   vector<double>   xx_scores_;
-  vector<MulDesc*> mul_desc_;
+  vector<MulDesc*> mul_desc_;  // Clear and resize every turn
 };
 
 #endif
