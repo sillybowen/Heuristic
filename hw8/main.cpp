@@ -3,6 +3,7 @@
 #include "server_game.h"
 #include "person.h"
 #include "matchmaker.h"
+#include "gradient_matcher.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -27,7 +28,7 @@ srv_port(only for srv mode)  isPerson(1:P, 0:M)" << endl;
     if (isPerson) {
       myPly = new Person(argv[1], N);
     } else {
-      myPly = new Matchmaker(argv[1], N);
+      myPly = new GradientMatcher(argv[1], N, numThrs);
     }
     cout << "Server Mode, plyName: " << argv[1] << "  N_Features= " << N
       << "  srv_port: " << srv_port << "  Playing: " << ((isPerson)? "Person":"Matcher")

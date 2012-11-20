@@ -60,15 +60,19 @@ bool ServerGame::readSrvOutput(string& fromSrv) {
 
   while (1) {
     if (!fromSrv.compare(0, 2, "M ")) {
-      nn = atoi(fromSrv.substr(2).c_str());
+      istringstream ist(fromSrv.substr(2));
+      fromSrv.clear();
+      ist >> nn >> fromSrv;
       cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
           "Matcher":"Person") << " N(expect: " << n_features_ << "): " << nn << endl;
-      break;
+      ltrim(fromSrv);
     } else if (!fromSrv.compare(0, 2, "P ")) {
-      nn = atoi(fromSrv.substr(2).c_str());
+      istringstream ist(fromSrv.substr(2));
+      fromSrv.clear();
+      ist >> nn >> fromSrv;
       cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
           "Matcher":"Person") << " N(expect: " << n_features_ << "): " << nn << endl;
-      break;
+      ltrim(fromSrv);
     } else if (!fromSrv.compare(0, 7, "WEIGHTS")) {
       cout << "I'm (expect: Person): " << ((my_ply_->isMatchmaker())?
           "Matcher":"Person") << " Sending Exact Weights." << endl;
@@ -91,6 +95,7 @@ bool ServerGame::readSrvOutput(string& fromSrv) {
       cout << "I'm (expect: Matcher): " << ((my_ply_->isMatchmaker())?
           "Matcher":"Person") << " Receiving 20 srv random candidates." << endl;
       // Receiving 20 random candidates from server, update xx_matr_ and match_score_
+      parserFromSrv(fromSrv);  // parse and update @xx_matr_ and @match_score_
       cout << "#fromSrv: " << fromSrv << endl;
       fromSrv = fromSrv.substr(fromSrv.find("\n"));
       ltrim(fromSrv);
@@ -119,6 +124,7 @@ bool ServerGame::readSrvOutput(string& fromSrv) {
       double value;
       istringstream ist(fromSrv);
       ist >> value >> fromSrv;
+      my_ply_->gotValueForJustSentCand(value);  // send value to GradientMatcher
       cout << "Got value from srv: " << value << endl;
       ltrim(fromSrv);
     }
@@ -165,14 +171,16 @@ void ServerGame::parserFromSrv(string fromSrv){
   int attr_index = 0;
 
   // check
+  /*
   size_t found;
   found = str.find("S->M:");
   if(found == string::npos)
     return;
+    */
   
   bool inner_set = false;
   stringstream ss;
-  for(int i=found+5; i<str.size(); i++){
+  for(int i=0; i<str.size(); i++){
     if(c_it[i] == '['){
       inner_set = true;
     }else if(c_it[i] == ']'){

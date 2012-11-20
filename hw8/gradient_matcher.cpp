@@ -11,7 +11,7 @@
 #include "game.h"
 #define MAXCANDIDATESNUMBER 50
 #define FINALCOSTTHRESHOLD 0.001
-#define VARTHRESHOLD 1.0
+#define VARTHRESHOLD 4.0
 using std::pair;
 using base::Callback;
 using base::makeCallableOnce;
@@ -83,10 +83,10 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
   double* guessW = mulDesc->guessWArr;
   // Print starting guessW array
   std::cerr << "Start descend Weights:\n";
-  local_game_->printLenNArr(guessW);
+  // local_game_->printLenNArr(guessW);
   double* gtArr = new double[n_features_];  // Gradient array
   // vector<SignCounter> signCounter(n_features_);
-  int iterations = 20000;
+  int iterations = 10000;
 
   double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
   while (iterations-- > 0) {
@@ -114,13 +114,13 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
     lastCost = curCost;
     curCost = costGivenGuessW(xx_len_, guessW);  // ******@xx_len_ is CONSTANT now
     costChg = curCost - lastCost;  // Should always be negative
-    std::cout << "curCost= " << curCost << "  costChg= " << costChg
-      << "  signDiffCount= " << signDiffToExactW(guessW) << std::endl;
+    // std::cout << "curCost= " << curCost << "  costChg= " << costChg
+    //   << "  signDiffCount= " << signDiffToExactW(guessW) << std::endl;
   }
 
   mulDesc->finalCost = curCost;
-  local_game_->printLenNArr(guessW);
-  std::cerr << "signDiffToExactW: " << signDiffToExactW(guessW) << " ConstrainInfo:";
+  // std::cerr << "signDiffToExactW: " << signDiffToExactW(guessW) << " ConstrainInfo:";
+  std::cerr << "ConstrainInfo: ";
   outputConstraintInfo(mulDesc);  // ----Update sign_count_ here
   // printSignCounter(signCounter);
   // Output final guessW to caller
@@ -172,7 +172,7 @@ void GradientMatcher::sendOutVector(double* aVector) {
     int leastAbsCount = INT_MAX, tmp;
     for (int i = 0; i < sign_count_.size(); ++i) {
       if ((tmp = abs(sign_count_[i].posCount_ - sign_count_[i].negCount_))
-          < leastAbsCount) {
+          < leastAbsCount && (conf_map_.find(i) == conf_map_.end())) {
         leastAbsCount = tmp;
         leastKnowWInd = i;
       }
@@ -190,6 +190,7 @@ void GradientMatcher::sendOutVector(double* aVector) {
       aVector[cit->first] = ((cit->second)? 1.0 : 0.0);
       tmpArr[cit->first] = aVector[cit->first];
       assignedArr[cit->first] = 1;
+      ++cit;
     }
     // Update rest according to sign_count_
     for (int i = 0; i < n_features_; ++i) {

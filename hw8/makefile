@@ -4,8 +4,8 @@ CC = ClientSocket.cpp Socket.cpp game.cpp server_game.cpp person.cpp \
 	 matchmaker.cpp gradient_matcher.cpp thread_pool_normal.cpp thread.cpp \
 	 thread_registry.cpp log_message.cpp log_writer.cpp btrim.cpp main.cpp
 CC = g++
-#CXXFLAGS = -O2
-CXXFLAGS = -g
+CXXFLAGS = -O2
+#CXXFLAGS = -g
 socklibs = -lnsl
 LIBPTHREAD = -lpthread
 LIBS = 
