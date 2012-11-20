@@ -29,8 +29,7 @@ public:
     }
     ~MulDesc() { delete [] guessWArr; }
   };
-
-  // void testFunct(int a) const { return; }
+  map<int, bool> ConfirmedMap;  // Store all weigths' index which has confirmed sign
 
   void importRandCandsAndScores(const double* const* xxMatr,
       const vector<double>& scores, int numOfCands);
@@ -60,12 +59,15 @@ private:
   void printSignCounter(const vector<SignCounter>& signCounter) const;
 
   int                 xx_len_;  // Number of row currently in @xx_matr_
+  // 1: received candidates, 2: sent first proposed cand, 3: got first proposal score
+  int                 matcher_step_;
   const int           num_thrs_;
   double**            xx_matr_;
   Game*               local_game_;  // Cheating, test gradient descent results
   vector<double>      xx_scores_;
   vector<MulDesc*>    mul_desc_;  // Clear and resize every turn
   vector<SignCounter> sign_count_;  // Clear and resize every turn
+  ConfirmedMap        conf_map_;  // Static, don't clear
 };
 
 #endif

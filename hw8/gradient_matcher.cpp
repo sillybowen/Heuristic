@@ -19,6 +19,7 @@ const static double etaArr[] = { 0.01, 0.005, 0.001, 0.0005, 0.0001 };
 GradientMatcher::GradientMatcher(const string& plyName, int nFeatures, int numThrs,
     Game* pgame) : Someone(plyName, nFeatures),
                    xx_len_(0),
+                   matcher_step_(0),
                    num_thrs_(numThrs),
                    xx_matr_(new double*[MAXCANDIDATESNUMBER]),
                    local_game_(pgame) {
@@ -48,7 +49,9 @@ void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
 void GradientMatcher::descendFromMultiSPs() {
   printXXMatrWithScore(xx_len_);
   mul_desc_.clear();
-  mul_desc_.resize(n_features_, new MulDesc(n_features_));
+  for (int i = 0; i < n_features_; ++i) {
+    mul_desc_.push_back(new MulDesc(n_features_));
+  }
   sign_count_.clear();
   sign_count_.resize(n_features_);
 
@@ -62,22 +65,14 @@ void GradientMatcher::descendFromMultiSPs() {
   delete [] guessW;
   */
 
-  // for (int ind = 0; ind < n_features_; ++ind) {
-  {
-    int ind = 0;
-    mul_desc_[ind]->guessWArr[0] = 1.0;
-    mul_desc_[ind]->guessWArr[1] = -1.0;
-    if (ind < 0) {
-      mul_desc_[ind]->guessWArr[-ind] = -0.2;
-    } else if (ind > 0) {
-      mul_desc_[ind]->guessWArr[ind] = 0.2;
-    }
+  for (int ind = 0; ind < n_features_; ++ind) {
+    (mul_desc_[ind]->guessWArr[ind]) += 1.0;
+    (mul_desc_[ind]->guessWArr[n_features_ - ind - 1]) += -1.0;
+
     Callback<void>* task = makeCallableOnce(&GradientMatcher::feedRandCandsResults,
         this, mul_desc_[ind], 0.001, -1, (double*)NULL);
     thrPool->addTask(task);
     // feedRandCandsResults(mul_desc_.back()->guessWArr);
-    std::cerr << "**************************ind= " << ind << std::endl;
-
   }
   thrPool->stop();
 
@@ -89,12 +84,14 @@ void GradientMatcher::descendFromMultiSPs() {
 void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
     int leaveInd, double* retGuessW) {
   double* guessW = mulDesc->guessWArr;
+  // Print starting guessW array
+  std::cerr << "Start descend Weights:\n";
+  local_game_->printLenNArr(guessW);
   double* gtArr = new double[n_features_];  // Gradient array
   // vector<SignCounter> signCounter(n_features_);
   int iterations = 20000;
 
   double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
-  bool isSignCount = false;
   while (iterations-- > 0) {
     for (int i = 0; i < n_features_; ++i) gtArr[i] = 0.0;
     // Foreach candidate c, calculate gradient
@@ -118,21 +115,15 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
     // Print guessed W:
     // local_game_->printLenNArr(guessW);
     lastCost = curCost;
-    curCost = costGivenGuessW(xx_len_, guessW);
+    curCost = costGivenGuessW(xx_len_, guessW);  // ******@xx_len_ is CONSTANT now
     costChg = curCost - lastCost;  // Should always be negative
     std::cout << "curCost= " << curCost << "  costChg= " << costChg
       << "  signDiffCount= " << signDiffToExactW(guessW) << std::endl;
-
-    // Start sign counting from next loop
-    if (isSignCount == false && (iterations < 40000)) {  // Only count last 10% loops
-      isSignCount = true;
-      // signCountInit(guessW, signCounter);
-    }
   }
 
   mulDesc->finalCost = curCost;
   if (curCost <= FINALCOSTTHRESHOLD) {  // If it can converge from this start point
-    // Do Concensus(sign count) on this gradient descend and merge to priority queue
+    // Do Concensus(sign count) on this gradient descend
     signCountDowork(mulDesc->guessWArr, sign_count_);
   }
   local_game_->printLenNArr(guessW);
@@ -176,6 +167,11 @@ int GradientMatcher::LOOCrossValid(const double* const* xxMatr,
 */
 
 void GradientMatcher::sendOutVector(double* aVector) {
+  // Clear and resized mul_desc_ and sign_count_
+  descendFromMultiSPs();
+  ++matcher_step_;
+  if (matcher_step_ % 5) {
+  }
 }
 
 // Used to evaluate @guessW
