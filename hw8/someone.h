@@ -27,6 +27,7 @@ public:
   // or candidate x vector if Someone is a @Matchmaker
   // Sizeof @aVector is always @n_features_
   virtual void sendOutVector(double* aVector) = 0;
+  virtual void gotValueForJustSentCand(double newValue) = 0;
   const string& getPlyName() const { return ply_name_; }
 
 protected:

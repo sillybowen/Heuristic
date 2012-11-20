@@ -9,6 +9,7 @@ public:
 
   bool isMatchmaker() const;
   void sendOutVector(double* aVector);
+  void gotValueForJustSentCand(double newValue);
 
 private:
   int seed_;

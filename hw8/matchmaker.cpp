@@ -11,6 +11,8 @@ Matchmaker::~Matchmaker() { }
 
 bool Matchmaker::isMatchmaker() const { return true; }
 
+void Matchmaker::gotValueForJustSentCand(double newValue) { }
+
 void Matchmaker::sendOutVector(double* aVector) {
   srand(time(NULL) + seed_++);
   double* tmpArr = new double[n_features_];

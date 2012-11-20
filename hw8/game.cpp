@@ -71,7 +71,9 @@ void Game::startGame() {
   getMRandomCands();
   dynamic_cast<GradientMatcher*>(matcher_)->importRandCandsAndScores(xx_matr_,
       match_score_, m_srv_cand_);
-  matcher_->descendFromMultiSPs();
+
+  double tmpArr[n_features_];
+  matcher_->sendOutVector(tmpArr);
   // matcher_->feedRandCandsResults(xx_matr_, match_score_, m_srv_cand_);
   // dynamic_cast<GradientMatcher*>(matcher_)->LOOCrossValid(xx_matr_,
   //     match_score_, m_srv_cand_);

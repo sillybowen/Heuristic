@@ -1,4 +1,6 @@
 #include <cfloat>
+#include <climits>
+#include <cstdlib>
 #include <cstring>
 #include <cmath>
 #include <iostream>
@@ -9,6 +11,8 @@
 #include "game.h"
 #define MAXCANDIDATESNUMBER 50
 #define FINALCOSTTHRESHOLD 0.001
+#define VARTHRESHOLD 1.0
+using std::pair;
 using base::Callback;
 using base::makeCallableOnce;
 using base::ThreadPool;
@@ -56,18 +60,10 @@ void GradientMatcher::descendFromMultiSPs() {
   sign_count_.resize(n_features_);
 
   ThreadPool* thrPool = new ThreadPoolNormal(num_thrs_);
-  /*
-  double* guessW = new double[n_features_];
-  for (int i = 0; i < n_features_; ++i) guessW[i] = 0.0; 
-  feedRandCandsResults(guessW);
-  std::cerr << "**************************" << std::endl;
-  local_game_->printLenNArr(guessW);
-  delete [] guessW;
-  */
 
   for (int ind = 0; ind < n_features_; ++ind) {
-    (mul_desc_[ind]->guessWArr[ind]) += 1.0;
-    (mul_desc_[ind]->guessWArr[n_features_ - ind - 1]) += -1.0;
+    (mul_desc_[ind]->guessWArr[ind]) += (1.0 / n_features_);
+    (mul_desc_[ind]->guessWArr[n_features_ - ind - 1]) += (-1.0 / n_features_);
 
     Callback<void>* task = makeCallableOnce(&GradientMatcher::feedRandCandsResults,
         this, mul_desc_[ind], 0.001, -1, (double*)NULL);
@@ -79,6 +75,7 @@ void GradientMatcher::descendFromMultiSPs() {
   std::cerr << "-----------------------------" << std::endl;
   // signCountDowork(mul_desc_.back()->guessWArr, signCounter);
   printSignCounter(sign_count_);
+  delete thrPool;
 }
 
 void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
@@ -122,13 +119,9 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
   }
 
   mulDesc->finalCost = curCost;
-  if (curCost <= FINALCOSTTHRESHOLD) {  // If it can converge from this start point
-    // Do Concensus(sign count) on this gradient descend
-    signCountDowork(mulDesc->guessWArr, sign_count_);
-  }
   local_game_->printLenNArr(guessW);
   std::cerr << "signDiffToExactW: " << signDiffToExactW(guessW) << " ConstrainInfo:";
-  outputConstraintInfo(mulDesc);
+  outputConstraintInfo(mulDesc);  // ----Update sign_count_ here
   // printSignCounter(signCounter);
   // Output final guessW to caller
   if (retGuessW) {
@@ -166,11 +159,73 @@ int GradientMatcher::LOOCrossValid(const double* const* xxMatr,
 }
 */
 
+// Will increase @xx_len_
 void GradientMatcher::sendOutVector(double* aVector) {
   // Clear and resized mul_desc_ and sign_count_
   descendFromMultiSPs();
   ++matcher_step_;
-  if (matcher_step_ % 5) {
+
+  double* tmpArr = new double[n_features_];
+  // Choose "least certain weight wi", then output
+  if (matcher_step_ % 5 && matcher_step_ < 20) {
+    int leastKnowWInd = 0;
+    int leastAbsCount = INT_MAX, tmp;
+    for (int i = 0; i < sign_count_.size(); ++i) {
+      if ((tmp = abs(sign_count_[i].posCount_ - sign_count_[i].negCount_))
+          < leastAbsCount) {
+        leastAbsCount = tmp;
+        leastKnowWInd = i;
+      }
+    }
+    // Update @aVector
+    for (int i = 0; i < n_features_; ++i) {
+      (i == leastKnowWInd)? (aVector[i] = 1.0) : (aVector[i] = 0.0);
+      tmpArr[i] = aVector[i];
+    }
+  } else {  // Output contest array by sign_count_ and conf_map_
+    int assignedArr[n_features_];
+    memset(assignedArr, 0, sizeof(int) * n_features_);
+    ConfirmedMap::const_iterator cit = conf_map_.begin();
+    while (cit != conf_map_.end()) {
+      aVector[cit->first] = ((cit->second)? 1.0 : 0.0);
+      tmpArr[cit->first] = aVector[cit->first];
+      assignedArr[cit->first] = 1;
+    }
+    // Update rest according to sign_count_
+    for (int i = 0; i < n_features_; ++i) {
+      if (!(assignedArr[i])) {  // Un-assigned by conf_map_
+        aVector[i] = (((sign_count_[i].posCount_ - sign_count_[i].negCount_) >= 0)?
+            1.0 : 0.0);
+        tmpArr[i] = aVector[i];
+        assignedArr[i] = 1;
+      }
+    }
+  }
+
+  xx_matr_[xx_len_++] = tmpArr;
+  if (local_game_ != NULL)
+    local_game_->printLenNArr(aVector);
+}
+
+// TODO: update conf_map_
+void GradientMatcher::gotValueForJustSentCand(double newValue) {
+  xx_scores_.push_back(newValue);
+  assert(int(xx_scores_.size()) == xx_len_);
+
+  // Check if the last inserted was the "prob-array"---only one '1', other all zeros
+  int oneCounter = 0, onePos = 0;
+  for (int i = 0; i < n_features_; ++i) {
+    if (xx_matr_[xx_len_ - 1][i] == 1) {
+      ++oneCounter;
+      onePos = i;
+    }
+  }
+  if (oneCounter == 1) {
+    if (newValue >= 0.0) {  // confirmed w_onePos is >= 0.0
+      conf_map_.insert(pair<int, bool>(onePos, true));
+    } else {
+      conf_map_.insert(pair<int, bool>(onePos, false));
+    }
   }
 }
 
@@ -201,6 +256,12 @@ void GradientMatcher::outputConstraintInfo(MulDesc* mulDesc) {
   }
   variance = (posSum - 1.0) * (posSum - 1.0) + (negSum + 1.0) * (negSum + 1.0);
   mulDesc->variance = variance;
+
+  // If it can converge from this start point and variance is small
+  // Do Concensus(sign count) on this gradient descend
+  if ((mulDesc->finalCost <= FINALCOSTTHRESHOLD) && (variance <= VARTHRESHOLD)) {
+    signCountDowork(mulDesc->guessWArr, sign_count_);
+  }
 
   std::cerr << "posSum= " << posSum << " negSum= " << negSum << " var= "
     << mulDesc->variance << "  finalCost= " << mulDesc->finalCost << std::endl;

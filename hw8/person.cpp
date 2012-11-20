@@ -93,6 +93,10 @@ bool Person::addNewVectHistory(const double* aVector) {
   }
 }
 
+void Person::gotValueForJustSentCand(double newValue) {
+  assert(isMatchmaker());
+}
+
 bool Person::addNewVectHistory() {  // Generating "noise" array
   double* tmpArr = new double[n_features_];
   for (int i = 0; i < n_features_; ++i)

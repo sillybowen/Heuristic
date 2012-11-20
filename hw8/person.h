@@ -9,6 +9,7 @@ public:
 
   bool isMatchmaker() const;
   void sendOutVector(double* aVector);
+  void gotValueForJustSentCand(double newValue);
 
   // For testing
   void printExactW() const;

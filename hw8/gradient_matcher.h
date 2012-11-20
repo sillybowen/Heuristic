@@ -45,6 +45,8 @@ public:
       double* retGuessW = NULL);
   // Override base class method
   void sendOutVector(double* aVector);
+  // Override base class method
+  void gotValueForJustSentCand(double newValue);
 
   int LOOCrossValid(const double* const* xxMatr, const vector<double>& scores,
       int numOfCands);
@@ -70,7 +72,7 @@ private:
   vector<double>      xx_scores_;
   vector<MulDesc*>    mul_desc_;  // Clear and resize every turn
   vector<SignCounter> sign_count_;  // Clear and resize every turn
-  ConfirmedMap        conf_map_;  // Static, don't clear
+  ConfirmedMap        conf_map_;  // Static, don't clear, value true: >= 0.0
 };
 
 #endif
