@@ -6,7 +6,7 @@
 
 class ServerGame : public Game {
 public:
-  ServerGame(const char* plyName, int nFeatures, int srv_port);
+  ServerGame(const char* plyName, int nFeatures, int numThrs, int srv_port);
   ~ServerGame();
 
   void startGame();

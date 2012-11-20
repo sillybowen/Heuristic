@@ -10,7 +10,7 @@ Person::Person(const string& plyName, int nFeatures)
               : Someone(plyName, nFeatures),
                 exact_w_(new double[nFeatures]) {
   const int halfValue = WEIGHTGRANULARITY / 2;
-  const int range = 2 * halfValue / n_features_ + 1;
+  const int range = halfValue / n_features_ + 1;
   int posCount = 0, negCount = 0;
   srand(time(NULL));
 

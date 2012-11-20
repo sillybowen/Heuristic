@@ -6,8 +6,8 @@
 using std::cout;
 using std::endl;
 
-ServerGame::ServerGame(const char* plyName, int nFeatures, int srv_port)
-          : Game(plyName, nFeatures), arch_clt_(registerSrv(srv_port)) { }
+ServerGame::ServerGame(const char* plyName, int nFeatures, int numThrs, int srv_port)
+          : Game(plyName, nFeatures, numThrs), arch_clt_(registerSrv(srv_port)) { }
 
 ServerGame::~ServerGame() { }
 

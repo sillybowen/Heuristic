@@ -12,14 +12,15 @@ using namespace std;
 #define MVALUE 20
 #define CANDIDATEPRECISION 100
 
-Game::Game(const char* plyName, int nFeatures)
-          : n_features_(nFeatures),
-            m_srv_cand_(MVALUE),
-            ply_name_(string(plyName)),
-            w_arr_(new double[nFeatures]),
-            xx_matr_(new double*[MVALUE]),
-            person_(new Person("Person", nFeatures)),
-            matcher_(new GradientMatcher("GradientMatcher", nFeatures, this)) {
+Game::Game(const char* plyName, int nFeatures, int numThrs)
+    : n_features_(nFeatures),
+      m_srv_cand_(MVALUE),
+      num_thrs_(numThrs),
+      ply_name_(string(plyName)),
+      w_arr_(new double[nFeatures]),
+      xx_matr_(new double*[MVALUE]),
+      person_(new Person("Person", nFeatures)),
+      matcher_(new GradientMatcher("GradientMatcher", nFeatures, numThrs, this)) {
   memset(w_arr_, 0, sizeof(double) * nFeatures);
   for (int i = 0; i < MVALUE; ++i) {
     xx_matr_[i] = new double[nFeatures];

@@ -3,17 +3,24 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
+#include "callback.hpp"
+#include "thread_pool_normal.hpp"  // For ThreadPoolNormal
 #include "gradient_matcher.h"
 #include "game.h"
 #define MAXCANDIDATESNUMBER 50
+using base::Callback;
+using base::makeCallableOnce;
+using base::ThreadPool;
+using base::ThreadPoolNormal;
 
 const static double etaArr[] = { 0.01, 0.005, 0.001, 0.0005, 0.0001 };
 
-GradientMatcher::GradientMatcher(const string& plyName, int nFeatures, Game* pgame)
-                                : Someone(plyName, nFeatures),
-                                  xx_len_(0),
-                                  xx_matr_(new double*[MAXCANDIDATESNUMBER]),
-                                  local_game_(pgame) {
+GradientMatcher::GradientMatcher(const string& plyName, int nFeatures, int numThrs,
+    Game* pgame) : Someone(plyName, nFeatures),
+                   xx_len_(0),
+                   num_thrs_(numThrs),
+                   xx_matr_(new double*[MAXCANDIDATESNUMBER]),
+                   local_game_(pgame) {
   memset(xx_matr_, 0, sizeof(double*) * MAXCANDIDATESNUMBER);
 }
 
@@ -42,45 +49,53 @@ void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
 // Do gradient descend from multiple starting points
 void GradientMatcher::descendFromMultiSPs() {
   printXXMatrWithScore(xx_len_);
-  vector<SignCounter> signCounter(n_features_);
 
+  ThreadPool* thrPool = new ThreadPoolNormal(num_thrs_);
+  /*
   double* guessW = new double[n_features_];
   for (int i = 0; i < n_features_; ++i) guessW[i] = 0.0; 
-
   feedRandCandsResults(guessW);
   std::cerr << "**************************" << std::endl;
   local_game_->printLenNArr(guessW);
-  // signCountDowork(guessW, signCounter);
-
   delete [] guessW;
+  */
 
-  for (int ind = (1 - n_features_); ind < n_features_; ++ind) {
+  // for (int ind = (1 - n_features_); ind < n_features_; ++ind) {
+  {
+    int ind = 0;
     MulDesc* newstruct = new MulDesc(n_features_);
     mul_desc_.push_back(newstruct);
+    mul_desc_.back()->guessWArr[0] = 1.0;
+    mul_desc_.back()->guessWArr[1] = -1.0;
     if (ind < 0) {
       mul_desc_.back()->guessWArr[-ind] = -0.2;
     } else if (ind > 0) {
       mul_desc_.back()->guessWArr[ind] = 0.2;
     }
-    feedRandCandsResults(mul_desc_.back()->guessWArr);
+    Callback<void>* task = makeCallableOnce(&GradientMatcher::feedRandCandsResults,
+        this, mul_desc_.back()->guessWArr, 0.001, -1, (double*)NULL);
+    thrPool->addTask(task);
+    // feedRandCandsResults(mul_desc_.back()->guessWArr);
     std::cerr << "**************************ind= " << ind << std::endl;
     local_game_->printLenNArr(mul_desc_.back()->guessWArr);
     std::cerr << "signDiffToExactW: " << signDiffToExactW(mul_desc_.back()->
         guessWArr) << "  ";
     outputConstraintInfo(mul_desc_.back()->guessWArr);
 
-    // signCountDowork(mul_desc_.back()->guessWArr, signCounter);
   }
+  thrPool->stop();
 
   std::cerr << "-----------------------------" << std::endl;
+  vector<SignCounter> signCounter(n_features_);
+  // signCountDowork(mul_desc_.back()->guessWArr, signCounter);
   printSignCounter(signCounter);
 }
 
 void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leaveInd,
-    double* retGuessW) const {
+    double* retGuessW) {
   double* gtArr = new double[n_features_];  // Gradient array
   // vector<SignCounter> signCounter(n_features_);
-  int iterations = 10000;
+  int iterations = 100000;
 
   double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
   bool isSignCount = false;
@@ -141,7 +156,7 @@ void GradientMatcher::feedRandCandsResults(double* guessW, double eta, int leave
 
 // Leave-One-Out cross validation, return the best deta rate index
 int GradientMatcher::LOOCrossValid(const double* const* xxMatr,
-    const vector<double>& scores, int numOfCands) const {
+    const vector<double>& scores, int numOfCands) {
   double bestCost = DBL_MAX;
   double tmpGuessW[n_features_];
   const int etaArrLen = sizeof(etaArr) / sizeof(double);
