@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+        echo "Usage: ./run_server N PORT"
+	echo "    N: No of attributes"
+        echo "    PORT: Listen port."
+        echo "Example:"
+        echo "    run_server 20 12345"
+        exit 1
+fi
+
+java -jar dating-1.0.0.jar $@
+
