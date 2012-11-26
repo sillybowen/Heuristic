@@ -3,6 +3,10 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include "gamble.h"
 #include "ClientSocket.h"
 #include "SocketException.h"
 
@@ -16,12 +20,14 @@ public:
   void startGame();
 
 private:
-  ClientSocket* registerSrv(int srv_port);
-  string        readSrvOutFileToStr() const;
   int           mode;
   ClientSocket* arch_clt_;
   const string  ply_name_;  // Player I am in control
-  const string  inFile_srv_;  // input file from server (server send messages here)
+  string        inFile_srv_;  // input file from server (server send messages here)
+  vector<Gamble*> gambles;
+  vector<Link*> links;
+  ClientSocket* registerSrv(int srv_port);
+  void          readSrvOutFile();
 };
 
 #endif  // game_h
