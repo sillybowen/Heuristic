@@ -1,6 +1,8 @@
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include "game.h"
 using namespace std;
 
@@ -8,7 +10,7 @@ Game::Game(const char* plyName, int srv_port, int mode_)
   : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode(mode_) { }
 
 void Game::startGame() {
-  string fromPly = ply_name_, fromSrv, srvEndMark("))\n");
+  string fromPly = ply_name_, fromSrv, srvEndMark("]");
   fromPly.push_back('\n');
 
   try {
@@ -16,14 +18,30 @@ void Game::startGame() {
 
     do {
       string tmpFromSrv;
-      do {
+      (*arch_clt_) >> fromPly;
+
+      // Get File Path / mode / num_rounds
+      string file_path, mode, num_str;
+      int num_rounds;
+      stringstream ss;
+      ss << fromPly;
+      ss >> file_path >> mode >> num_str;
+      num_rounds = atoi(num_str.c_str());
+
+      cout << "File Path : " << file_path << endl << "Mode : " << mode << endl << "# of rounds : " << num_rounds << endl << endl;
+      while(true) {
         (*arch_clt_) >> tmpFromSrv;
         fromSrv += tmpFromSrv;
-      } while (fromSrv.find(srvEndMark) == string::npos);
+
+	if((fromSrv.find("[")!=string::npos && fromSrv.find("]")!=string::npos) ||
+	   (fromSrv.find("[")==string::npos && fromSrv.find("]")==string::npos))
+	  break;
+      }
       cout << "#FromSrv: " << fromSrv << endl;
 
-      fromSrv.clear();
+      
 
+      fromSrv.clear();
       sleep(1);
     } while (1);
   } catch (SocketException& se) {
