@@ -159,12 +159,22 @@ void Portfolio_jinil::selectGambles(){
     }    
   }
 
+  int class_count[16];
+  for(int i=0; i<16; i++)
+    class_count[i] = 0;
+
   for(int i=t_gambles_.size()-1; i>=0; i--){
     int gamble_id = t_gambles_[i]->gamble_id;
     int class_id = t_gambles_[i]->class_id;
-    bettingInfo_.push_back(new BettingInfo(gamble_id));
+
+    if(class_count[class_id] < 25){
+      bettingInfo_.push_back(new BettingInfo(gamble_id));
+      class_count[class_id] += 1;
+    }
+    /*
     if(bettingInfo_.size() == 20)
       break;
+    */
   }
 
   int total_betting_num = bettingInfo_.size();
