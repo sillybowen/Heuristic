@@ -1,6 +1,6 @@
 #include "stock.h"
 #include <iostream>
-#define PP 0.5
+#define PP 0.3
 using namespace std;
 void Stock::assignProb(int index, double p,double r) {
   prob_[index] = p;
@@ -112,10 +112,11 @@ double Stock::score() {
     sum1+=s.s[i];
   }
   cout<<sum1<<endl;
-  for (int i = 0; i<3; i++) {
+  /*  for (int i = 0; i<3; i++) {
     cout<<s.s[i]<<' ';
     ret+= (ret_[i] * s.s[i]/sum1);///s.sum);
-  }
+    }*/
+  ret = ret_[0]*s.s[0]/sum1;
   cout<<endl;
   if (ret<2.0) ret = 0;
   cout<<ret<<endl;
