@@ -6,10 +6,7 @@
 using namespace std;
 
 Game::Game(const char* plyName, int srv_port, int mode)
-  : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { 
-  allocate = 1.0;
-  roundinfo_str = "";
-}
+  : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { }
 
 void Game::startGame(int user) {
   string fromPly = ply_name_, fromSrv, tmpFromSrv;
@@ -37,7 +34,7 @@ void Game::startGame(int user) {
         if (user == 1) {  // Setup bowen's Engine class
           engine_.ParseFile(inFile_srv_);
         }else if (user == 3){  // Setup jinil's Engine class
-	  engine_jinil_.getData(gambles_, links_);
+	  engine_jinil_.ParseFile(inFile_srv_);
 	}
         fromSrv = firstRoundStr.substr(firstRoundStr.find("\n") + 1);
 	
@@ -65,13 +62,6 @@ void Game::startGame(int user) {
       }
       cout << "#FromSrv: " << fromSrv << endl;
 
-      int p1, p2;
-      if((p1=fromSrv.find("["))!=string::npos && (p2=fromSrv.find("]"))!=string::npos){
-	roundinfo_str = fromSrv.substr(p1, p2+1);
-	if(p2+1 != fromSrv.size())
-	  allocate = atof( fromSrv.substr(p2+1, fromSrv.size()-p2-1).c_str() );
-      }
-     
       ////////////////////////////////////////
       // Bowen, Tao  
       // Please insert your code in here
@@ -103,10 +93,18 @@ void Game::startGame(int user) {
       }
       // Jinil's engine
       else if (user == 3) {
-	p_betting_list = engine_jinil_.makeDecision(allocate);	
-	fromPly = convertBettingListToString(*p_betting_list);
-	if(roundinfo_str != "")
-	  engine_jinil_.readResultFromSrv(roundinfo_str);
+	if(!firstDone){
+	  p_betting_list = engine_jinil_.makeDecision();	
+	  fromPly = convertBettingListToString(*p_betting_list);
+	}else{
+	  vector<int> roundinfo(engine_jinil_.getNumOfStocks());
+          double totalAssets = 0.0;
+          if (readSrvGamebleReturns(fromSrv, roundinfo, totalAssets) == 1) {
+            engine_jinil_.giveRoundInfo(roundinfo);
+          }
+	  p_betting_list = engine_jinil_.makeDecision();	
+	  fromPly = convertBettingListToString(*p_betting_list);
+	}
       }
 
       cout << "Player sent: " << fromPly << endl;

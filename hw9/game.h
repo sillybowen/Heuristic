@@ -37,8 +37,6 @@ private:
   Portfolio_jinil engine_jinil_;   // Jinil's engine class
   vector<Gamble*> gambles_;
   vector<Link*>   links_;
-  float           allocate;
-  string          roundinfo_str;
 };
 
 #endif  // game_h

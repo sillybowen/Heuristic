@@ -32,16 +32,18 @@ class Portfolio_jinil{
  public:
   Portfolio_jinil();
   ~Portfolio_jinil(){ }
-  void getData(vector<Gamble*> gambles, vector<Link*> links);
-  vector<double> *makeDecision(float alloc);
-  void readResultFromSrv(string result);
+  void ParseFile(string inFile_srv_);
+  vector<double> *makeDecision();
   void getResult();
   void init();                   // step 0
   void setupClassType();         // step 1
   void changeProbOnClass();      // step 2
   void changeProbOnLink();       // step 3
   void selectGambles();          // step 4
-
+  void giveRoundInfo(vector<int>& info);
+  int getNumOfStocks() const {
+    return gambles_.size();
+  }
  private:
   int roundNum;
   vector<Gamble*> gambles_;
@@ -49,7 +51,6 @@ class Portfolio_jinil{
   vector<Link*>   links_;
   vector<ResultInfo*> resultInfo_;
   vector<BettingInfo*> bettingInfo_; // selected betting gamble list
-  float allocation;
   ClassInfo classInfo[16];
   vector<double> decision_;
 };
