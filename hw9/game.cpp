@@ -9,7 +9,7 @@ Game::Game(const char* plyName, int srv_port, int mode)
   : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { }
 
 void Game::startGame(int user) {
-  string fromPly = ply_name_, fromSrv;
+  string fromPly = ply_name_, fromSrv, tmpFromSrv;
   bool firstDone = false;
   fromPly.push_back('\n');
 
@@ -34,18 +34,20 @@ void Game::startGame(int user) {
         if (user == 1) {  // Setup bowen's Engine class
           engine_.ParseFile(inFile_srv_);
         }
+        fromSrv = firstRoundStr.substr(firstRoundStr.find("\n") + 1);
         firstDone = true;
+        continue;
       }
 
-      string tmpFromSrv;
-      while(true) {
+      while (fromSrv.find("\n") == string::npos) {
         (*arch_clt_) >> tmpFromSrv;
         fromSrv += tmpFromSrv;
 
-	if((fromSrv.find("[")!=string::npos && fromSrv.find("]")!=string::npos) ||
-	   (fromSrv.find("[")==string::npos && fromSrv.find("]")==string::npos))
-	  break;
+        if((fromSrv.find("[")!=string::npos && fromSrv.find("]")!=string::npos) ||
+            (fromSrv.find("[")==string::npos && fromSrv.find("]")==string::npos))
+          break;
       }
+      tmpFromSrv.clear();
       cout << "#FromSrv: " << fromSrv << endl;
       // Get Gamble Data File
       readSrvOutFile();
@@ -132,7 +134,7 @@ string Game::convertBettingListToString(vector<double> betting_list_){
       ost << ", ";
     }
   }
-  ost << "]";
+  ost << "]\n";
 
   return ost.str();
 }
