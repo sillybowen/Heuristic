@@ -32,6 +32,7 @@ class Portfolio_jinil{
  public:
   Portfolio_jinil();
   ~Portfolio_jinil(){ }
+  void setMode(int mode_);
   void ParseFile(string inFile_srv_);
   vector<double> *makeDecision();
   void getResult();
@@ -46,6 +47,7 @@ class Portfolio_jinil{
   }
  private:
   int roundNum;
+  int mode;
   vector<Gamble*> gambles_;
   vector<Gamble*> t_gambles_;
   vector<Link*>   links_;

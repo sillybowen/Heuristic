@@ -35,6 +35,7 @@ void Game::startGame(int user) {
           engine_.ParseFile(inFile_srv_);
         }else if (user == 3){  // Setup jinil's Engine class
 	  engine_jinil_.ParseFile(inFile_srv_);
+	  engine_jinil_.setMode(mode_);
 	}
         fromSrv = firstRoundStr.substr(firstRoundStr.find("\n") + 1);
 	

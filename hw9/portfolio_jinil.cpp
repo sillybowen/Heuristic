@@ -4,6 +4,11 @@
 
 Portfolio_jinil::Portfolio_jinil(){
   roundNum = 0;  
+  mode = 2;
+}
+
+void Portfolio_jinil::setMode(int mode_){
+  mode = mode_;
 }
 
 void Portfolio_jinil::ParseFile(string inFile_srv_){
@@ -39,6 +44,7 @@ void Portfolio_jinil::ParseFile(string inFile_srv_){
 
 vector<double> *Portfolio_jinil::makeDecision(){
   cout << " [Round] " << roundNum << endl;
+  cout << " [mode] " << mode << endl;
   // 0> step : Copy gambles_ => t_gambles_;
   //            to modify gambles' probabilities for this round
   init();
@@ -167,14 +173,16 @@ void Portfolio_jinil::selectGambles(){
     int gamble_id = t_gambles_[i]->gamble_id;
     int class_id = t_gambles_[i]->class_id;
 
-    if(class_count[class_id] < 25){
+    if(mode == 1){
       bettingInfo_.push_back(new BettingInfo(gamble_id));
-      class_count[class_id] += 1;
+      if(bettingInfo_.size() == 20)
+	break;
+    }else{
+      if(class_count[class_id] < 25){
+	bettingInfo_.push_back(new BettingInfo(gamble_id));
+	class_count[class_id] += 1;
+      }
     }
-    /*
-    if(bettingInfo_.size() == 20)
-      break;
-    */
   }
 
   int total_betting_num = bettingInfo_.size();
