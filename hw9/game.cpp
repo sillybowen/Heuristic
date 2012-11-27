@@ -69,15 +69,22 @@ void Game::startGame(int user) {
       ///////////////////////////////////////
       vector<double>* p_betting_list;
       if (user == 1) {
-        p_betting_list = engine_.makeDecision();
-        fromPly = convertBettingListToString(*p_betting_list);
+        if (!firstDone) {
+          p_betting_list = engine_.makeDecision();
+          fromPly = convertBettingListToString(*p_betting_list);
+        } else {
+          // Add gamble previous returns here
+          // fromPly = convertBettingListToString(vector<double>(
+            //     engine_.getNumOfStocks(), (1.0 / double(engine_.getNumOfStocks()))));
+          p_betting_list = engine_.makeDecision();
+          fromPly = convertBettingListToString(*p_betting_list);
+        }
         cout << "Player sent: " << fromPly << endl;
       }
       (*arch_clt_) << fromPly;
 
       fromPly.clear();
       fromSrv.clear();
-      sleep(1);
     } while (1);
   } catch (SocketException& se) {
     assert(false);

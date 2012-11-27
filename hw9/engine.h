@@ -15,6 +15,10 @@ class Engine {
   void giveRoundInfo(vector<int>& info);
   void output();
   vector<double> *makeDecision();
+
+  int getNumOfStocks() const {
+    return stocks_.size();
+  }
 };
 
 #endif
