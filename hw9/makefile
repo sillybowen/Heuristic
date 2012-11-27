@@ -2,8 +2,8 @@
 
 CC = init_choice.cpp engine.cpp stock.cpp ClientSocket.cpp Socket.cpp game.cpp gamble.cpp main.cpp portfolio_jinil.cpp
 CC = g++
-CXXFLAGS = -O2
-#CXXFLAGS = -g
+#CXXFLAGS = -O2
+CXXFLAGS = -g
 socklibs = -lnsl
 LIBPTHREAD = -lpthread
 LIBS = 

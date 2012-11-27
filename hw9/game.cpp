@@ -76,6 +76,11 @@ void Game::startGame(int user) {
           // Add gamble previous returns here
           // fromPly = convertBettingListToString(vector<double>(
             //     engine_.getNumOfStocks(), (1.0 / double(engine_.getNumOfStocks()))));
+          vector<int> roundinfo(engine_.getNumOfStocks());
+          double totalAssets = 0.0;
+          if (readSrvGamebleReturns(fromSrv, roundinfo, totalAssets) == 1) {
+            engine_.giveRoundInfo(roundinfo);
+          }
           p_betting_list = engine_.makeDecision();
           fromPly = convertBettingListToString(*p_betting_list);
         }
@@ -90,6 +95,43 @@ void Game::startGame(int user) {
     assert(false);
   }
 
+}
+
+/*
+0 cout<<'h';
+1 cout<<'m';
+2 cout<<'l';
+*/
+int Game::readSrvGamebleReturns(const string& fromSrv, vector<int>& roundRets,
+    double& totalAssets) const {
+  istringstream ist(fromSrv);
+  int index;
+  char retChar;
+
+  // Remove '['
+  if (ist.get() != '[')
+    return -1;
+  while (1) {
+    ist >> index;
+    ist.get();
+    ist >> retChar;
+    switch (retChar) {
+      case 'h': roundRets[index] = 0; break;
+      case 'm': roundRets[index] = 1; break;
+      case 'l': roundRets[index] = 2; break;
+    }
+
+    if (ist.peek() == ',') {
+      ist.get();
+      skipws(ist);
+    } else {  // ']'
+      ist.get();
+      ist >> totalAssets;
+      break;
+    }
+  }
+
+  return 1;
 }
 
 ClientSocket* Game::registerSrv(int srv_port) {

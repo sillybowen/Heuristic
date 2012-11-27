@@ -20,6 +20,8 @@ public:
   Game(const char* plyName, int srv_port, int mode_);
   ~Game() { }
   void startGame(int user);
+  int readSrvGamebleReturns(const string& fromSrv, vector<int>& roundRets,
+      double& totalAssets) const;
   string convertBettingListToString(vector<double> betting_list_);
 
 private:
