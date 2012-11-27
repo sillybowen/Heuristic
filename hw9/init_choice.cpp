@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cstring>
 #include "init_choice.h"
+using std::pair;
 
 InitChoice::InitChoice(int numGambles, int numLinks, const vector<Gamble*>& gambles,
     const vector<Link*>& links) : n_gambles_(numGambles),
@@ -29,6 +30,9 @@ InitChoice::~InitChoice() {
 
 void InitChoice::calExpVarsOfGambles() {
   for (int i = 0; i < n_gambles_; ++i) {
+    // Add class belonging first
+    cla_map_.insert(pair<int, int>(g_data_->at(i)->gamble_id, g_data_->at(i)->class_id));
+
     int gambleId = g_data_->at(i)->gamble_id;
     exp_g_[gambleId] = g_data_->at(i)->h_ret * g_data_->at(i)->h_prob
       + g_data_->at(i)->m_ret * g_data_->at(i)->m_prob
