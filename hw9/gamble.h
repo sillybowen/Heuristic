@@ -1,14 +1,14 @@
 #ifndef gamble_h
 #define gamble_h
 
-struct Link{
+struct Link {
   int gi;
   int gj;
   Link(int gi_, int gj_)
   :gi(gi_), gj(gj_){ }
 };
 
-class Gamble{
+class Gamble {
  private:
   int gamble_id;
   int class_id;
@@ -19,6 +19,8 @@ class Gamble{
   Gamble(int gamble_id_, int class_id_, float h_ret_, float h_prob_,
 	 float m_ret_, float m_prob_, float l_ret_, float l_prob_);
   ~Gamble() { }
+
+  friend class InitChoice;
 };
 
 #endif
