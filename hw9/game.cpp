@@ -10,6 +10,7 @@ Game::Game(const char* plyName, int srv_port, int mode)
 
 void Game::startGame(int user) {
   string fromPly = ply_name_, fromSrv;
+  bool firstDone = false;
   fromPly.push_back('\n');
 
   // user : 1)Bowen 2)Tao 3)Jinil
@@ -18,18 +19,25 @@ void Game::startGame(int user) {
     (*arch_clt_) << fromPly;  // Send server our player's name
 
     do {
+      if (!firstDone) {
+        string firstRoundStr;
+        (*arch_clt_) >> firstRoundStr;
+        // Get File Path / mode / num_rounds
+        string mode, num_str;
+        int num_rounds;
+        stringstream ss(firstRoundStr);
+        ss >> inFile_srv_ >> mode >> num_str;
+        num_rounds = atoi(num_str.c_str());
+
+        cout << "F_Path: " << inFile_srv_ << "\nMode: " << mode << "\n# of rounds: "
+          << num_rounds << endl;
+        if (user == 1) {  // Setup bowen's Engine class
+          engine_.ParseFile(inFile_srv_);
+        }
+        firstDone = true;
+      }
+
       string tmpFromSrv;
-      (*arch_clt_) >> fromPly;
-
-      // Get File Path / mode / num_rounds
-      string mode, num_str;
-      int num_rounds;
-      stringstream ss;
-      ss << fromPly;
-      ss >> inFile_srv_ >> mode >> num_str;
-      num_rounds = atoi(num_str.c_str());
-
-      cout << "File Path : " << inFile_srv_ << endl << "Mode : " << mode << endl << "# of rounds : " << num_rounds << endl << endl;
       while(true) {
         (*arch_clt_) >> tmpFromSrv;
         fromSrv += tmpFromSrv;
@@ -51,9 +59,15 @@ void Game::startGame(int user) {
       //    ; if you don't want to betting in gamble_id(j), 
       //        betting_list[j] = 0;
       ///////////////////////////////////////
-      vector<double>  betting_list_;      
-      fromPly = convertBettingListToString(betting_list_);
+      vector<double>* p_betting_list;
+      if (user == 1) {
+        p_betting_list = engine_.makeDecision();
+        fromPly = convertBettingListToString(*p_betting_list);
+        cout << "Player sent: " << fromPly << endl;
+      }
+      (*arch_clt_) << fromPly;
 
+      fromPly.clear();
       fromSrv.clear();
       sleep(1);
     } while (1);
@@ -106,16 +120,19 @@ void Game::readSrvOutFile() {  // Default file is @inFile_srv_
 }
 
 string Game::convertBettingListToString(vector<double> betting_list_){
-  string ret = "[";
-  for(int i=0; i<betting_list_.size(); i++){
-    if(betting_list_[i] != 0){
-      if(ret.size() > 1)
-	ret += ", ";
-      ret += i;
-      ret += ":";
-      ret += betting_list_[i];
-    }      
+  ostringstream ost;
+  ost << "[";
+  for (int i=0; i<betting_list_.size(); i++) {
+    if (betting_list_[i] != 0.0) {
+      ost << i << ":" << betting_list_[i];
+    } else {
+      ost << i << ":0.0";
+    }
+    if (i != (betting_list_.size() - 1)) {
+      ost << ", ";
+    }
   }
-  ret += "]";
-  return ret;
+  ost << "]";
+
+  return ost.str();
 }

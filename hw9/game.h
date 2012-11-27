@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "gamble.h"
+#include "engine.h"
 #include "ClientSocket.h"
 #include "SocketException.h"
 
@@ -29,6 +30,7 @@ private:
   ClientSocket*   arch_clt_;
   const string    ply_name_;  // Player I am in control
   string          inFile_srv_;  // input file from server (server send messages here)
+  Engine          engine_;  // Bowen's engine class
   vector<Gamble*> gambles_;
   vector<Link*>   links_;
 };
