@@ -6,7 +6,10 @@
 using namespace std;
 
 Game::Game(const char* plyName, int srv_port, int mode)
-  : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { }
+  : ply_name_(string(plyName)), 
+    arch_clt_(registerSrv(srv_port)),
+    mode_(mode),
+    init_choi_(NULL) { }
 
 void Game::startGame(int user) {
   string fromPly = ply_name_, fromSrv, tmpFromSrv;
@@ -34,6 +37,8 @@ void Game::startGame(int user) {
         if (user == 1) {  // Setup bowen's Engine class
           engine_.ParseFile(inFile_srv_);
         }
+        init_choi_ = new InitChoice(engine_.getNumOfStocks(), (int)links_.size(),
+            gambles_, links_);
         fromSrv = firstRoundStr.substr(firstRoundStr.find("\n") + 1);
         firstDone = true;
         continue;
@@ -85,6 +90,8 @@ void Game::startGame(int user) {
           fromPly = convertBettingListToString(*p_betting_list);
         }
         cout << "Player sent: " << fromPly << endl;
+      } else if (user == 2) {
+        init_choi_->printClassBelongMap();
       }
       (*arch_clt_) << fromPly;
 
