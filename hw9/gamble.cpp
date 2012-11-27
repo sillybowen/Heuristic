@@ -16,9 +16,11 @@ void Gamble::calculateExpectRet(){
 void Gamble::increaseHighProb(){
   l_prob /= 2;
   h_prob += l_prob;
+  calculateExpectRet();
 }
 
 void Gamble::increaseLowProb(){
   h_prob /= 2;
   l_prob += h_prob;
+  calculateExpectRet();
 }
