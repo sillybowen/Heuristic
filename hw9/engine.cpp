@@ -24,7 +24,7 @@ void Engine::ParseFile(string filePath) {
     stringstream ss;
     ss<<s;
     ss>>id>>c>>cid;
-    Stock *sto = new Stock(id,cid);
+    Stock *sto = new Stock(id,cid,&stocks_);
     for (int i = 0; i<3; i++) {
       ss>>c>>r>>c>>p;
       sto->assignProb(i,p,r);
