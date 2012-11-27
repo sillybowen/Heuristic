@@ -4,11 +4,11 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    cout << "FORMAT: ./portfolio  teamName  port#  mode(1:stable class 2:unstable class) " << endl;
+  if (argc < 4) {
+    cout << "FORMAT: ./portfolio  teamName  port#  mode(1:stable 2:unstable)  user(1:Bowen 2:Tao 3:Jinil) " << endl;
     return 1;
   }
-  int srv_port = atoi(argv[2]), mode = atoi(argv[3]);
+  int srv_port = atoi(argv[2]), mode = atoi(argv[3]), user = atoi(argv[4]);
   Game* portfolioGame = new Game(argv[1], srv_port, mode);
 
   // the set of favorable classes and unfavorable classes will stay the same over all rounds
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  portfolioGame->startGame();
+  portfolioGame->startGame(user);
 
   delete portfolioGame;
 
