@@ -46,10 +46,12 @@ double Stock::score() {
       ret += (prob_[i]*ret_[i]);
     return ret;
   }
+  int start = roundInfo_.size()-20;
+  if (start<0) start = 0;
 
-  for (int i= 0; i<roundInfo_.size(); i++) {
-    sum+=(i+1);
-    tmp[roundInfo_[i]]+= (i+1);
+  for (int i= start; i<roundInfo_.size(); i++) {
+    sum+=(i-start+1);
+    tmp[roundInfo_[i]]+= (i-start+1);
   }
   if (tmp[0]<0.3) return 0;
   for (int i = 0; i<3; i++) {
