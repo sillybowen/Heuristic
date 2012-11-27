@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include "gamble.h"
@@ -13,6 +12,8 @@
 using std::string;
 using std::vector;
 
+class Gamble;
+
 class Game {
 public:
   Game(const char* plyName, int srv_port, int mode_);
@@ -20,14 +21,15 @@ public:
   void startGame();
 
 private:
-  int           mode;
-  ClientSocket* arch_clt_;
-  const string  ply_name_;  // Player I am in control
-  string        inFile_srv_;  // input file from server (server send messages here)
-  vector<Gamble*> gambles;
-  vector<Link*> links;
   ClientSocket* registerSrv(int srv_port);
   void          readSrvOutFile();
+
+  int             mode_;
+  ClientSocket*   arch_clt_;
+  const string    ply_name_;  // Player I am in control
+  string          inFile_srv_;  // input file from server (server send messages here)
+  vector<Gamble*> gambles_;
+  vector<Link*>   links_;
 };
 
 #endif  // game_h

@@ -5,8 +5,8 @@
 #include "gamble.h"
 using namespace std;
 
-Game::Game(const char* plyName, int srv_port, int mode_)
-  : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode(mode_) { }
+Game::Game(const char* plyName, int srv_port, int mode)
+  : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { }
 
 void Game::startGame() {
   string fromPly = ply_name_, fromSrv;
@@ -43,7 +43,7 @@ void Game::startGame() {
       ////////////////////////////////////////
       // Bowen, Tao  
       // Please insert your code in here
-      // You can use 'gambles' and 'links' vector, which we read them from server output file
+      // You can use 'gambles_' and 'links_' vector, which we read them from server output file
       ///////////////////////////////////////
 
 
@@ -88,12 +88,12 @@ void Game::readSrvOutFile() {  // Default file is @inFile_srv_
 	buf5[SIZE], buf6[SIZE], buf7[SIZE], buf8[SIZE];
       sscanf(buf.c_str(), "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", 
 	     buf1, buf2, buf3, buf4, buf5, buf6, buf7, buf8);  
-      gambles.push_back(new Gamble(atoi(buf1), atoi(buf2), atof(buf3), atof(buf4),
+      gambles_.push_back(new Gamble(atoi(buf1), atoi(buf2), atof(buf3), atof(buf4),
 				   atof(buf5), atof(buf6), atof(buf7), atof(buf8)));
     }else{           // data type : Link
       char gi[SIZE], gj[SIZE];
       sscanf(buf.c_str(), "%[^,],%[^,]", gi, gj);
-      links.push_back(new Link(atoi(gi), atoi(gj)));
+      links_.push_back(new Link(atoi(gi), atoi(gj)));
     }
   }
 }
