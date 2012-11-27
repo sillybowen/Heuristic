@@ -6,7 +6,10 @@
 using namespace std;
 
 Game::Game(const char* plyName, int srv_port, int mode)
-  : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { }
+  : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { 
+  allocate = 1.0;
+  roundinfo_str = "";
+}
 
 void Game::startGame(int user) {
   string fromPly = ply_name_, fromSrv, tmpFromSrv;
@@ -33,9 +36,15 @@ void Game::startGame(int user) {
           << num_rounds << endl;
         if (user == 1) {  // Setup bowen's Engine class
           engine_.ParseFile(inFile_srv_);
-        }
+        }else if (user == 3){  // Setup jinil's Engine class
+	  engine_jinil_.getData(gambles_, links_);
+	}
         fromSrv = firstRoundStr.substr(firstRoundStr.find("\n") + 1);
-        firstDone = true;
+	
+	// Get Gamble Data File
+	readSrvOutFile();
+      
+	firstDone = true;
         continue;
       }
 
@@ -55,9 +64,14 @@ void Game::startGame(int user) {
         tmpFromSrv.clear();
       }
       cout << "#FromSrv: " << fromSrv << endl;
-      // Get Gamble Data File
-      readSrvOutFile();
 
+      int p1, p2;
+      if((p1=fromSrv.find("["))!=string::npos && (p2=fromSrv.find("]"))!=string::npos){
+	roundinfo_str = fromSrv.substr(p1, p2+1);
+	if(p2+1 != fromSrv.size())
+	  allocate = atof( fromSrv.substr(p2+1, fromSrv.size()-p2-1).c_str() );
+      }
+     
       ////////////////////////////////////////
       // Bowen, Tao  
       // Please insert your code in here
@@ -68,6 +82,8 @@ void Game::startGame(int user) {
       //        betting_list[j] = 0;
       ///////////////////////////////////////
       vector<double>* p_betting_list;
+      
+      // Bowen's engine
       if (user == 1) {
         if (!firstDone) {
           p_betting_list = engine_.makeDecision();
@@ -84,8 +100,16 @@ void Game::startGame(int user) {
           p_betting_list = engine_.makeDecision();
           fromPly = convertBettingListToString(*p_betting_list);
         }
-        cout << "Player sent: " << fromPly << endl;
       }
+      // Jinil's engine
+      else if (user == 3) {
+	p_betting_list = engine_jinil_.makeDecision(allocate);	
+	fromPly = convertBettingListToString(*p_betting_list);
+	if(roundinfo_str != "")
+	  engine_jinil_.readResultFromSrv(roundinfo_str);
+      }
+
+      cout << "Player sent: " << fromPly << endl;
       (*arch_clt_) << fromPly;
 
       fromPly.clear();
