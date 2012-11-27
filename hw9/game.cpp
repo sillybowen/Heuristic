@@ -39,15 +39,21 @@ void Game::startGame(int user) {
         continue;
       }
 
-      while (fromSrv.find("\n") == string::npos) {
+      while (1) {
+        if (fromSrv.find("\n") != string::npos) {
+          if (!fromSrv.compare(0, 3, "OK\n")) {  // Just "OK", remove redundency
+            fromSrv = fromSrv.substr(fromSrv.find("\n") + 1);
+            continue;
+          } else if (!fromSrv.compare(0, 5, "ERROR")) {
+            return;  // error
+          } else {
+            break;
+          }
+        }
         (*arch_clt_) >> tmpFromSrv;
         fromSrv += tmpFromSrv;
-
-        if((fromSrv.find("[")!=string::npos && fromSrv.find("]")!=string::npos) ||
-            (fromSrv.find("[")==string::npos && fromSrv.find("]")==string::npos))
-          break;
+        tmpFromSrv.clear();
       }
-      tmpFromSrv.clear();
       cout << "#FromSrv: " << fromSrv << endl;
       // Get Gamble Data File
       readSrvOutFile();
