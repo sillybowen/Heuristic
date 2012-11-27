@@ -18,7 +18,7 @@ class Game {
 public:
   Game(const char* plyName, int srv_port, int mode_);
   ~Game() { }
-  void startGame();
+  void startGame(int user);
 
 private:
   ClientSocket* registerSrv(int srv_port);

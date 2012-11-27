@@ -8,9 +8,11 @@ using namespace std;
 Game::Game(const char* plyName, int srv_port, int mode)
   : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { }
 
-void Game::startGame() {
+void Game::startGame(int user) {
   string fromPly = ply_name_, fromSrv;
   fromPly.push_back('\n');
+
+  // user : 1)Bowen 2)Tao 3)Jinil
 
   try {
     (*arch_clt_) << fromPly;  // Send server our player's name
