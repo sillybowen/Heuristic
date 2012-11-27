@@ -1,13 +1,13 @@
 .SUFFIXES: .h .o .cpp
 
-CC = init_choice.cpp engine.cpp stock.cpp ClientSocket.cpp Socket.cpp game.cpp gamble.cpp main.cpp
+CC = init_choice.cpp engine.cpp stock.cpp ClientSocket.cpp Socket.cpp game.cpp gamble.cpp main.cpp portfolio_jinil.cpp
 CC = g++
 CXXFLAGS = -O2
 #CXXFLAGS = -g
 socklibs = -lnsl
 LIBPTHREAD = -lpthread
 LIBS = 
-OBJS = init_choice.o engine.o stock.o ClientSocket.o Socket.o game.o gamble.o main.o
+OBJS = init_choice.o engine.o stock.o ClientSocket.o Socket.o game.o gamble.o main.o portfolio_jinil.o
 CCEXEC = portfolio
 ENGINETESTFILE = engineTest.cpp
 ENGINETEST = engine_test

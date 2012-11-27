@@ -19,6 +19,7 @@ public:
   Game(const char* plyName, int srv_port, int mode_);
   ~Game() { }
   void startGame(int user);
+  string convertBettingListToString(vector<double> betting_list_);
 
 private:
   ClientSocket* registerSrv(int srv_port);

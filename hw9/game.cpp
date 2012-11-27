@@ -46,8 +46,13 @@ void Game::startGame(int user) {
       // Bowen, Tao  
       // Please insert your code in here
       // You can use 'gambles_' and 'links_' vector, which we read them from server output file
+      // Please return to vector<double> betting_list
+      //    ; index: gamble_id, double: fraction
+      //    ; if you don't want to betting in gamble_id(j), 
+      //        betting_list[j] = 0;
       ///////////////////////////////////////
-
+      vector<double>  betting_list_;      
+      fromPly = convertBettingListToString(betting_list_);
 
       fromSrv.clear();
       sleep(1);
@@ -98,4 +103,19 @@ void Game::readSrvOutFile() {  // Default file is @inFile_srv_
       links_.push_back(new Link(atoi(gi), atoi(gj)));
     }
   }
+}
+
+string Game::convertBettingListToString(vector<double> betting_list_){
+  string ret = "[";
+  for(int i=0; i<betting_list_.size(); i++){
+    if(betting_list_[i] != 0){
+      if(ret.size() > 1)
+	ret += ", ";
+      ret += i;
+      ret += ":";
+      ret += betting_list_[i];
+    }      
+  }
+  ret += "]";
+  return ret;
 }
