@@ -7,8 +7,8 @@
 using namespace std;
 
 Engine::~Engine() {
-  for (int i = 0; i<stocks.size(); i++)
-    delete stocks[i];
+  for (int i = 0; i<stocks_.size(); i++)
+    delete stocks_[i];
 }
 void Engine::ParseFile(string filePath) {
   ifstream input;
@@ -22,15 +22,14 @@ void Engine::ParseFile(string filePath) {
   while (tmp[0]<='9'&&tmp[0]>='0') {
     string s = string(tmp);
     stringstream ss;
-    cout<<s<<endl;
     ss<<s;
     ss>>id>>c>>cid;
     Stock *sto = new Stock(id,cid);
     for (int i = 0; i<3; i++) {
       ss>>c>>p>>c>>r;
-      sto->AssignProb(i,p,r);
+      sto->assignProb(i,p,r);
     }
-    stocks.push_back(sto);
+    stocks_.push_back(sto);
     //    stocks[stocks.size()-1]->output();
     input.getline(tmp,256);
   }
@@ -40,15 +39,28 @@ void Engine::ParseFile(string filePath) {
   while (tmp[0]<='9'&&tmp[0]>='0') {
     string s = string(tmp);
     stringstream ss;
-    cout<<s<<endl;
     ss<<s;
     ss>>i1>>c>>i2;
     cout<<i1<<' '<<i2<<endl;
-    stocks[i1]->AddNeighbor(i2);
-    stocks[i2]->AddNeighbor(i1);
+    stocks_[i1]->addNeighbor(i2);
+    stocks_[i2]->addNeighbor(i1);
     input.getline(tmp,256);
   }
-  for (int i = 0; i<stocks.size(); i++)
-    stocks[i]->output();
   input.close();
+}
+void Engine::giveRoundInfo(vector<int> &info) {
+  for (int i = 0; i<info.size(); i++) {
+    stocks_[i]->addRoundInfo(info[i]);
+  }
+}
+
+void Engine::output() {
+  for (int i = 0; i<stocks_.size(); i++)
+    stocks_[i]->output();
+}
+
+vector<double> *Engine::makeDecision() {
+  if (decision_.size()==0)
+    decision_.resize(stocks_.size(),1.0/ ((double)stocks_.size()));
+  return &decision_;
 }

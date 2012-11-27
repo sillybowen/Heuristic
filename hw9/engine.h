@@ -6,12 +6,15 @@
 using namespace std;
 class Engine {
  private:
-  vector<Stock*> stocks;
+  vector<Stock*> stocks_;
+  vector<double> decision_;
  public:
   Engine(){};
   ~Engine();
   void ParseFile(string filePath);
-  void GetRoundInfo(vector<int> info);
+  void giveRoundInfo(vector<int>& info);
+  void output();
+  vector<double> *makeDecision();
 };
 
 #endif
