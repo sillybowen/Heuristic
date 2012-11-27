@@ -26,7 +26,7 @@ void Engine::ParseFile(string filePath) {
     ss>>id>>c>>cid;
     Stock *sto = new Stock(id,cid);
     for (int i = 0; i<3; i++) {
-      ss>>c>>p>>c>>r;
+      ss>>c>>r>>c>>p;
       sto->assignProb(i,p,r);
     }
     stocks_.push_back(sto);
@@ -61,6 +61,20 @@ void Engine::output() {
 
 vector<double> *Engine::makeDecision() {
   if (decision_.size()==0)
-    decision_.resize(stocks_.size(),1.0/ ((double)stocks_.size()));
+    decision_.resize(stocks_.size());
+  double sum = 0;
+  double sum2 = 0;
+  for (int i = 0; i<stocks_.size(); i++) {
+    decision_[i] = stocks_[i]->score();
+    sum += decision_[i];
+  }
+  for (int i = 0; i<stocks_.size()-1; i++) {
+    decision_[i] /= sum;
+    if (sum2+decision_[i]>1.0) {
+      decision_[i] = 1.0-sum2;
+    }
+    sum2+= decision_[i];
+  }
+  decision_[stocks_.size()-1] = 1.0 - sum2;  
   return &decision_;
 }

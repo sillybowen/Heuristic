@@ -10,12 +10,13 @@ class Stock {
   int id_;
   int classID_;
   vector<int> neighbor_;
-  vector<int> roundInfo;
+  vector<int> roundInfo_;
  public:
  Stock(int id,int cid) : id_(id),classID_(cid){};
   void  assignProb(int index,double p,double r);
   void addNeighbor(int index);
   void addRoundInfo(int info);
   void output();
+  double score();
 };
 #endif
