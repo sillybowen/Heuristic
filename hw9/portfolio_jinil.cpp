@@ -185,6 +185,28 @@ void Portfolio_jinil::selectGambles(){
     }
   }
 
+  // add clean code
+  bool gamble_clean[gambles_.size()];
+  for(int i=0; i<gambles_.size(); i++){
+    gamble_clean[i] = true;
+  }
+  for(int i=0; i<links_.size(); i++){
+    gamble_clean[ links_[i]->gi ] = false;
+    gamble_clean[ links_[i]->gj ] = false;
+  }
+
+  /*
+  // clean & favorable class => input it on bettingInfo.
+  for(int i=0; i<gambles_.size(); i++){
+    if(gamble_clean[i]){
+      if(classInfo[ gambles_[i]->class_id ].type == 1){
+	if(gambles_[i]->expect_ret > 1)
+	  bettingInfo_.push_back(new BettingInfo(i));
+      }
+    }
+  }
+  */
+
   int total_betting_num = bettingInfo_.size();
   float common_fraction = 1.0 / (total_betting_num);
   for(int i=0; i<bettingInfo_.size(); i++)
