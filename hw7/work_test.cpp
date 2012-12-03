@@ -23,7 +23,7 @@ int main () {
   // interface to work
   int myteam = 1;
   int max_k_ = 10;
-  Parser p(myteam, max_k_, string("Team1"));
+  Parser p(myteam, max_k_, string("Team2"));
   vector<Location> retloc;
   vector<Nano> retnano;
   p.work(&srvTr,retloc,retnano, 0);

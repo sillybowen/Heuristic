@@ -140,6 +140,14 @@ void Worker::FirstRoundKill() {
       }
     }
 }
+bool Worker::OpponentPlaceNothing(vector<Nano*> * nanos) {
+  int freed = k_;
+  for (int i = 0; i<nanos->size();i++) 
+    if (nanos->at(i) ->getTeam() == 3-myTeam_) {
+      return false;
+    }
+  return true;
+}
 void Worker::Count(int & lived, int & freed,int team) {
   freed = k_;
   lived = 0;

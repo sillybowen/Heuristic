@@ -34,6 +34,7 @@ class Worker {
  Worker(int myTeam,int k) :k_(k),myTeam_(myTeam){
     std::cerr<<"Work get K:"<<k_<<" team:"<<myTeam_<<endl;
   };
+  bool OpponentPlaceNothing(vector<Nano*>* nanos);
   void makeDecision(vector<Location*>*locs,vector<Nano*>*nanos,vector<Location> &retloc,vector<Nano>&retnanos);
 };
 #endif

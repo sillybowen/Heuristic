@@ -4,11 +4,13 @@
 #include <sstream>
 using namespace std;
 void Parser::work(tree*srvTr,vector<Location>&retloc,vector<Nano>&retnano, int worker_sel) {
+  GetNanos(srvTr);
+  if (worker.OpponentPlaceNothing(&nanos))
+    return ;
   GetNodes(srvTr);
   GetEdges(srvTr);
   GetEaten(srvTr);
   cerr<<"get nano"<<endl;
-  GetNanos(srvTr);
   output();
   
   switch(worker_sel){
