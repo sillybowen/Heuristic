@@ -53,6 +53,28 @@ namespace {
     }
   }
 
+  TEST_F(RandomPersonTest, Static_ValidaVector) {
+    const int numOfTries = 20000;
+    double* tmpArr = NULL;
+
+    for (int i = 0; i < numOfTries; ++i) {
+      int nFeatures = rand() % 73 + 20;
+      tmpArr = new double[nFeatures];
+      Person::randWeightsGenerator(tmpArr, nFeatures);
+      double posSum = 0.0, negSum = 0.0;
+
+      for (int i = 0; i < nFeatures; ++i) {
+        if (tmpArr[i] >= 0.0) posSum += tmpArr[i];
+        else negSum += tmpArr[i];
+      }
+
+      ASSERT_DOUBLE_EQ(posSum, 1.0);
+      ASSERT_DOUBLE_EQ(negSum, -1.0);
+
+      delete [] tmpArr;
+    }
+  }
+
   TEST_F(RandomPersonTest, ValidNoises) {
     int numOfTries = 200;
     const int nFeatures = 73;

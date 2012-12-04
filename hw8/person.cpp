@@ -55,6 +55,46 @@ Person::~Person() {
   delete [] exact_w_;
 }
 
+int Person::seed_ = 0;
+
+void Person::randWeightsGenerator(double* aVector, int len) {
+  const int halfValue = WEIGHTGRANULARITY / 2;
+  const int range = halfValue / len + 1;
+  int posCount = 0, negCount = 0;
+  srand(time(NULL) + seed_++);
+
+  for (int i = 0; i < len; ++i) {
+    int sign = rand() % 2, random = rand() % range;
+    if (sign) {  // Positive weights
+      posCount += random;
+      aVector[i] = double(random) / double(halfValue);
+    } else {
+      negCount += random;
+      aVector[i] = double(-random) / double(halfValue);
+    }
+  }
+
+  // std::cout << "posCount= " << posCount << "   negCount= " << negCount << std::endl;
+  assert(posCount <= halfValue && negCount <= halfValue);
+  while (posCount < halfValue) {  // Make positive weights addup to 1.0 (include 0)
+    int randPos = rand() % len;
+    if (aVector[randPos] < 0.0) continue;
+    else {
+      aVector[randPos] += 1.0 / double(halfValue);
+      ++posCount;
+    }
+  }
+  while (negCount < halfValue) {  // Make negative weights addup to 1.0 (Not count 0)
+    int randPos = rand() % len;
+    if (aVector[randPos] >= 0.0) continue;
+    else {
+      aVector[randPos] -= 1.0 / double(halfValue);
+      ++negCount;
+    }
+  }
+
+}
+
 bool Person::isMatchmaker() const { return false; }
 
 void Person::sendOutVector(double* aVector) {

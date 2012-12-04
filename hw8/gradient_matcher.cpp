@@ -9,9 +9,12 @@
 #include "thread_pool_normal.hpp"  // For ThreadPoolNormal
 #include "gradient_matcher.h"
 #include "game.h"
+#include "person.h"  // For Person::randWeightsGenerator method
 #define MAXCANDIDATESNUMBER 50
-#define FINALCOSTTHRESHOLD 0.001
-#define VARTHRESHOLD 4.0
+#define FINALCOSTTHRESHOLD 0.0001
+#define VARTHRESHOLD 0.003
+#define NUMOFINITDESCENDPOINTS 150
+#define SENDFULLVECTORINTERVAL 10
 using std::pair;
 using base::Callback;
 using base::makeCallableOnce;
@@ -53,7 +56,7 @@ void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
 void GradientMatcher::descendFromMultiSPs() {
   printXXMatrWithScore(xx_len_);
   mul_desc_.clear();
-  for (int i = 0; i < n_features_; ++i) {
+  for (int i = 0; i < NUMOFINITDESCENDPOINTS; ++i) {
     mul_desc_.push_back(new MulDesc(n_features_));
   }
   sign_count_.clear();
@@ -61,9 +64,8 @@ void GradientMatcher::descendFromMultiSPs() {
 
   ThreadPool* thrPool = new ThreadPoolNormal(num_thrs_);
 
-  for (int ind = 0; ind < n_features_; ++ind) {
-    (mul_desc_[ind]->guessWArr[ind]) += (1.0 / n_features_);
-    (mul_desc_[ind]->guessWArr[n_features_ - ind - 1]) += (-1.0 / n_features_);
+  for (int ind = 0; ind < NUMOFINITDESCENDPOINTS; ++ind) {
+    Person::randWeightsGenerator(mul_desc_[ind]->guessWArr, n_features_);
 
     Callback<void>* task = makeCallableOnce(&GradientMatcher::feedRandCandsResults,
         this, mul_desc_[ind], 0.001, -1, (double*)NULL);
@@ -86,7 +88,7 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
   // local_game_->printLenNArr(guessW);
   double* gtArr = new double[n_features_];  // Gradient array
   // vector<SignCounter> signCounter(n_features_);
-  int iterations = 10000;
+  int iterations = 20000;
 
   double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
   while (iterations-- > 0) {
@@ -116,6 +118,8 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
     costChg = curCost - lastCost;  // Should always be negative
     // std::cout << "curCost= " << curCost << "  costChg= " << costChg
     //   << "  signDiffCount= " << signDiffToExactW(guessW) << std::endl;
+    if (curCost < FINALCOSTTHRESHOLD)
+      break;
   }
 
   mulDesc->finalCost = curCost;
@@ -167,7 +171,7 @@ void GradientMatcher::sendOutVector(double* aVector) {
 
   double* tmpArr = new double[n_features_];
   // Choose "least certain weight wi", then output
-  if (matcher_step_ % 5 && matcher_step_ < 20) {
+  if (matcher_step_ % SENDFULLVECTORINTERVAL && matcher_step_ < 20) {
     int leastKnowWInd = 0;
     int leastAbsCount = INT_MAX, tmp;
     for (int i = 0; i < sign_count_.size(); ++i) {
@@ -319,6 +323,10 @@ void GradientMatcher::printSignCounter(const vector<SignCounter>& signCounter) c
   std::cerr << "\nP-N: ";
   for (int i = 0; i < signCounter.size(); ++i)
     std::cerr << std::setw(5) << signCounter[i].posCount_ - signCounter[i].negCount_
+      << " ";
+  std::cerr << "\nnumVoters: ";
+  for (int i = 0; i < signCounter.size(); ++i)
+    std::cerr << std::setw(5) << signCounter[i].posCount_ + signCounter[i].negCount_
       << " ";
   std::cerr << std::endl;
 }
