@@ -28,6 +28,7 @@ public:
     int  signFliped_;
     int  posCount_;
     int  negCount_;
+    int  certInd_;  // certainly index == abs(posCount_ - negCount_)
     bool lastSign_;  // if >= 0.0, true; else false
     SignCounter() : signFliped_(0), posCount_(0), negCount_(0) { }
   };

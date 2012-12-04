@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "person.h"
+#include "projection.h"
 #include "gtest/gtest.h"
 
 namespace {
@@ -73,6 +74,23 @@ namespace {
 
       delete [] tmpArr;
     }
+  }
+
+  TEST_F(RandomPersonTest, ProjForPosNegConstraint) {
+    int nFeatures = 8;
+    double* tmpArr = new double[nFeatures];
+    for (int i = 0; i < nFeatures; ++i) {
+      tmpArr[i] = (rand() % 73) / 73.0;
+      cout << tmpArr[i] << ' ';
+    }
+
+    Projection::projForPosNegConstraint(tmpArr, nFeatures);
+    cout << "Projected:\n";
+    for (int i = 0; i < nFeatures; ++i) {
+      cout << tmpArr[i] << ' ';
+    }
+    cout << endl;
+    delete tmpArr;
   }
 
   TEST_F(RandomPersonTest, ValidNoises) {

@@ -9,11 +9,12 @@
 #include "gradient_matcher.h"
 #include "game.h"
 #include "person.h"  // For Person::randWeightsGenerator method
+#include "projection.h"  // Project gradient vector, to obey constraints
 #define MAXCANDIDATESNUMBER 50
 #define FINALCOSTTHRESHOLD 0.0001
 #define VARTHRESHOLD 0.001
-#define NUMOFINITDESCENDPOINTS 150
-#define SENDFULLVECTORINTERVAL 10
+#define NUMOFINITDESCENDPOINTS 180
+#define SENDFULLVECTORINTERVAL 7
 using std::pair;
 using base::Callback;
 using base::makeCallableOnce;
@@ -116,10 +117,12 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
       for (int j = 0; j < n_features_; ++j)
         gtArr[j] += diff * xx_matr_[c][j];
     }
-
     // Update guessW
     for (int k = 0; k < n_features_; ++k)
       guessW[k] -= eta * gtArr[k];
+
+    // Project guessW to [1,1,1...1] hyperplane
+    Projection::projForPosNegConstraint(guessW, n_features_);
 
     // Print guessed W:
     // local_game_->printLenNArr(guessW);
