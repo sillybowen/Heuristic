@@ -23,9 +23,11 @@ struct ResultInfo{
 
 struct BettingInfo{
   int gambleId;
-  float fraction;
+  double fraction;
   BettingInfo(int id)
   : gambleId(id){ }
+  BettingInfo(int id, double frac)
+  :gambleId(id), fraction(frac){}
 };
 
 class Portfolio_jinil{
@@ -45,7 +47,15 @@ class Portfolio_jinil{
   int getNumOfStocks() const {
     return gambles_.size();
   }
+  int setTotalAssets(double asset){
+    totalAssets = asset;
+  }
+  double calSharpRatio(int begin, int end);
+  void chooseBestGambles(int& begin, int& end);
+
  private:
+  int STOCKS;
+  double totalAssets;
   int roundNum;
   int mode;
   vector<Gamble*> gambles_;
@@ -55,6 +65,8 @@ class Portfolio_jinil{
   vector<BettingInfo*> bettingInfo_; // selected betting gamble list
   ClassInfo classInfo[16];
   vector<double> decision_;
+  double benefit;
+  vector<double> return_money;
 };
 
 #endif

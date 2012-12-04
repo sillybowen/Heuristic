@@ -102,6 +102,7 @@ void Game::startGame(int user) {
           double totalAssets = 0.0;
           if (readSrvGamebleReturns(fromSrv, roundinfo, totalAssets) == 1) {
             engine_jinil_.giveRoundInfo(roundinfo);
+	    engine_jinil_.setTotalAssets(totalAssets);
           }
 	  p_betting_list = engine_jinil_.makeDecision();	
 	  fromPly = convertBettingListToString(*p_betting_list);

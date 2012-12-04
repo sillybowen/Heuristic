@@ -28,7 +28,7 @@ public:
 private:
   ClientSocket* registerSrv(int srv_port);
   void          readSrvOutFile();
-
+  double          allocate;
   int             mode_;
   ClientSocket*   arch_clt_;
   const string    ply_name_;  // Player I am in control

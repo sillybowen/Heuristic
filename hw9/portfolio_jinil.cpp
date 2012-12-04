@@ -1,10 +1,14 @@
 #include "portfolio_jinil.h"
 #include <fstream>
 #include <cassert>
+#include <math.h>
 
 Portfolio_jinil::Portfolio_jinil(){
   roundNum = 0;  
   mode = 2;
+  totalAssets = 1.0;
+  STOCKS = 30;
+  benefit = 1.0;
 }
 
 void Portfolio_jinil::setMode(int mode_){
@@ -37,7 +41,7 @@ void Portfolio_jinil::ParseFile(string inFile_srv_){
       links_.push_back(new Link(atoi(gi), atoi(gj)));
     }
   }
-  
+
   for(int i=0; i<gambles_.size(); i++)
     classInfo[ gambles_[i]->class_id ].member_list.push_back( gambles_[i]->gamble_id );
 }
@@ -64,11 +68,18 @@ vector<double> *Portfolio_jinil::makeDecision(){
     changeProbOnLink();
   }
 
+  // Reset the expect_ret
+  for(int i=0; i<t_gambles_.size(); i++)
+    t_gambles_[i]->calculateExpectRet();
+
   // 4> step : Select betting gambles
   selectGambles();
-
   roundNum++;
+
   getResult();
+
+  cout << "benefit : " << benefit << endl;
+
   return &decision_;
 }
 
@@ -152,9 +163,8 @@ void Portfolio_jinil::changeProbOnLink(){
 
 // Step 4
 void Portfolio_jinil::selectGambles(){
-  bettingInfo_.clear();
-  
   // bubble sorting : t_gambles_
+  // The last one has the largest expect_ret
   for(int i=t_gambles_.size()-1; i>0; i--){
     for(int j=0; j<i; j++){
       if(t_gambles_[j]->expect_ret > t_gambles_[j+1]->expect_ret){
@@ -165,55 +175,100 @@ void Portfolio_jinil::selectGambles(){
     }    
   }
 
-  int class_count[16];
-  for(int i=0; i<16; i++)
-    class_count[i] = 0;
-
-  for(int i=t_gambles_.size()-1; i>=0; i--){
-    int gamble_id = t_gambles_[i]->gamble_id;
-    int class_id = t_gambles_[i]->class_id;
-
-    if(mode == 1){
-      bettingInfo_.push_back(new BettingInfo(gamble_id));
-      if(bettingInfo_.size() == 20)
+  vector<BettingInfo*> pre_bettingInfo_;
+  for(int i=0; i<bettingInfo_.size(); i++){
+    if(bettingInfo_[i]->fraction == 0.0)
+      continue;
+    int gambleId = bettingInfo_[i]->gambleId;
+    printf("previous betting [id]:%d, [fraction]:%f >> ", gambleId, bettingInfo_[i]->fraction);
+    
+    int resultType = -2;
+    for(int j=0; j<resultInfo_.size(); j++){
+      if(resultInfo_[j]->gambleId == gambleId){
+	resultType = resultInfo_[j]->type;
 	break;
-    }else{
-      if(class_count[class_id] < 25){
-	bettingInfo_.push_back(new BettingInfo(gamble_id));
-	class_count[class_id] += 1;
       }
     }
+    if(resultType == 1)
+      cout << "type:high\t";
+    else if(resultType == 0)
+      cout << "type:middle\t"; 
+    else if(resultType == -1)
+      cout << "type:low\t";
+    else
+      cout << "ERROR" << endl;
+
+    printf("h_ret:%f\tm_ret:%f\tl_ret:%f\n", gambles_[gambleId]->h_ret, gambles_[gambleId]->m_ret, gambles_[gambleId]->l_ret);
+
+    pre_bettingInfo_.push_back( bettingInfo_[i] );
   }
 
-  // add clean code
-  bool gamble_clean[gambles_.size()];
-  for(int i=0; i<gambles_.size(); i++){
-    gamble_clean[i] = true;
-  }
-  for(int i=0; i<links_.size(); i++){
-    gamble_clean[ links_[i]->gi ] = false;
-    gamble_clean[ links_[i]->gj ] = false;
-  }
+  bettingInfo_.clear();
+
+  cout << endl;
 
   /*
-  // clean & favorable class => input it on bettingInfo.
-  for(int i=0; i<gambles_.size(); i++){
-    if(gamble_clean[i]){
-      if(classInfo[ gambles_[i]->class_id ].type == 1){
-	if(gambles_[i]->expect_ret > 1)
-	  bettingInfo_.push_back(new BettingInfo(i));
+  for(int i=0; i<resultInfo_.size(); i++){
+    if(resultInfo_[i]->type == 1){
+      for(int j=0; j<pre_bettingInfo_.size(); j++){
+	if(resultInfo_[i]->gambleId == pre_bettingInfo_[j]->gambleId){
+	  printf("Favorable [%d] : %f -> %f\n", pre_bettingInfo_[j]->gambleId, pre_bettingInfo_[j]->fraction, pre_bettingInfo_[j]->fraction * 1.5);
+	  pre_bettingInfo_[j]->fraction *= 1.5;
+	  bettingInfo_.push_back( pre_bettingInfo_[j] );
+	  break;
+	}
       }
     }
   }
   */
+  cout << endl;
 
-  int total_betting_num = bettingInfo_.size();
-  float common_fraction = 1.0 / (total_betting_num);
+  double total_invest_fraction = 0.0;
   for(int i=0; i<bettingInfo_.size(); i++)
-    bettingInfo_[i]->fraction = common_fraction;
+    total_invest_fraction += bettingInfo_[i]->fraction;
+
+  // If the value is more than 1?
+  // remove some stocks until less than 1
+  while(total_invest_fraction > 1){
+    total_invest_fraction -= bettingInfo_[ bettingInfo_.size()-1 ]->fraction;
+    bettingInfo_.pop_back();
+  }
+
+  int remainStocks = STOCKS - bettingInfo_.size();
+  int count = remainStocks;
+  double remainFraction = 1 - total_invest_fraction;
+  for(int i=t_gambles_.size()-1; i>=0; i--){
+    if(count <= 0)
+      break;
+    else{
+      bool isSkip = false;
+      // if this is already exist on the bettingInfo_,
+      // skip this
+      for(int j=0; j<bettingInfo_.size(); j++){
+	if(t_gambles_[i]->gamble_id == bettingInfo_[j]->gambleId){
+	  isSkip = true;
+	  break;
+	}
+      }
+      if(isSkip)
+	continue;
+
+      bool notValuable = false;
+
+      if(notValuable)
+	continue;
+      else{
+	int id = t_gambles_[i]->gamble_id;
+	double fraction = remainFraction / remainStocks;
+	bettingInfo_.push_back(new BettingInfo(id, fraction));
+	count--;
+      }
+    }
+  }
 }
 
 void Portfolio_jinil::giveRoundInfo(vector<int> &info){
+  resultInfo_.clear();
   for(int i=0; i<info.size(); i++){
     int type;
     if(info[i] == 0)
@@ -224,13 +279,105 @@ void Portfolio_jinil::giveRoundInfo(vector<int> &info){
       type = -1;
     resultInfo_.push_back(new ResultInfo(i, type));
   }
+
+  return_money.clear();
+  for(int i=0; i<gambles_.size(); i++)
+    return_money.push_back(0);
+
+  double temp_benefit = 0.0;
+  // calculate benefits
+  for(int i=0; i<bettingInfo_.size(); i++){
+    for(int j=0; j<resultInfo_.size(); j++){
+      if(bettingInfo_[i]->gambleId == resultInfo_[j]->gambleId){
+	int betting_id = bettingInfo_[i]->gambleId;
+	double returnValue;
+	if(resultInfo_[j]->type == 1)
+	  returnValue += bettingInfo_[i]->fraction * benefit * gambles_[betting_id]->h_ret;
+	else if(resultInfo_[j]->type == 0)
+	  returnValue += bettingInfo_[i]->fraction * benefit * gambles_[betting_id]->m_ret;
+	else
+	  returnValue += bettingInfo_[i]->fraction * benefit * gambles_[betting_id]->l_ret;
+	temp_benefit += returnValue;
+	return_money[betting_id] = returnValue;
+	break;
+	}
+    }
+  }
+  benefit = temp_benefit;
 }
 
 void Portfolio_jinil::getResult(){
   decision_.clear();
-  for(int i=0; i<gambles_.size(); i++) // Initialization
-    decision_.push_back(0.0);
 
-  for(int i=0; i<bettingInfo_.size(); i++)
-    decision_[ bettingInfo_[i]->gambleId ] = bettingInfo_[i]->fraction;
+  for(int i=0; i<gambles_.size(); i++){ // Initialization
+    decision_.push_back(0);
+  }
+
+  for(int i=0; i<bettingInfo_.size(); i++){
+    int bet_id = bettingInfo_[i]->gambleId;
+    double bet_fraction = bettingInfo_[i]->fraction;
+    decision_[bet_id] = bet_fraction;
+    printf("betting [id]:%d, [fraction]:%f\n", bettingInfo_[i]->gambleId, bettingInfo_[i]->fraction);
+  }
+}
+
+void Portfolio_jinil::chooseBestGambles(int &begin, int &end){
+  double best_SR = 0.0;
+  int best_begin = 0;
+  int best_end = 0;
+  for(int j=0; j<t_gambles_.size(); j++){
+    double temp_SR = calSharpRatio(best_begin, j);
+    if(temp_SR > best_SR){
+      best_end = j;
+      best_SR = temp_SR;
+    }
+  }
+  /*
+  for(int i=0; i<t_gambles_.size(); i++){
+    for(int j=i; j<t_gambles_.size(); j++){
+      double temp_SR = calSharpRatio(i, j);
+      if(temp_SR > best_SR){
+	best_begin = i;
+	best_end = j;
+	best_SR = temp_SR;
+      }
+    }
+  }
+  */
+  begin = best_begin;
+  end = best_end;
+
+  cout << "begin: " << begin << ", end: " << end << endl;
+  cout << "best_SR : " << best_SR << endl;
+}
+
+double Portfolio_jinil::calSharpRatio(int begin, int end){
+  double mean = 0.0;
+  double var = 0.0;
+  double sum = 0.0;
+  int size = end - begin + 1;
+  if(size < 10)
+    return 0;
+  
+  // mean
+  for(int i=begin; i<=end; i++)
+    sum += t_gambles_[i]->expect_ret;
+  
+  mean = sum / size;
+  
+  // var
+  for(int i=begin; i<=end; i++)
+    var += pow(t_gambles_[i]->expect_ret - mean, 2);
+  var /= size;
+  
+  /*
+  cout << "begin: " << begin << ", end: " << end << endl;
+  cout << "mean:" << mean << ", var:" << var << ", sum:" << sum << endl;
+  cout << "Sharp Ration: " << sum/var << endl;
+  */
+
+  if(var == 0)
+    return 0;
+  else
+    return sum / sqrt(var);
 }
