@@ -6,19 +6,17 @@
 #include <iostream>
 #include <iomanip>
 #include "callback.hpp"
-#include "thread_pool_normal.hpp"  // For ThreadPoolNormal
 #include "gradient_matcher.h"
 #include "game.h"
 #include "person.h"  // For Person::randWeightsGenerator method
 #define MAXCANDIDATESNUMBER 50
 #define FINALCOSTTHRESHOLD 0.0001
-#define VARTHRESHOLD 0.003
+#define VARTHRESHOLD 0.001
 #define NUMOFINITDESCENDPOINTS 150
 #define SENDFULLVECTORINTERVAL 10
 using std::pair;
 using base::Callback;
 using base::makeCallableOnce;
-using base::ThreadPool;
 using base::ThreadPoolNormal;
 
 const static double etaArr[] = { 0.01, 0.005, 0.001, 0.0005, 0.0001 };
@@ -29,7 +27,8 @@ GradientMatcher::GradientMatcher(const string& plyName, int nFeatures, int numTh
                    matcher_step_(0),
                    num_thrs_(numThrs),
                    xx_matr_(new double*[MAXCANDIDATESNUMBER]),
-                   local_game_(pgame) {
+                   local_game_(pgame),
+                   thr_pool_(new ThreadPoolNormal(num_thrs_)) {
   memset(xx_matr_, 0, sizeof(double*) * MAXCANDIDATESNUMBER);
 }
 
@@ -37,6 +36,9 @@ GradientMatcher::~GradientMatcher() {
   for (int i = 0; i < xx_len_; ++i)
     delete [] xx_matr_[i];
   delete xx_matr_;
+
+  thr_pool_->stop();
+  delete thr_pool_;
 }
 
 void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
@@ -52,6 +54,8 @@ void GradientMatcher::importRandCandsAndScores(const double* const* xxMatr,
   xx_len_ = numOfCands;
 }
 
+static int finishedCounter = 0;
+
 // Do gradient descend from multiple starting points
 void GradientMatcher::descendFromMultiSPs() {
   printXXMatrWithScore(xx_len_);
@@ -62,22 +66,27 @@ void GradientMatcher::descendFromMultiSPs() {
   sign_count_.clear();
   sign_count_.resize(n_features_);
 
-  ThreadPool* thrPool = new ThreadPoolNormal(num_thrs_);
+  WaitAllDone* waitAllDone = new WaitAllDone();
 
+  finishedCounter = 0;
   for (int ind = 0; ind < NUMOFINITDESCENDPOINTS; ++ind) {
     Person::randWeightsGenerator(mul_desc_[ind]->guessWArr, n_features_);
 
     Callback<void>* task = makeCallableOnce(&GradientMatcher::feedRandCandsResults,
         this, mul_desc_[ind], 0.001, -1, (double*)NULL);
-    thrPool->addTask(task);
+    thr_pool_->addTask(task);
     // feedRandCandsResults(mul_desc_.back()->guessWArr);
   }
-  thrPool->stop();
+  Callback<void>* allDone = makeCallableOnce(&WaitAllDone::jobsDoneSignal,
+      waitAllDone);
+  thr_pool_->addTask(allDone);
+  waitAllDone->wait();
 
-  std::cerr << "-----------------------------" << std::endl;
+  std::cerr << "-----------------------------" << "NumFinished: " << finishedCounter
+    << std::endl;
   // signCountDowork(mul_desc_.back()->guessWArr, signCounter);
   printSignCounter(sign_count_);
-  delete thrPool;
+  delete waitAllDone;
 }
 
 void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
@@ -89,6 +98,7 @@ void GradientMatcher::feedRandCandsResults(MulDesc* mulDesc, double eta,
   double* gtArr = new double[n_features_];  // Gradient array
   // vector<SignCounter> signCounter(n_features_);
   int iterations = 20000;
+  __sync_fetch_and_add(&finishedCounter, 0x1);
 
   double curCost = DBL_MAX, lastCost = 0.0, costChg = DBL_MAX, signCountPt = 1E-5;
   while (iterations-- > 0) {
