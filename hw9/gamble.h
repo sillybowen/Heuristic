@@ -19,13 +19,14 @@ class Gamble {
   double expect_ret;    // expectional return value
   double previous_ret;
 
-  Gamble(int gamble_id_, int class_id_, double h_ret_, double h_prob_,
-	 double m_ret_, double m_prob_, double l_ret_, double l_prob_);
+  Gamble(int gamble_id_, int class_id_, float h_ret_, float h_prob_,
+	 float m_ret_, float m_prob_, float l_ret_, float l_prob_);
   ~Gamble() { }
   void calculateExpectRet();
   void increaseHighProb();   // Increase h_prob, decrease l_prob
   void increaseLowProb();    // Increase l_prob, decrease h_prob
   friend class InitChoice;
+  void updatePreviousRet(int type);
 };
 
 #endif

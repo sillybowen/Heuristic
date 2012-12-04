@@ -68,6 +68,11 @@ vector<double> *Portfolio_jinil::makeDecision(){
     changeProbOnLink();
   }
 
+  // update expected ret of gambles
+  for(int i=0; i<t_gambles_.size(); i++){
+    t_gambles_[i]->calculateExpectRet();
+  }
+
   // Reset the expect_ret
   for(int i=0; i<t_gambles_.size(); i++)
     t_gambles_[i]->calculateExpectRet();
@@ -278,6 +283,12 @@ void Portfolio_jinil::giveRoundInfo(vector<int> &info){
     else
       type = -1;
     resultInfo_.push_back(new ResultInfo(i, type));
+  }
+
+  // update gamble_ information
+  for(int i=0; i<resultInfo_.size(); i++){
+    int gambleId = resultInfo_[i]->gambleId;
+    gambles_[gambleId]->updatePreviousRet( resultInfo_[i]->type );
   }
 
   return_money.clear();
