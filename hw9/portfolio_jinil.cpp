@@ -7,7 +7,7 @@ Portfolio_jinil::Portfolio_jinil(){
   roundNum = 0;  
   mode = 2;
   totalAssets = 1.0;
-  STOCKS = 30;
+  STOCKS = 20;
   benefit = 1.0;
 }
 
@@ -284,6 +284,8 @@ void Portfolio_jinil::giveRoundInfo(vector<int> &info){
       type = -1;
     resultInfo_.push_back(new ResultInfo(i, type));
   }
+
+  cout << "From Server : " << resultInfo_.size() << " received" << endl;
 
   // update gamble_ information
   for(int i=0; i<resultInfo_.size(); i++){
