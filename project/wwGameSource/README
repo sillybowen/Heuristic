@@ -1,0 +1,5 @@
+(1) TO compile:
+javac wordwrestlegame/*.java wordwrestlegame/utils/*.java
+
+(2) TO run:
+appletviewer  WordWrestleGame.html
