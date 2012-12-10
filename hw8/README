@@ -3,3 +3,8 @@ use 2> to seperate it from other
 
 $ run:
 ./dating aaa 17 0 1>tmp 2> imp
+
+(1) Version 1 strategy
+Multi gradient descend from 150 random starting points
+Do the above at each round, time consuming
+

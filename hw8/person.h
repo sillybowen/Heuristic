@@ -7,6 +7,9 @@ public:
   Person(const string& plyName, int nFeatures);
   virtual ~Person();
 
+  static int seed_;  // For srand in the following function
+  static void randWeightsGenerator(double* aVector, int len);
+
   bool isMatchmaker() const;
   void sendOutVector(double* aVector);
   void gotValueForJustSentCand(double newValue);

@@ -5,7 +5,6 @@
 #include <ctime>
 #include <iostream>
 #include "person.h"
-#include <stdio.h>
 #define WEIGHTGRANULARITY 200
 
 Person::Person(const string& plyName, int nFeatures)
@@ -54,6 +53,46 @@ Person::Person(const string& plyName, int nFeatures)
 
 Person::~Person() {
   delete [] exact_w_;
+}
+
+int Person::seed_ = 0;
+
+void Person::randWeightsGenerator(double* aVector, int len) {
+  const int halfValue = WEIGHTGRANULARITY / 2;
+  const int range = halfValue / len + 1;
+  int posCount = 0, negCount = 0;
+  srand(time(NULL) + seed_++);
+
+  for (int i = 0; i < len; ++i) {
+    int sign = rand() % 2, random = rand() % range;
+    if (sign) {  // Positive weights
+      posCount += random;
+      aVector[i] = double(random) / double(halfValue);
+    } else {
+      negCount += random;
+      aVector[i] = double(-random) / double(halfValue);
+    }
+  }
+
+  // std::cout << "posCount= " << posCount << "   negCount= " << negCount << std::endl;
+  assert(posCount <= halfValue && negCount <= halfValue);
+  while (posCount < halfValue) {  // Make positive weights addup to 1.0 (include 0)
+    int randPos = rand() % len;
+    if (aVector[randPos] < 0.0) continue;
+    else {
+      aVector[randPos] += 1.0 / double(halfValue);
+      ++posCount;
+    }
+  }
+  while (negCount < halfValue) {  // Make negative weights addup to 1.0 (Not count 0)
+    int randPos = rand() % len;
+    if (aVector[randPos] >= 0.0) continue;
+    else {
+      aVector[randPos] -= 1.0 / double(halfValue);
+      ++negCount;
+    }
+  }
+
 }
 
 bool Person::isMatchmaker() const { return false; }
@@ -110,17 +149,7 @@ bool Person::addNewVectHistory() {  // Generating "noise" array
   else {
     const int numOfNoises = n_features_ * 0.05;
     for (int i = 0; i < numOfNoises; ) {
-
-      int n;
-      FILE * f = fopen("/dev/urandom", "rb");
-      if(f != NULL){
-	fread(&n, sizeof(int), 1, f);
-	fclose(f);
-      }
-
-      int pos = n % n_features_;
-
-      //int pos = rand() % n_features_;
+      int pos = rand() % n_features_;
       if (isModifyArr[pos] != 0 || fabs(exact_w_[pos]) < 0.05)
         continue;
       else {
@@ -128,15 +157,7 @@ bool Person::addNewVectHistory() {  // Generating "noise" array
         ++i;
       }
       int trunckW = exact_w_[pos] * 100;
-
-      f = fopen("/dev/urandom", "rb");
-      if(f != NULL){
-	fread(&n, sizeof(int), 1, f);
-	fclose(f);
-      }
-      int noiseW = trunckW * double((n % 41) - 20) / 100.0;
-
-      //int noiseW = trunckW * double((rand() % 41) - 20) / 100.0;
+      int noiseW = trunckW * double((rand() % 41) - 20) / 100.0;
       tmpArr[pos] = double(noiseW) / 100.0;
     }
     vect_his_.push_back(tmpArr);

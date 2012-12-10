@@ -8,52 +8,154 @@ using namespace std;
 Game::Game(const char* plyName, int srv_port, int mode)
   : ply_name_(string(plyName)), arch_clt_(registerSrv(srv_port)), mode_(mode) { }
 
-void Game::startGame() {
-  string fromPly = ply_name_, fromSrv;
+void Game::startGame(int user) {
+  string fromPly = ply_name_, fromSrv, tmpFromSrv;
+  bool firstDone = false;
   fromPly.push_back('\n');
+
+  // user : 1)Bowen 2)Tao 3)Jinil
 
   try {
     (*arch_clt_) << fromPly;  // Send server our player's name
 
     do {
-      string tmpFromSrv;
-      (*arch_clt_) >> fromPly;
+      if (!firstDone) {
+        string firstRoundStr;
+        (*arch_clt_) >> firstRoundStr;
+        // Get File Path / mode / num_rounds
+        string mode, num_str;
+        int num_rounds;
+        stringstream ss(firstRoundStr);
+        ss >> inFile_srv_ >> mode >> num_str;
+        num_rounds = atoi(num_str.c_str());
 
-      // Get File Path / mode / num_rounds
-      string mode, num_str;
-      int num_rounds;
-      stringstream ss;
-      ss << fromPly;
-      ss >> inFile_srv_ >> mode >> num_str;
-      num_rounds = atoi(num_str.c_str());
+        cout << "F_Path: " << inFile_srv_ << "\nMode: " << mode << "\n# of rounds: "
+          << num_rounds << endl;
+        if (user == 1) {  // Setup bowen's Engine class
+          engine_.ParseFile(inFile_srv_);
+        }else if (user == 3){  // Setup jinil's Engine class
+	  engine_jinil_.ParseFile(inFile_srv_);
+	  engine_jinil_.setMode(mode_);
+	}
+        fromSrv = firstRoundStr.substr(firstRoundStr.find("\n") + 1);
+	
+	// Get Gamble Data File
+	readSrvOutFile();
+      
+	firstDone = true;
+        continue;
+      }
 
-      cout << "File Path : " << inFile_srv_ << endl << "Mode : " << mode << endl << "# of rounds : " << num_rounds << endl << endl;
-      while(true) {
+      while (1) {
+        if (fromSrv.find("\n") != string::npos) {
+          if (!fromSrv.compare(0, 3, "OK\n")) {  // Just "OK", remove redundency
+            fromSrv = fromSrv.substr(fromSrv.find("\n") + 1);
+            continue;
+          } else if (!fromSrv.compare(0, 5, "ERROR")) {
+            return;  // error
+          } else {
+            break;
+          }
+        }
         (*arch_clt_) >> tmpFromSrv;
         fromSrv += tmpFromSrv;
-
-	if((fromSrv.find("[")!=string::npos && fromSrv.find("]")!=string::npos) ||
-	   (fromSrv.find("[")==string::npos && fromSrv.find("]")==string::npos))
-	  break;
+        tmpFromSrv.clear();
       }
       cout << "#FromSrv: " << fromSrv << endl;
-      // Get Gamble Data File
-      readSrvOutFile();
 
       ////////////////////////////////////////
       // Bowen, Tao  
       // Please insert your code in here
       // You can use 'gambles_' and 'links_' vector, which we read them from server output file
+      // Please return to vector<double> betting_list
+      //    ; index: gamble_id, double: fraction
+      //    ; if you don't want to betting in gamble_id(j), 
+      //        betting_list[j] = 0;
       ///////////////////////////////////////
+      vector<double>* p_betting_list;
+      
+      // Bowen's engine
+      if (user == 1) {
+        if (!firstDone) {
+          p_betting_list = engine_.makeDecision();
+          fromPly = convertBettingListToString(*p_betting_list);
+        } else {
+          // Add gamble previous returns here
+          // fromPly = convertBettingListToString(vector<double>(
+            //     engine_.getNumOfStocks(), (1.0 / double(engine_.getNumOfStocks()))));
+          vector<int> roundinfo(engine_.getNumOfStocks());
+          double totalAssets = 0.0;
+          if (readSrvGamebleReturns(fromSrv, roundinfo, totalAssets) == 1) {
+            engine_.giveRoundInfo(roundinfo);
+          }
+          p_betting_list = engine_.makeDecision();
+          fromPly = convertBettingListToString(*p_betting_list);
+        }
+      }
+      // Jinil's engine
+      else if (user == 3) {
+	if(!firstDone){
+	  p_betting_list = engine_jinil_.makeDecision();	
+	  fromPly = convertBettingListToString(*p_betting_list);
+	}else{
+	  vector<int> roundinfo(engine_jinil_.getNumOfStocks());
+          double totalAssets = 0.0;
+          if (readSrvGamebleReturns(fromSrv, roundinfo, totalAssets) == 1) {
+            engine_jinil_.giveRoundInfo(roundinfo);
+	    engine_jinil_.setTotalAssets(totalAssets);
+          }
+	  p_betting_list = engine_jinil_.makeDecision();	
+	  fromPly = convertBettingListToString(*p_betting_list);
+	}
+      }
 
+      cout << "Player sent: " << fromPly << endl;
+      (*arch_clt_) << fromPly;
 
+      fromPly.clear();
       fromSrv.clear();
-      sleep(1);
     } while (1);
   } catch (SocketException& se) {
     assert(false);
   }
 
+}
+
+/*
+0 cout<<'h';
+1 cout<<'m';
+2 cout<<'l';
+*/
+int Game::readSrvGamebleReturns(const string& fromSrv, vector<int>& roundRets,
+    double& totalAssets) const {
+  istringstream ist(fromSrv);
+  int index;
+  char retChar;
+
+  // Remove '['
+  if (ist.get() != '[')
+    return -1;
+  while (1) {
+    ist >> index;
+    ist.get();
+    ist >> retChar;
+    switch (retChar) {
+      case 'h': roundRets[index] = 0; break;
+      case 'm': roundRets[index] = 1; break;
+      case 'l': roundRets[index] = 2; break;
+    }
+
+    if (ist.peek() == ',') {
+      ist.get();
+      skipws(ist);
+    } else {  // ']'
+      ist.get();
+      ist >> totalAssets;
+      break;
+    }
+  }
+
+  return 1;
 }
 
 ClientSocket* Game::registerSrv(int srv_port) {
@@ -96,4 +198,22 @@ void Game::readSrvOutFile() {  // Default file is @inFile_srv_
       links_.push_back(new Link(atoi(gi), atoi(gj)));
     }
   }
+}
+
+string Game::convertBettingListToString(vector<double> betting_list_){
+  ostringstream ost;
+  ost << "[";
+  for (int i=0; i<betting_list_.size(); i++) {
+    if (betting_list_[i] != 0.0) {
+      ost << i << ":" << betting_list_[i];
+    } else {
+      ost << i << ":0.0";
+    }
+    if (i != (betting_list_.size() - 1)) {
+      ost << ", ";
+    }
+  }
+  ost << "]\n";
+
+  return ost.str();
 }

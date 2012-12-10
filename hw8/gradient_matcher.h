@@ -2,9 +2,13 @@
 #define gradient_matcher_h
 #include <vector>
 #include <map>
+#include "thread_pool_normal.hpp"  // For ThreadPoolNormal
 #include "someone.h"
+#include "lock.hpp"
 using std::vector;
 using std::map;
+using base::Notification;
+using base::ThreadPool;
 
 class Game;
 class GradientMatcher : public Someone {
@@ -13,10 +17,18 @@ public:
       Game* pgame = NULL);
   ~GradientMatcher();
 
+  struct WaitAllDone {
+    WaitAllDone() { }
+    void jobsDoneSignal() { n_.notify(); }
+    void wait() { n_.wait(); }
+
+    Notification n_;
+  };
   struct SignCounter {
     int  signFliped_;
     int  posCount_;
     int  negCount_;
+    int  certInd_;  // certainly index == abs(posCount_ - negCount_)
     bool lastSign_;  // if >= 0.0, true; else false
     SignCounter() : signFliped_(0), posCount_(0), negCount_(0) { }
   };
@@ -73,6 +85,7 @@ private:
   vector<MulDesc*>    mul_desc_;  // Clear and resize every turn
   vector<SignCounter> sign_count_;  // Clear and resize every turn
   ConfirmedMap        conf_map_;  // Static, don't clear, value true: >= 0.0
+  ThreadPool*         thr_pool_;
 };
 
 #endif

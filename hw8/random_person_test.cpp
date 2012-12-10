@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "person.h"
+#include "projection.h"
 #include "gtest/gtest.h"
 
 namespace {
@@ -51,6 +52,45 @@ namespace {
       ASSERT_DOUBLE_EQ(posSum, 1.0);
       ASSERT_DOUBLE_EQ(negSum, -1.0);
     }
+  }
+
+  TEST_F(RandomPersonTest, Static_ValidaVector) {
+    const int numOfTries = 20000;
+    double* tmpArr = NULL;
+
+    for (int i = 0; i < numOfTries; ++i) {
+      int nFeatures = rand() % 73 + 20;
+      tmpArr = new double[nFeatures];
+      Person::randWeightsGenerator(tmpArr, nFeatures);
+      double posSum = 0.0, negSum = 0.0;
+
+      for (int i = 0; i < nFeatures; ++i) {
+        if (tmpArr[i] >= 0.0) posSum += tmpArr[i];
+        else negSum += tmpArr[i];
+      }
+
+      ASSERT_DOUBLE_EQ(posSum, 1.0);
+      ASSERT_DOUBLE_EQ(negSum, -1.0);
+
+      delete [] tmpArr;
+    }
+  }
+
+  TEST_F(RandomPersonTest, ProjForPosNegConstraint) {
+    int nFeatures = 8;
+    double* tmpArr = new double[nFeatures];
+    for (int i = 0; i < nFeatures; ++i) {
+      tmpArr[i] = (rand() % 73) / 73.0;
+      cout << tmpArr[i] << ' ';
+    }
+
+    Projection::projForPosNegConstraint(tmpArr, nFeatures);
+    cout << "Projected:\n";
+    for (int i = 0; i < nFeatures; ++i) {
+      cout << tmpArr[i] << ' ';
+    }
+    cout << endl;
+    delete tmpArr;
   }
 
   TEST_F(RandomPersonTest, ValidNoises) {

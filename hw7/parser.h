@@ -27,5 +27,6 @@ class Parser {
   const vector<Location*>& getLocations() const { return locs; }
 
   void taoGreedy(tree* pSrvTr, vector<Location>& retloc, vector<Nano>& retnano);
+  friend class Worker;
 };
 #endif
