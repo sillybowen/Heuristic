@@ -10,9 +10,10 @@ public class InputWordPanel extends JPanel implements ActionListener {
   /**
    * default serializable id
    */
+  public final String playerName;
   private static final long serialVersionUID = 1L;
   private final WordWrestleGame wwGame;
-  private final String playerName;
+  private int playerScore;
   private final int playerId;
   private final Font newTextFieldFont;
   protected JTextField playerNameField;
@@ -20,7 +21,6 @@ public class InputWordPanel extends JPanel implements ActionListener {
   protected JTextField scoreTag;
   protected JTextField scoreField;
   protected JTextArea textArea;
-  public int playerScore;
 
   public InputWordPanel(WordWrestleGame game, String name, int id) {
     super(new GridBagLayout());
@@ -31,7 +31,7 @@ public class InputWordPanel extends JPanel implements ActionListener {
     
     playerNameField = new JTextField(playerName + ":", 10);
     playerNameField.setEditable(false);
-    if (playerId == 2) {  // Second player will be the first to enter a word
+    if (playerId == 1) {
       playerNameField.setForeground(Constants.BLUE);
     } else {
       playerNameField.setForeground(Constants.RED);
@@ -43,7 +43,7 @@ public class InputWordPanel extends JPanel implements ActionListener {
     textField = new JTextField(Constants.INPUT_WORD_LENGTH);
     textField.addActionListener(this);
     textField.setFont(newTextFieldFont);
-    if (id != 1) {
+    if (id != 2) {  // Second player will be the first to enter a word
       textField.setEditable(false);
     }
     
@@ -53,7 +53,7 @@ public class InputWordPanel extends JPanel implements ActionListener {
         Constants.INPUT_WORD_LENGTH);
     scoreField.setEditable(false);
 
-    textArea = new JTextArea(5, Constants.INPUT_WORD_LENGTH);
+    textArea = new JTextArea(2, Constants.INPUT_WORD_LENGTH);
     textArea.setEditable(false);
     textArea.setFont(newTextFieldFont);
     JScrollPane scrollPane = new JScrollPane(textArea);
@@ -81,6 +81,20 @@ public class InputWordPanel extends JPanel implements ActionListener {
     c.weightx = 1.0;
     c.weighty = 1.0;
     add(scrollPane, c);
+  }
+  
+  public void resetInputWordPanel() {
+    textField.setText("");
+    textArea.setText("");
+    scoreField.setText("");
+    playerScore = 0;
+    if (playerId != 2) {  // Second player will be the first to enter a word
+      setInputAreaEditable(false);
+      System.out.println("reset input word panel, NOT editable");
+    } else {
+      setInputAreaEditable(true);
+      System.out.println("reset input word panel, editable");
+    }
   }
   
   public void setInputAreaEditable(boolean isEditable) {
@@ -156,6 +170,10 @@ public class InputWordPanel extends JPanel implements ActionListener {
     // Display the window.
     frame.pack();
     frame.setVisible(true);
+  }
+  
+  public int getPlayerScore() {
+    return playerScore;
   }
 
   public static void main(String[] args) {

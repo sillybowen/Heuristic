@@ -8,6 +8,8 @@ public final class Constants {
   public static final String FIRST_PLAYER_NAME = "firstPlayer";
   public static final String SECOND_PLAYER_NAME = "secondPlayer";
   public static final String NEWLINE = "\n";
+  public static final String PRE_HTML = "<html><h1>";
+  public static final String POST_HTML = "</h1></html>";
   
   /*
    * Set color base on RGB You can get RGB value for your color at
