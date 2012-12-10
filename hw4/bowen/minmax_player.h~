@@ -1,0 +1,23 @@
+#ifndef minmax_player_h_
+#define minmax_player_h_
+#include "player.h"
+#include "flat_board.h"
+
+class MinMaxPlayer : public Player {
+ public:
+  MinMaxPlayer (const FlatBoard* pfb, const int* pboard,int boardLen);
+  //  ~MinMaxPlayer();
+
+  MovePos nextAdd();
+  int nextRemove();
+  int score(){};
+ private:
+  int minAddStep(int d);
+  int maxAddStep(int d,Player::MovePos& mv);
+  int minRemoveStep(int d);
+  int maxRemoveStep(int d);
+  vector<int> blocks_arr_;
+  vector<int> opp_blocks_arr_;
+  FlatBoard localboard;
+};
+#endif

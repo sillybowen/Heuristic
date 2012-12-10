@@ -1,0 +1,26 @@
+#include "dp_remove.h"
+
+using namespace std;
+
+DPRemove::DPRemove(int len, int n, int* board):
+  board_len_(len),numOfWeights_(n){
+  for (int i = 0; i<len; i++)
+    if (board[i]!=0) {
+      weights_.push_back(board[i]);
+      positions_.push_back(i);
+    }
+  int x = 1<<25;
+  cout<<x<<endl;
+}
+int translateBoardToBit(int *board) {
+  int ret = 0;
+  for (int i = 0;i<weights_.size();i++) {
+    ret*=2;
+    if (board[positions_[i]] != 0)
+      ret++;
+  }
+  return ret;
+}
+void DPRemove::Work() {
+  
+}

@@ -1,0 +1,57 @@
+#include <iostream>
+#include <limits>
+#include "minmax_player.h"
+using namespace std;
+
+MinMaxPlayer:: MinMaxPlayer( const FlatBoard* pfb, const int* pboard, int boardLen) : Player(pfb,pboard,boardLen) {
+  blocks_arr_.resize(PLAYERNUMOFBLOCKS+1);
+  blocks_arr_[0] = 0;
+  for (int i = 1; i<=PLAYERNUMOFBLOCKS; i++)
+    blocks_arr_[i] = 1;
+}
+
+Player::MovePos MinMaxPlayer::nextAdd() {
+  opp_blocks_arr_ = pflat_board_->getOppUsedBlock((Player*)this);
+  localboard = *pflat_board_;
+  Player::MovePos ret(0);
+  maxAddStep(2,ret);
+  return ret;
+}
+
+int MinMaxPlayer::nextRemove() {
+  int ret = maxRemoveStep(2);
+  return ret;
+}
+
+int MinMaxPlayer::minAddStep(int d) {
+
+}
+int MinMaxPlayer::maxAddStep(int d, Player::MovePos& mv) {
+  int sc = std::numeric_limits<int>::min();
+  int answ,ansp;
+  int tmp;
+  for (int w = 1; w<= PLAYERNUMOFBLOCKS;w++)
+    if (blocks_arr_[w] == 1)
+      for (int p = 0;p<boardLen_;p++)
+        if (pflat_board_->validateAdd(p,w)){
+          pflat_board_->addWt(p,w);
+          if (d>0)
+            tmp = minAddStep(d-1);
+          else
+            tmp = score();
+          if (tmp>sc) {
+            answ = w;
+            ansp = p;
+            sc = tmp;
+          }
+          pflat_board_->removeWt(p);
+        }
+  mv.boardArrPos = ansp;
+  mv.wt = answ;
+}
+int MinMaxPlayer::minRemoveStep(int d) {
+  
+}
+int MinMaxPlayer::minRemoveStep(int d) {
+  
+}

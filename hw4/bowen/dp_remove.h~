@@ -1,0 +1,21 @@
+#ifndef dp_remove_h_
+#define dp_remove_h_
+#include <vector>
+
+using namespace std;
+class DPRemove {
+ public:
+  DPRemove( int len, int n, int* board);
+  int choice(int* board);
+  void work();
+ private:
+  vector<int> weights_;
+  vector<int> positions_;
+  vector<int> status_;
+  int decision();
+  int board_len_;
+  int numOfWeights_;
+  int translateBoardToBit(int * board);
+};
+
+#endif

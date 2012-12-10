@@ -1,0 +1,13 @@
+This algorithm works with 7 weights for each player and supports at -1 and -3. 
+
+The basic idea of this algorithm is that since red needs to remove the last weight from the lever, red would certainly lose if red reaches that state. Thus, we need to find out all the stable configurations with one weight on the lever (I called that set1) and prevent those if playing red and try to achieve those if playing blue. 
+
+Red Strategy at placing stage: block the set1 positions with weights that would be unstable alone without tipping the lever. If not possible, put weights on the left side of the lever since all the set1 configurations are located on the left side. This way would force blue to put weights on the right side of the lever, allowing you to block more set1 positions. 
+Red Strategy at removing stage: use min-max search tree with some priority to find a winning path. Probably, red should try to remove weights in set1 first. 
+
+Blue Strategy at placing stage: put weights in set1 configurations. If not possible, I chose to place weights on the right side, so that I can put weights on the left side next turn. But this is not a very good idea. 
+Blue Strategy at removing stage: remove the weights on the left side that are not set1 to force red to remove weights on the right side. 
+
+Improvements that can be implemented: I did not take into account about the weights my opponent and I already placed on the lever or the ones we still have. Probably, it would make blue a lot stronger, especially at the placing stage. Right now, red beats blue 100%. 
+
+Usage: java NoTippingGame (portNum) (number of weights) (red/blue) 
