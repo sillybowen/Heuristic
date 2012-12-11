@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class prefixTree {
 	Node root;
@@ -17,7 +18,9 @@ public class prefixTree {
 	  return root.getRandomString("");
 	}
 	public void load() throws IOException{
-		InputStream ist = new FileInputStream("dictionary.txt");
+	    String path = this.getClass().getResource("").getPath();
+
+		InputStream ist = new FileInputStream(path + "dictionary.txt");
 		BufferedReader istream = new BufferedReader(new InputStreamReader(ist));
 		String text = istream.readLine(); //just read the first line in the text file		
 		while (text!=null) {
@@ -25,6 +28,7 @@ public class prefixTree {
 			text = istream.readLine();
 		}
 		istream.close();
+	    
 	}
 	public void insert(String s){
 		root.insert(s, 0);
