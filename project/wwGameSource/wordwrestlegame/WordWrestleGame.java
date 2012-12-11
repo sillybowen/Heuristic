@@ -5,22 +5,25 @@ import java.awt.event.*;
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyledDocument;
 
 import wordwrestlegame.utils.Constants;
 
 //no deprecation here, 2 different methods of action listening
 
 public class WordWrestleGame extends Applet implements ActionListener {
-  private static String initWord = Constants.INIT_WORD;
+  private static String initWord;
   private static String styleInitWord;
+  private static prefixTree pft;
+  private static Set<String> usedStrSet;
   private static JTextPane compressedWord;
   private static JTextField numMovesTextField;
   private static InputWordPanel lPlyPanel;
@@ -35,10 +38,12 @@ public class WordWrestleGame extends Applet implements ActionListener {
   }
   
   public void resetWWGame() {
+    usedStrSet.clear();  // Clear used word set
     lPlyPanel.resetInputWordPanel();
     rPlyPanel.resetInputWordPanel();
     turns = 0;
-    initWord = Constants.INIT_WORD;
+    initWord = pft.getRandomWord();
+    usedStrSet.add(initWord);
     numMovesTextField.setText("Number of Moves: "
         + Integer.toString(numOfMoves));
     compressedWord.setText(Constants.PRE_HTML + initWord + Constants.POST_HTML);
@@ -48,6 +53,19 @@ public class WordWrestleGame extends Applet implements ActionListener {
     numOfMoves = Integer.parseInt(s);
     numMovesTextField.setText("Number of Moves: "
         + Integer.toString(numOfMoves));
+  }
+  
+  public void init() {
+    pft = new prefixTree();
+    try {
+      pft.load();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    initWord = pft.getRandomWord();
+    usedStrSet = new HashSet<String>();
+    usedStrSet.add(initWord);
   }
 
   public void gameStart() {
@@ -138,6 +156,14 @@ public class WordWrestleGame extends Applet implements ActionListener {
     repaint();
   }
   
+  public void addWordToSet(String word) {
+    usedStrSet.add(word);
+  }
+  
+  public boolean isWordInSet(String word) {
+    return usedStrSet.contains(word);
+  }
+  
   /*
    * Find largest prefix of input which is the same as the corresponding
    * suffix of @initWord, return number of characters in common
@@ -179,6 +205,10 @@ public class WordWrestleGame extends Applet implements ActionListener {
     String mycaption = event.getActionCommand();
     System.out.println("The event is: " + mycaption);
     resetWWGame();
+  }
+  
+  public prefixTree getPft() {
+    return pft;
   }
   
   public static void main(String[] args) {

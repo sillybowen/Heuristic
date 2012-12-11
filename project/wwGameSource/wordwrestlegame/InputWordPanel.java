@@ -110,11 +110,15 @@ public class InputWordPanel extends JPanel implements ActionListener {
     String text = textField.getText();
     int isValidInput = isValidWordInput(text);
     if (isValidInput == -1) {
-      JOptionPane.showMessageDialog(this, "Not a word (has space)!",
+      JOptionPane.showMessageDialog(this, "Not a word!",
           "Illegal Input Error", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (isValidInput == -2) {
       JOptionPane.showMessageDialog(this, "No Common Suffix-Prefix",
+          "Illegal Input Error", JOptionPane.ERROR_MESSAGE);
+      return;
+    } else if (isValidInput == -3) {
+      JOptionPane.showMessageDialog(this, "Word Already Used",
           "Illegal Input Error", JOptionPane.ERROR_MESSAGE);
       return;
     }
@@ -141,10 +145,14 @@ public class InputWordPanel extends JPanel implements ActionListener {
   private int isValidWordInput(String inputWord) {
     int commonLen;
     
-    if (inputWord.contains(" ")) {
+    if (!(wwGame.getPft().isValid(inputWord))) {
       return -1;
     } else if (wwGame != null) {
+      if (wwGame.isWordInSet(inputWord)) {
+        return -3;  // Repeat word
+      }
       commonLen = wwGame.updateCompressedWord(inputWord);
+      wwGame.addWordToSet(inputWord);
       if (commonLen > 0) {
         return commonLen;
       } else {
